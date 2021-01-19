@@ -152,7 +152,7 @@ public partial class AdMobManager : MonoBehaviour, IAdsNetworkHelper
         {
             AdMobManager.appId = AdMobConst.ADMOB_APP_ID;
             AdMobManager.bannerId = AdMobConst.BANNER_ID;
-            AdMobManager.interstitialId = AdMobConst.INTERSTITIAL_COMPLETELEVEL;
+            AdMobManager.interstitialId = AdMobConst.INTERSTITIAL;
             AdMobManager.videoId = AdMobConst.REWARD_ID;
 
             _instance = this;
@@ -605,7 +605,7 @@ public partial class AdMobManager : MonoBehaviour, IAdsNetworkHelper
 
     public void RequestInterstitialNoShow(AdPlacementType placementId, AdsManager.InterstitialDelegate onAdLoaded = null, bool showLoading = true)
     {
-        string id = CustomMediation.GetAdmobID(placementId, AdMobConst.INTERSTITIAL_COMPLETELEVEL);
+        string id = CustomMediation.GetAdmobID(placementId, AdMobConst.INTERSTITIAL);
         RequestAdmobInterstitialNoShow(id, onAdLoaded, showLoading);
     }
 
