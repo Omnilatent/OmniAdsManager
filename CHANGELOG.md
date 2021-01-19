@@ -1,4 +1,4 @@
-2021/1/15:
+1.0.3 (2021/1/15):
 New features:
 - Ad Placement remote config can now set network priority order for each placement. 
 - Example remote config json for new placement setting:

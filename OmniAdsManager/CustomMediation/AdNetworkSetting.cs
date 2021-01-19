@@ -9,6 +9,7 @@ public class AdNetworkSetting : ScriptableObject
     [Tooltip("Priority from top to bottom, (0 first)")]
     //[Reorderable]
     [SerializeField] private List<CustomMediation.AD_NETWORK> adNetworks;
+    [SerializeField] public string unityGameID;
 
     public static AdNetworkSetting Instance
     {

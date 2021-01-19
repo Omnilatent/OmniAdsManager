@@ -39,7 +39,7 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsListener, IAdsNetworkHelp
     void Start()
     {
         //Monetization.Initialize(Const.GAMEID, testMode);
-        Advertisement.Initialize(Const.GAMEID, testMode);
+        Advertisement.Initialize(AdNetworkSetting.Instance.unityGameID, testMode);
         if (showBannerOnStart)
             StartCoroutine(ShowBannerWhenReady(CustomMediation.GetUnityPlacementId(AdPlacementType.Banner)));
         //interstitialSplashContent = Monetization.GetPlacementContent(interstitialSplash) as ShowAdPlacementContent;
@@ -257,6 +257,8 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsListener, IAdsNetworkHelp
 
     static void LogEvent(string message, string param, string value)
     {
+#if FIREBASE
         FirebaseManager.LogEvent($"UnityAds_{message}", param, value);
+#endif
     }
 }

@@ -69,6 +69,8 @@ public class AdsManager : MonoBehaviour
     public delegate List<CustomMediation.AD_NETWORK> ConfigPlacementAdsNetworkPriority(AdPlacementType placementType);
     public ConfigPlacementAdsNetworkPriority configPlacementAdsNetworkPriority; //get remote config value for waterfall order
 
+    public const string RMCF_ADS_PRIORITY = "ads_priority";
+
     public static AdsManager Instance
     {
         get
@@ -166,7 +168,7 @@ public class AdsManager : MonoBehaviour
     {
         //Initialize remote config
         //0 is admob, 1 is unity
-        string adsPriorityStr = FirebaseRemoteConfigHelper.GetString(Const.RMCF_ADS_PRIORITY, "");
+        string adsPriorityStr = FirebaseRemoteConfigHelper.GetString(RMCF_ADS_PRIORITY, "");
         Debug.Log($"remote config value: {adsPriorityStr}");
         if (!isReady || isDoneInitRemoteConfig || string.IsNullOrEmpty(adsPriorityStr)) return null;
         var splitStr = adsPriorityStr.Split(',');
@@ -190,7 +192,7 @@ public class AdsManager : MonoBehaviour
 
     void SetupRemoteConfig(object sender, bool isSuccess)
     {
-        string configJsonData = FirebaseRemoteConfigHelper.GetString(Const.RMCF_ADS_PRIORITY, null);
+        string configJsonData = FirebaseRemoteConfigHelper.GetString(RMCF_ADS_PRIORITY, null);
         if (!string.IsNullOrEmpty(configJsonData))
         {
             if ((configJsonData.StartsWith("{") && configJsonData.EndsWith("}")) || //For object
@@ -216,12 +218,12 @@ public class AdsManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"AdsManager: {Const.RMCF_ADS_PRIORITY} has invalid format. {configJsonData}");
+                Debug.LogError($"AdsManager: {RMCF_ADS_PRIORITY} has invalid format. {configJsonData}");
             }
         }
         else
         {
-            Debug.LogError($"AdsManager: {Const.RMCF_ADS_PRIORITY} is null");
+            Debug.LogError($"AdsManager: {RMCF_ADS_PRIORITY} is null");
         }
     }
 
@@ -490,7 +492,7 @@ public class AdsManager : MonoBehaviour
     public static void ShowError(string msg, string placementName)
     {
         string text = string.Format("There was a problem displaying this ads. {0}. Please try again later.", msg);
-        Manager.Add(PopupController.POPUP_SCENE_NAME, new PopupData(PopupType.OK, text));
+        //Manager.Add(PopupController.POPUP_SCENE_NAME, new PopupData(PopupType.OK, text));
         //Manager.Add(PopupWithImageController.POPUP_SCENE_NAME, new PopupWithImageData(PopupType.OK, text).SetImagePath(Const.DIALOG_ICON_OPPS_PATH));
         FirebaseManager.LogEvent($"AdsError_{placementName}", "message", msg);
     }
