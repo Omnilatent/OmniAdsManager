@@ -431,7 +431,7 @@ public partial class AdMobManager : MonoBehaviour, IAdsNetworkHelper
 
         if (noAds != null && noAds())
         {
-            OnInterstitialFinish();
+            OnInterstitialFinish(false);
             return;
         }
 
@@ -443,7 +443,7 @@ public partial class AdMobManager : MonoBehaviour, IAdsNetworkHelper
             this.interstitialTime = this.time;
             this.interstitial.Show();
 #if UNITY_EDITOR
-            OnInterstitialFinish();
+            OnInterstitialFinish(true);
 #endif
             //("show inter success");
             return;
@@ -451,7 +451,7 @@ public partial class AdMobManager : MonoBehaviour, IAdsNetworkHelper
 
         if (lastInterstitialRequestIsFailed)
         {
-            OnInterstitialFinish();
+            OnInterstitialFinish(false);
         }
         else
         {
@@ -548,7 +548,7 @@ public partial class AdMobManager : MonoBehaviour, IAdsNetworkHelper
             this.interstitial.OnAdFailedToLoad -= HandleInterstitialFailedToLoad;
             Manager.LoadingAnimation(false);
 
-            OnInterstitialFinish();
+            OnInterstitialFinish(false);
 
             lastInterstitialRequestIsFailed = true;
             ShowError(args);
