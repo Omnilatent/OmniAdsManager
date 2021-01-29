@@ -506,7 +506,17 @@ public class AdsManager : MonoBehaviour
 
     bool DoNotShowAds(AdPlacementType placementType)
     {
-        if (noAds != null && noAds()) return true;
+        bool isNoAds = false;
+        if (noAds != null)
+        {
+            var noAdsInvokeList = noAds.GetInvocationList();
+            for (int i = 0; i < noAdsInvokeList.Length; i++)
+            {
+                isNoAds = isNoAds || (bool)noAdsInvokeList[i].DynamicInvoke();
+            }
+        }
+        //.Log($"AdsManager: do not show ads {placementType}: {isNoAds}");
+        if (isNoAds) return true;
         if (configPlacementHideAds != null && configPlacementHideAds(placementType)) return true;
         return false;
     }
