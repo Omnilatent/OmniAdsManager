@@ -52,6 +52,9 @@ public class AdsManager : MonoBehaviour
     public delegate bool ConfigPlacementHideAds(AdPlacementType placementType);
     public ConfigPlacementHideAds configPlacementHideAds; //get remote config value to check if show or hide this placement
 
+    public delegate void HandleOnAdLoadFailed(string message, AdPlacementType placementType);
+    public static HandleOnAdLoadFailed onAdLoadFailed;
+
     bool isDoneInitRemoteConfig;
     bool isLoadingInterstitial; //to prevent duplicate call of RequestInterstitial & duplicate callback when previous load isn't done yet. Should work when cacheInterstitial is false
     const string admobManagerResourcesPath = "AdmobManager";
@@ -486,21 +489,20 @@ public class AdsManager : MonoBehaviour
 
     public static void ShowError(string msg, AdPlacementType placementType)
     {
-        ShowError(msg, placementType.ToString());
+        onAdLoadFailed?.Invoke(msg, placementType);
     }
 
     public static void ShowError(string msg, string placementName)
     {
-        string text = string.Format("There was a problem displaying this ads. {0}. Please try again later.", msg);
+        //string text = string.Format("There was a problem displaying this ads. {0}. Please try again later.", msg);
         //Manager.Add(PopupController.POPUP_SCENE_NAME, new PopupData(PopupType.OK, text));
-        //Manager.Add(PopupWithImageController.POPUP_SCENE_NAME, new PopupWithImageData(PopupType.OK, text).SetImagePath(Const.DIALOG_ICON_OPPS_PATH));
-        FirebaseManager.LogEvent($"AdsError_{placementName}", "message", msg);
+        //FirebaseManager.LogEvent($"AdsError_{placementName}", "message", msg);
     }
 
     public bool HasEnoughTimeBetweenInterstitial()
     {
         bool enoughTimeHasPassed = (time - timeLastShowInterstitial) >= TIME_BETWEEN_ADS;
-        Debug.Log($"time between inter {time - timeLastShowInterstitial}");
+        //.Log($"time between inter {time - timeLastShowInterstitial}");
         return enoughTimeHasPassed;
     }
 
