@@ -2,13 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AdPlacementType
+public partial class AdPlacement
 {
-    Banner = 1,
-    Interstitial = 2,
-    Reward_Skip = 3,
-    Inter_Splash = 4,
-    Reward_GetMoreHint = 5,
+    public struct Type
+    {
+        private int _Value;
+
+        public static implicit operator Type(int value)
+        {
+            return new Type { _Value = value };
+        }
+
+        public static implicit operator int(Type value)
+        {
+            return value._Value;
+        }
+    }
+    public static readonly Type Banner = 1;
+    public static readonly Type Interstitial = 2;
+    public static readonly Type Reward_Skip = 3;
+    public static readonly Type Inter_Splash = 4;
+    public static readonly Type Reward_GetMoreHint = 5;
 }
 
 public static partial class CustomMediation
@@ -44,22 +58,23 @@ public static partial class CustomMediation
     }
     const string PREF_AD_NETWORK = "PREFERED_AD_NETWORK";
 
-    public static string GetUnityPlacementId(AdPlacementType adPlacementType)
+    public static string GetUnityPlacementId(AdPlacement.Type adPlacementType)
     {
         string placementId = string.Empty;
-        switch (adPlacementType)
+
+        if(adPlacementType == AdPlacement.Banner)
         {
-            case AdPlacementType.Banner:
-                placementId = "UNITY_GameDraw_Banner_50"; break;
-            case AdPlacementType.Interstitial:
-                placementId = "UNITY_CompleteLevel_Interstitial"; break;
-            case AdPlacementType.Reward_Skip:
-                placementId = "UNITY_ClickButtonSkip_Rewarded"; break;
-            case AdPlacementType.Reward_GetMoreHint:
-                placementId = "UNITY_Getmorehint_Rewarded"; break;
-            case AdPlacementType.Inter_Splash:
-                placementId = "UNITY_Splash_Interstitial"; break;
+            placementId = "UNITY_GameDraw_Banner_50";
         }
+        else if (adPlacementType == AdPlacement.Interstitial)
+        {
+            placementId = "UNITY_GameDraw_Banner_50";
+        }
+        else if (adPlacementType == AdPlacement.Reward_GetMoreHint)
+        {
+            placementId = "UNITY_GameDraw_Banner_50";
+        }
+
         if (placementId == string.Empty)
         {
             Debug.LogError($"Custom Mediation: {adPlacementType} has no Unity Ads ID, default ID will be used");
