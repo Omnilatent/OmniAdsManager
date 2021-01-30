@@ -20,9 +20,7 @@ public partial class AdPlacement
     }
     public static readonly Type Banner = 1;
     public static readonly Type Interstitial = 2;
-    public static readonly Type Reward_Skip = 3;
-    public static readonly Type Inter_Splash = 4;
-    public static readonly Type Reward_GetMoreHint = 5;
+    public static readonly Type Reward = 3;
 }
 
 public static partial class CustomMediation
@@ -70,7 +68,7 @@ public static partial class CustomMediation
         {
             placementId = "UNITY_GameDraw_Banner_50";
         }
-        else if (adPlacementType == AdPlacement.Reward_GetMoreHint)
+        else if (adPlacementType == AdPlacement.Reward)
         {
             placementId = "UNITY_GameDraw_Banner_50";
         }

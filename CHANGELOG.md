@@ -1,3 +1,7 @@
+2.0.0
+Changes:
+- Change enum AdsPlacementType to a struct in partial class AdsPlacement.Type so user can add their own PlacementType without having to change CustomMediation.cs
+
 ===
 1.1.0 (2021/1/30)
 New features:
