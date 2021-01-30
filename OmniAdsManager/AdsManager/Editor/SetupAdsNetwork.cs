@@ -4,56 +4,72 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-public class SetupAdsNetwork : MonoBehaviour
+namespace Omnilatent.AdsManager
 {
-    const string packageName = "com.omnilatent.adsmanager";
-
-    [MenuItem("Tools/Omnilatent/Ads Manager/Add Admob")]
-    public static void AddAdmobHelper()
+    public class SetupAdsNetwork : MonoBehaviour
     {
-        //string path = Path.GetFullPath($"Packages/{packageName}/OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
-        string path = Path.GetFullPath($"Assets/OmniAds/OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
-        int line_to_edit = 0;
-        string sourceFile = path;
-        string destinationFile = Path.GetFullPath($"Assets/OmniAds/OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
-        string tempFile = Path.GetFullPath($"Assets/OmniAds/OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.temp");
+        const string packageName = "com.omnilatent.adsmanager";
 
-        // Read the appropriate line from the file.
-        string lineToWrite = "#if true //MODULE_MAKER";
-        string line = null;
-        bool hasFoundLine = false;
-        using (StreamReader reader = new StreamReader(sourceFile))
+        [MenuItem("Tools/Omnilatent/Ads Manager/Add Admob")]
+        public static void AddAdmobHelper()
         {
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (line.Equals("#if false //MODULE_MAKER"))
-                {
-                    break;
-                }
-                line_to_edit++;
-            }
-        }
+            //string packagePath = Path.GetFullPath($"Packages/{packageName}");
+            string packagePath = Path.GetFullPath($"Assets/OmniAds");
+            int line_to_edit = 0;
+            string sourceFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
+            string destinationFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
+            string tempFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.temp"); ;
 
-        if (!hasFoundLine)
-            throw new InvalidDataException("Line does not exist in " + sourceFile);
-
-        // Read from the target file and write to a new file.
-        int line_number = 1;
-        using (StreamReader reader = new StreamReader(destinationFile))
-        using (StreamWriter writer = new StreamWriter(tempFile))
-        {
-            while ((line = reader.ReadLine()) != null)
+            // Read the appropriate line from the file.
+            string lineToWrite = "#if true //MODULE_MAKER";
+            string line = null;
+            bool hasFoundLine = false;
+            using (StreamReader reader = new StreamReader(sourceFile))
             {
-                if (line_number == line_to_edit)
+                while ((line = reader.ReadLine()) != null)
                 {
-                    writer.WriteLine(lineToWrite);
+                    line_to_edit++;
+                    if (line.Equals("#if false //MODULE_MAKER"))
+                    {
+                        hasFoundLine = true;
+                        break;
+                    }
+                    else if (line.Equals("#if true //MODULE_MAKER"))
+                    {
+                        lineToWrite = "#if false //MODULE_MAKER";
+                        hasFoundLine = true;
+                        break;
+                    }
                 }
-                else
-                {
-                    writer.WriteLine(line);
-                }
-                line_number++;
             }
+
+            if (!hasFoundLine)
+                throw new InvalidDataException("Line does not exist in " + sourceFile);
+
+            // Read from the target file and write to a new file.
+            int line_number = 1;
+            using (StreamReader reader = new StreamReader(destinationFile))
+            using (StreamWriter writer = new StreamWriter(tempFile))
+            {
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line_number == line_to_edit)
+                    {
+                        writer.WriteLine(lineToWrite);
+                    }
+                    else
+                    {
+                        writer.WriteLine(line);
+                    }
+                    line_number++;
+                }
+            }
+
+            string backupFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.bak"); ;
+            File.Delete(backupFile);
+            File.Move(sourceFile, backupFile);
+            File.Move(tempFile, destinationFile);
+            Debug.Log("AdsManager Admob has been modified.");
         }
     }
 }

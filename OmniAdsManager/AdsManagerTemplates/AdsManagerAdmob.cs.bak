@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public partial class AdsManager : MonoBehaviour
 {
-#if true //MODULE_MAKER
+#if false //MODULE_MAKER
     AdMobManager InitAdmobManager()
     {
         var resGO = Resources.Load<GameObject>(admobManagerResourcesPath);
