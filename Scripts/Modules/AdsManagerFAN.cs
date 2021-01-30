@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 public partial class AdsManager : MonoBehaviour
 {
-#if false //MODULE_MAKER
-    FacebookAudienceNetworkHelper InitFANHelper()
+#if true //MODULE_MAKER
+    const string FANManagerResourcesPath = "FacebookAudienceNetworkHelper";
+    IAdsNetworkHelper InitFANHelper()
     {
-        _FANHelper = gameObject.GetComponent<FacebookAudienceNetworkHelper>() as IAdsNetworkHelper;
-        if (_FANHelper == null)
+        var resGO = Resources.Load<GameObject>(FANManagerResourcesPath);
+        if (resGO == null)
         {
-            throw new System.NullReferenceException($"Component {typeof(FacebookAudienceNetworkHelper).Name} does not exist");
+            throw new System.NullReferenceException($"{FANManagerResourcesPath} not found in Resources");
         }
-        return _FANHelper as FacebookAudienceNetworkHelper;
+        var adsHelperGO = Instantiate(resGO);
+        return adsHelperGO.GetComponent<IAdsNetworkHelper>();
     }
 #else
     IAdsNetworkHelper InitFANHelper()

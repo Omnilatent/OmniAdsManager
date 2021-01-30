@@ -58,7 +58,6 @@ public partial class AdsManager : MonoBehaviour
     bool isDoneInitRemoteConfig;
     bool isLoadingInterstitial; //to prevent duplicate call of RequestInterstitial & duplicate callback when previous load isn't done yet. Should work when cacheInterstitial is false
     const string admobManagerResourcesPath = "AdmobManager";
-    const string FANManagerResourcesPath = "FANManager";
 
     float time; //counting time in app
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
