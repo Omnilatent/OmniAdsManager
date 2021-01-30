@@ -121,5 +121,25 @@ namespace Omnilatent.AdsManager
             else
                 Debug.Log($"{scriptToAdd} has been removed.");
         }
+
+        [MenuItem("Tools/Omnilatent/Ads Manager/Create AdsManager Prefab")]
+        public static void CreateAdsManagerPrefab()
+        {
+            string[] guids2 = AssetDatabase.FindAssets("AdsManagerSamplePrefab t:prefab");
+            string sourcePath = AssetDatabase.GUIDToAssetPath(guids2[0]);
+            GameObject samplePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(sourcePath);
+
+            Directory.CreateDirectory($"{Application.dataPath}/Resources");
+            string path = $"Assets/Resources/AdsManager.prefab";
+
+            //sourcePath = sourcePath.Substring(7, sourcePath.Length - 7);
+            bool success = AssetDatabase.CopyAsset(sourcePath, path);
+
+            //PrefabUtility.SaveAsPrefabAsset(samplePrefab, path, out bool success);
+            if (success)
+                Debug.Log($"Created AdsManager prefab in {path}");
+            else
+                Debug.LogError($"Creating AdsManager prefab in {path} failed");
+        }
     }
 }
