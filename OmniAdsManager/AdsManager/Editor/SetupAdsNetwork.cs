@@ -13,17 +13,32 @@ namespace Omnilatent.AdsManager
         [MenuItem("Tools/Omnilatent/Ads Manager/Add Admob")]
         public static void AddAdmobHelper()
         {
-            //string packagePath = Path.GetFullPath($"Packages/{packageName}");
-            string packagePath = Path.GetFullPath($"Assets/OmniAds");
+            string packagePath = Path.GetFullPath($"Packages/{packageName}");
+            string assetPath = Path.GetFullPath($"Assets/OmniAds");
             int line_to_edit = 0;
-            string sourceFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
-            string destinationFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
-            string tempFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.temp"); ;
+            string sourceFile;
+            string currentFile = Path.Combine(assetPath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs");
+            string destinationFile = Path.Combine(assetPath, "OmniAdsManager/Modules/AdsManagerAdmob.cs");
+            string tempFile = Path.Combine(assetPath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.temp"); ;
+
+            //check if script file already exist in project asset
+            bool currentFileExist = File.Exists(currentFile);
+            if (currentFileExist)
+            {
+                //use file in asset
+                sourceFile = currentFile;
+            }
+            else
+            {
+                //use .txt file in template
+                sourceFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.txt");
+            }
 
             // Read the appropriate line from the file.
             string lineToWrite = "#if true //MODULE_MAKER";
             string line = null;
             bool hasFoundLine = false;
+
             using (StreamReader reader = new StreamReader(sourceFile))
             {
                 while ((line = reader.ReadLine()) != null)
@@ -65,9 +80,13 @@ namespace Omnilatent.AdsManager
                 }
             }
 
-            string backupFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.bak"); ;
-            File.Delete(backupFile);
-            File.Move(sourceFile, backupFile);
+            if (currentFileExist)
+            {
+                //backup current file and delete previous backup
+                string backupFile = Path.Combine(packagePath, "OmniAdsManager/AdsManagerTemplates/AdsManagerAdmob.cs.bak"); ;
+                File.Delete(backupFile);
+                File.Move(currentFile, backupFile);
+            }
             File.Move(tempFile, destinationFile);
             Debug.Log("AdsManager Admob has been modified.");
         }
