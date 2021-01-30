@@ -16,7 +16,7 @@ public partial class AdsManager : MonoBehaviour
         return _adMobHelper as AdMobManager;
     }
 #else
-    AdMobManager InitAdmobManager()
+    IAdsNetworkHelper InitAdmobManager()
     {
         return null;
     }
