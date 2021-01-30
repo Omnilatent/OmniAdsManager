@@ -14,3 +14,10 @@ Usage:
             if (success) AdsManager.instance.ShowInterstitial(AdPlacementType.Interstitial);
             //Load next scene here
         });
+
+- To add an Ads Network to AdsManager:
+ + Add OmniAds Ads Helper package (Admob / FAN / Unity).
+ + Run setup by click on menu: Tools/Omnilatent/AdsManager/Toggle {Ads network name}.
+
+- To remove Ads Network AdsManager:
+ + Run setup by click on menu: Tools/Omnilatent/AdsManager/Toggle {Ads network name} again.

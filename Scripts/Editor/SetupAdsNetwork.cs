@@ -38,13 +38,13 @@ namespace Omnilatent.AdsManager
             return path;
         }
 
-        [MenuItem("Tools/Omnilatent/Ads Manager/Add Admob")]
+        [MenuItem("Tools/Omnilatent/Ads Manager/Toggle Admob")]
         public static void AddAdmobHelper()
         {
             AddNetworkHelper("AdsManagerAdmob");
         }
 
-        [MenuItem("Tools/Omnilatent/Ads Manager/Add Facebook Audience Network")]
+        [MenuItem("Tools/Omnilatent/Ads Manager/Toggle Facebook Audience Network")]
         public static void AddFAN()
         {
             AddNetworkHelper("AdsManagerFAN");

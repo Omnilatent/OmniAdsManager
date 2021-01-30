@@ -1,3 +1,14 @@
+===
+1.1.0 (2021/1/30)
+New features:
+- You can now generate AdsManager script to implement AdmobManager and FacebookAudienceNetworkHelper instead of relying on Scripting Define.
+Access the new menu in Tools/Omnilatent/AdsManager.
+
+Changes:
+- AdmobManager has been moved out of AdsManager package to a separate package.
+- Restructure folders.
+
+===
 1.0.3 (2021/1/15):
 New features:
 - Ad Placement remote config can now set network priority order for each placement. 
@@ -16,6 +27,7 @@ New features:
 Fix:
 - Unity Ads' ShowBanner correctly show only if it received a successful callback
 
+===
 2020/11/16:
 Update:
 - Updated AdMobManager Initialize code
