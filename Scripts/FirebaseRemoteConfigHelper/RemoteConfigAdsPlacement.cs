@@ -79,7 +79,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         }
     }
 
-    RemoteConfigAdsPlacementData GetPlacementConfigData(AdPlacementType placementType)
+    RemoteConfigAdsPlacementData GetPlacementConfigData(AdPlacement.Type placementType)
     {
         string key = ((int)placementType).ToString();
         if (configData != null && configData.ContainsKey(key)) return configData[key];
@@ -87,7 +87,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         return null;
     }
 
-    bool CheckHideAds(AdPlacementType placementType)
+    bool CheckHideAds(AdPlacement.Type placementType)
     {
         /*configData = new Dictionary<string, RemoteConfigAdsData>() {
              {"1", new RemoteConfigAdsData()},
@@ -97,7 +97,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         return false;
     }
 
-    List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacementType placementType)
+    List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacement.Type placementType)
     {
         var config = GetPlacementConfigData(placementType);
         if (config != null)

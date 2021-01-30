@@ -49,10 +49,10 @@ public partial class AdsManager : MonoBehaviour
     public delegate bool NoAdsDelegate();
     public NoAdsDelegate noAds;
 
-    public delegate bool ConfigPlacementHideAds(AdPlacementType placementType);
+    public delegate bool ConfigPlacementHideAds(AdPlacement.Type placementType);
     public ConfigPlacementHideAds configPlacementHideAds; //get remote config value to check if show or hide this placement
 
-    public delegate void HandleOnAdLoadFailed(string message, AdPlacementType placementType);
+    public delegate void HandleOnAdLoadFailed(string message, AdPlacement.Type placementType);
     public static HandleOnAdLoadFailed onAdLoadFailed;
 
     bool isDoneInitRemoteConfig;
@@ -69,7 +69,7 @@ public partial class AdsManager : MonoBehaviour
     Dictionary<string, RemoteConfigAdsNetworkData> configData;
 
     List<CustomMediation.AD_NETWORK> defaultAdsNetworkPriority;
-    public delegate List<CustomMediation.AD_NETWORK> ConfigPlacementAdsNetworkPriority(AdPlacementType placementType);
+    public delegate List<CustomMediation.AD_NETWORK> ConfigPlacementAdsNetworkPriority(AdPlacement.Type placementType);
     public ConfigPlacementAdsNetworkPriority configPlacementAdsNetworkPriority; //get remote config value for waterfall order
 
     public const string RMCF_ADS_PRIORITY = "ads_priority";
@@ -242,7 +242,7 @@ public partial class AdsManager : MonoBehaviour
     /// <summary>
     /// Get ads network priority order. If there is remote config, get from config, otherwise use default
     /// </summary>
-    List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacementType placementType)
+    List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacement.Type placementType)
     {
         List<CustomMediation.AD_NETWORK> adPriority;
         if (configPlacementAdsNetworkPriority != null)
@@ -261,7 +261,7 @@ public partial class AdsManager : MonoBehaviour
         return (Application.internetReachability == NetworkReachability.NotReachable);
     }
 
-    public void ShowBanner(AdPlacementType placementType = AdPlacementType.Banner, BoolDelegate onAdLoaded = null)
+    public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
         if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
         if (DoNotShowAds(placementType))
@@ -282,7 +282,7 @@ public partial class AdsManager : MonoBehaviour
         showingBanners.Add(CurrentAdNetwork);*/
     }
 
-    IEnumerator CoShowBanner(AdPlacementType placementType = AdPlacementType.Banner, BoolDelegate onAdLoaded = null)
+    IEnumerator CoShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
@@ -326,7 +326,7 @@ public partial class AdsManager : MonoBehaviour
     }
 
     /// <param name="onAdClosed">Warning: not completely functional yet, only Admob will call onAdClosed when the interstitial is closed</param>
-    public void ShowInterstitial(AdPlacementType placeType, InterstitialDelegate onAdClosed = null)
+    public void ShowInterstitial(AdPlacement.Type placeType, InterstitialDelegate onAdClosed = null)
     {
         if (currentAdsHelper == null)
         {
@@ -345,7 +345,7 @@ public partial class AdsManager : MonoBehaviour
         }*/
     }
 
-    public void RequestInterstitialNoShow(AdPlacementType placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = true)
+    public void RequestInterstitialNoShow(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = true)
     {
         //if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenInterstitial()) //skip checking interstitial time so we can use this function for preloading interstitial ads
         if (DoNotShowAds(placementType))
@@ -374,7 +374,7 @@ public partial class AdsManager : MonoBehaviour
         }*/
     }
 
-    IEnumerator CoRequestInterstitialNoShow(AdPlacementType placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = true)
+    IEnumerator CoRequestInterstitialNoShow(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = true)
     {
         isLoadingInterstitial = true;
         bool isSuccess = false;
@@ -409,12 +409,12 @@ public partial class AdsManager : MonoBehaviour
     }
 
 
-    public static void Reward(BoolDelegate onFinish, AdPlacementType placementType)
+    public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
         instance.StartCoroutine(instance.CoReward(onFinish, placementType));
     }
 
-    IEnumerator CoReward(BoolDelegate onFinish, AdPlacementType placementType)
+    IEnumerator CoReward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
         RewardResult rewardResult = new RewardResult(); string errorMsg = string.Empty;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
@@ -465,7 +465,7 @@ public partial class AdsManager : MonoBehaviour
         if (rewardResult.type == RewardResult.Type.LoadFailed) { ShowError(rewardResult.message, placementType); }
     }
 
-    public static void ShowError(string msg, AdPlacementType placementType)
+    public static void ShowError(string msg, AdPlacement.Type placementType)
     {
         onAdLoadFailed?.Invoke(msg, placementType);
     }
@@ -484,7 +484,7 @@ public partial class AdsManager : MonoBehaviour
         return enoughTimeHasPassed;
     }
 
-    bool DoNotShowAds(AdPlacementType placementType)
+    bool DoNotShowAds(AdPlacement.Type placementType)
     {
         bool isNoAds = false;
         if (noAds != null)
