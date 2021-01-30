@@ -117,8 +117,7 @@ public partial class AdsManager : MonoBehaviour
 #endif
 #endif
         adsNetworkHelpers = defaultAdsNetworkHelpers;
-        //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(InitializeRemoteConfigSingleAds);
-        FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig);
+        //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
     }
 
 #if UNITYADS
@@ -177,7 +176,7 @@ public partial class AdsManager : MonoBehaviour
             if ((configJsonData.StartsWith("{") && configJsonData.EndsWith("}")) || //For object
             (configJsonData.StartsWith("[") && configJsonData.EndsWith("]"))) //For array) 
             {
-                configData = LitJson.JsonMapper.ToObject<Dictionary<string, RemoteConfigAdsNetworkData>>(configJsonData);
+                configData = JsonUtility.FromJson<Dictionary<string, RemoteConfigAdsNetworkData>>(configJsonData);
 
                 adsNetworkHelpers = new List<IAdsNetworkHelper>();
                 string deb = "ads_placement_config:\n";
