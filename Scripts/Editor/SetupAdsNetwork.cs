@@ -10,6 +10,34 @@ namespace Omnilatent.AdsManager
     {
         const string packageName = "com.omnilatent.adsmanager";
 
+        static string GetScriptPath()
+        {
+            //default path is Asset/Omnilatent/OmniAdsManager/Scripts
+            string[] res = System.IO.Directory.GetFiles(Application.dataPath, "SetupAdsNetwork.cs", SearchOption.AllDirectories);
+            if (res.Length == 0)
+            {
+                Debug.LogError("Script SetupAdsNetwork.cs not found");
+                return null;
+            }
+
+            string path = res[0].Replace("\\", "/");
+            bool foundInCorrectPath = false;
+            foreach (var pathItem in res)
+            {
+                string pathItemFormatted = pathItem.Replace("\\", "/");
+                if (pathItemFormatted.Contains("OmniAdsManager/Scripts/Editor"))
+                {
+                    path = pathItemFormatted;
+                    foundInCorrectPath = true;
+                }
+            }
+            if (!foundInCorrectPath)
+                Debug.LogWarning("Script SetupAdsNetwork.cs not found in correct folder. This can prevent the script from working correctly.");
+            path = path.Replace("Editor/SetupAdsNetwork.cs", "");
+            Debug.Log(path);
+            return path;
+        }
+
         [MenuItem("Tools/Omnilatent/Ads Manager/Add Admob")]
         public static void AddAdmobHelper()
         {
@@ -24,8 +52,9 @@ namespace Omnilatent.AdsManager
 
         static void AddNetworkHelper(string scriptToAdd)
         {
-            string packagePath = Path.GetFullPath($"Packages/{packageName}/OmniAds/OmniAdsManager/Modules");
-            string assetPath = Path.GetFullPath($"Assets/OmniAds/OmniAdsManager/Modules");
+            string packagePath = Path.GetFullPath($"Packages/{packageName}/Scripts/Modules");
+            //string assetPath = Path.GetFullPath($"Asset/Omnilatent/OmniAdsManager/Scripts/Modules");
+            string assetPath = GetScriptPath() + "/Modules";
             int line_to_edit = 0;
             string sourceFile = Path.Combine(assetPath, $"{scriptToAdd}.cs");
             string destinationFile = Path.Combine(assetPath, $"{scriptToAdd}.cs");
