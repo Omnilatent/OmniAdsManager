@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace Omnilatent.AdsManager
 {
-    public class SetupAdsNetwork : MonoBehaviour
+    public class SetupAdsNetwork
     {
         const string packageName = "com.omnilatent.adsmanager";
 
@@ -16,10 +16,10 @@ namespace Omnilatent.AdsManager
             AddNetworkHelper("AdsManagerAdmob");
         }
 
-        [MenuItem("Tools/Omnilatent/Ads Manager/Add Admob")]
+        [MenuItem("Tools/Omnilatent/Ads Manager/Add Facebook Audience Network")]
         public static void AddFAN()
         {
-            AddNetworkHelper("AdsManagerAdmob");
+            AddNetworkHelper("AdsManagerFAN");
         }
 
         static void AddNetworkHelper(string scriptToAdd)

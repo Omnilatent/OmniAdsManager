@@ -112,7 +112,7 @@ public partial class AdsManager : MonoBehaviour
 #if UNITYADS
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.Unity, InitUnityAdsManager());
 #endif
-#if ADS_FAN && !UNITY_EDITOR
+#if !UNITY_EDITOR
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.FAN, InitFANHelper());
 #endif
 #endif
@@ -126,18 +126,6 @@ public partial class AdsManager : MonoBehaviour
     {
         _unityAdsHelper = gameObject.GetComponent<UnityAdsManager>() as IAdsNetworkHelper;
         return _unityAdsHelper as UnityAdsManager;
-    }
-#endif
-
-#if ADS_FAN
-    FacebookAudienceNetworkHelper InitFANHelper()
-    {
-        _FANHelper = gameObject.GetComponent<FacebookAudienceNetworkHelper>() as IAdsNetworkHelper;
-        if (_FANHelper == null)
-        {
-            throw new System.NullReferenceException($"Component {typeof(FacebookAudienceNetworkHelper).Name} does not exist");
-        }
-        return _FANHelper as FacebookAudienceNetworkHelper;
     }
 #endif
 
