@@ -27,7 +27,7 @@ public class RemoteConfigAdsNetworkData
     }
 }
 
-public class AdsManager : MonoBehaviour
+public partial class AdsManager : MonoBehaviour
 {
     public delegate void BoolDelegate(bool reward);
 
@@ -128,18 +128,6 @@ public class AdsManager : MonoBehaviour
         return _unityAdsHelper as UnityAdsManager;
     }
 #endif
-
-    AdMobManager InitAdmobManager()
-    {
-        var resGO = Resources.Load<GameObject>(admobManagerResourcesPath);
-        if (resGO == null)
-        {
-            throw new System.NullReferenceException($"{admobManagerResourcesPath} not found in Resources");
-        }
-        var admobGO = Instantiate(resGO);
-        _adMobHelper = admobGO.GetComponent<AdMobManager>();
-        return _adMobHelper as AdMobManager;
-    }
 
 #if ADS_FAN
     FacebookAudienceNetworkHelper InitFANHelper()
@@ -257,8 +245,11 @@ public class AdsManager : MonoBehaviour
 
     void AddDefaultNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID, IAdsNetworkHelper adsHelper)
     {
-        defaultAdsNetworkHelpers.Add(adsHelper);
-        defaultAdsNetworkPriority.Add(adsNetworkID);
+        if (adsHelper != null)
+        {
+            defaultAdsNetworkHelpers.Add(adsHelper);
+            defaultAdsNetworkPriority.Add(adsNetworkID);
+        }
     }
 
     /// <summary>
