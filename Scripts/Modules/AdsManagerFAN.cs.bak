@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public partial class AdsManager : MonoBehaviour
 {
-#if false //MODULE_MAKER
+#if true //MODULE_MAKER
     FacebookAudienceNetworkHelper InitFANHelper()
     {
         _FANHelper = gameObject.GetComponent<FacebookAudienceNetworkHelper>() as IAdsNetworkHelper;
@@ -14,7 +14,7 @@ public partial class AdsManager : MonoBehaviour
         return _FANHelper as FacebookAudienceNetworkHelper;
     }
 #else
-    FacebookAudienceNetworkHelper InitFANHelper()
+    IAdsNetworkHelper InitFANHelper()
     {
         return null;
     }
