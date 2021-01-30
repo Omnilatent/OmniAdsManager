@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AdPlacementType
+public partial class AdPlacementType
 {
-    Banner = 1,
-    Interstitial = 2,
-    Reward_Skip = 3,
-    Inter_Splash = 4,
-    Reward_GetMoreHint = 5,
+    public const int Banner = 1;
+    public const int Interstitial = 2;
+    public const int Reward_Skip = 3;
+    public const int Inter_Splash = 4;
+    public const int Reward_GetMoreHint = 5;
 }
 
 public static partial class CustomMediation
@@ -44,7 +44,7 @@ public static partial class CustomMediation
     }
     const string PREF_AD_NETWORK = "PREFERED_AD_NETWORK";
 
-    public static string GetUnityPlacementId(AdPlacementType adPlacementType)
+    public static string GetUnityPlacementId(int adPlacementType)
     {
         string placementId = string.Empty;
         switch (adPlacementType)
