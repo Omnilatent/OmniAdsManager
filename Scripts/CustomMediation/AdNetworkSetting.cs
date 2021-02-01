@@ -1,5 +1,4 @@
-﻿using SubjectNerd.Utilities;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,6 @@ using UnityEngine;
 public class AdNetworkSetting : ScriptableObject
 {
     [Tooltip("Priority from top to bottom, (0 first)")]
-    //[Reorderable]
     [SerializeField] private List<CustomMediation.AD_NETWORK> adNetworks;
     [SerializeField] public string unityGameID;
 
