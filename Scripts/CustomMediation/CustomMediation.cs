@@ -55,29 +55,4 @@ public static partial class CustomMediation
 #endif
     }
     const string PREF_AD_NETWORK = "PREFERED_AD_NETWORK";
-
-    public static string GetUnityPlacementId(AdPlacement.Type adPlacementType)
-    {
-        string placementId = string.Empty;
-
-        if(adPlacementType == AdPlacement.Banner)
-        {
-            placementId = "UNITY_GameDraw_Banner_50";
-        }
-        else if (adPlacementType == AdPlacement.Interstitial)
-        {
-            placementId = "UNITY_GameDraw_Banner_50";
-        }
-        else if (adPlacementType == AdPlacement.Reward)
-        {
-            placementId = "UNITY_GameDraw_Banner_50";
-        }
-
-        if (placementId == string.Empty)
-        {
-            Debug.LogError($"Custom Mediation: {adPlacementType} has no Unity Ads ID, default ID will be used");
-        }
-        return placementId;
-    }
-
 }
