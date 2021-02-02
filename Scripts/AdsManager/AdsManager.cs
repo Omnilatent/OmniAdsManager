@@ -103,29 +103,14 @@ public partial class AdsManager : MonoBehaviour
         //init default ads helper
         defaultAdsNetworkHelpers = new List<IAdsNetworkHelper>();
         defaultAdsNetworkPriority = new List<CustomMediation.AD_NETWORK>();
-#if UNITY_EDITOR && UNITYADS
-        if ((InitAdmobManager() as IAdsNetworkHelper) == null) Debug.LogError("admob manager not found");
-        AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.Unity, InitUnityAdsManager());
-#else
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.GoogleAdmob, InitAdmobManager());
-#if UNITYADS
-        AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.Unity, InitUnityAdsManager());
-#endif
 #if !UNITY_EDITOR
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.FAN, InitFANHelper());
 #endif
-#endif
+        AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.Unity, InitUnityAdsManager());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
     }
-
-#if UNITYADS
-    UnityAdsManager InitUnityAdsManager()
-    {
-        _unityAdsHelper = gameObject.GetComponent<UnityAdsManager>() as IAdsNetworkHelper;
-        return _unityAdsHelper as UnityAdsManager;
-    }
-#endif
 
     void InitializeRemoteConfig(object sender, bool isReady)
     {

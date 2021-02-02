@@ -9,7 +9,8 @@ public partial class AdsManager : MonoBehaviour
         var resGO = Resources.Load<GameObject>(admobManagerResourcesPath);
         if (resGO == null)
         {
-            throw new System.NullReferenceException($"{admobManagerResourcesPath} not found in Resources");
+            Debug.Log($"{admobManagerResourcesPath} not found in Resources");
+            return null;
         }
         var admobGO = Instantiate(resGO);
         _adMobHelper = admobGO.GetComponent<IAdsNetworkHelper>();

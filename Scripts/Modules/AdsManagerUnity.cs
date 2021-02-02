@@ -4,13 +4,13 @@ using UnityEngine;
 public partial class AdsManager : MonoBehaviour
 {
 #if true //MODULE_MAKER
-    const string FANManagerResourcesPath = "FacebookAudienceNetworkHelper";
-    IAdsNetworkHelper InitFANHelper()
+    const string unityAdsManagerResourcesPath = "UnityAdsHelper";
+    IAdsNetworkHelper InitUnityAdsManager()
     {
-        var resGO = Resources.Load<GameObject>(FANManagerResourcesPath);
+        var resGO = Resources.Load<GameObject>(unityAdsManagerResourcesPath);
         if (resGO == null)
         {
-            Debug.Log($"{FANManagerResourcesPath} not found in Resources");
+            Debug.Log($"{unityAdsManagerResourcesPath} not found in Resources");
             return null;
         }
         var adsHelperGO = Instantiate(resGO);
