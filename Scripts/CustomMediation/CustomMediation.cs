@@ -17,6 +17,11 @@ public partial class AdPlacement
         {
             return value._Value;
         }
+
+        public override string ToString()
+        {
+            return _Value.ToString();
+        }
     }
     public static readonly Type Banner = 1;
     public static readonly Type Interstitial = 2;

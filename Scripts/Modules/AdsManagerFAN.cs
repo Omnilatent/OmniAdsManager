@@ -13,8 +13,8 @@ public partial class AdsManager : MonoBehaviour
             Debug.Log($"{FANManagerResourcesPath} not found in Resources");
             return null;
         }
-        var adsHelperGO = Instantiate(resGO);
-        return adsHelperGO.GetComponent<IAdsNetworkHelper>();
+        _FANHelper = Instantiate(resGO).GetComponent<IAdsNetworkHelper>();
+        return _FANHelper;
     }
 #else
     IAdsNetworkHelper InitFANHelper()
