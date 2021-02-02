@@ -395,6 +395,7 @@ public partial class AdsManager : MonoBehaviour
 
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
+        Manager.LoadingAnimation(true);
         instance.StartCoroutine(instance.CoReward(onFinish, placementType));
     }
 
