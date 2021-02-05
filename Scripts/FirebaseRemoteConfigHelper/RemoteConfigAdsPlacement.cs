@@ -49,8 +49,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         if (!string.IsNullOrEmpty(configJsonData))
         {
             //configData = LitJson.JsonMapper.ToObject<Dictionary<string, RemoteConfigAdsPlacementData>>(configJsonData);
-            //var data = LitJson.JsonMapper.ToObject<Dictionary<string, List<RemoteConfigAdsPlacementData>>>(configJsonData);
-            var data = JsonUtility.FromJson<Dictionary<string, List<RemoteConfigAdsPlacementData>>>(configJsonData);
+            var data = LitJson.JsonMapper.ToObject<Dictionary<string, List<RemoteConfigAdsPlacementData>>>(configJsonData);
             List<RemoteConfigAdsPlacementData> listData = null;
             foreach (var item in data)
             {

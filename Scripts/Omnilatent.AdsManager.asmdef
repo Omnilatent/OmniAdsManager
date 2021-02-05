@@ -3,7 +3,7 @@
     "references": [
         "SS.View",
         "GoogleMobileAds",
-        "Lit.Json",
+        "LitJSON",
         "OmniLatent.FirebaseManager",
         "AudienceNetwork",
         "UnityEngine.Advertisements"

@@ -160,7 +160,7 @@ public partial class AdsManager : MonoBehaviour
             if ((configJsonData.StartsWith("{") && configJsonData.EndsWith("}")) || //For object
             (configJsonData.StartsWith("[") && configJsonData.EndsWith("]"))) //For array) 
             {
-                configData = JsonUtility.FromJson<Dictionary<string, RemoteConfigAdsNetworkData>>(configJsonData);
+                configData = LitJson.JsonMapper.ToObject<Dictionary<string, RemoteConfigAdsNetworkData>>(configJsonData);
 
                 adsNetworkHelpers = new List<IAdsNetworkHelper>();
                 string deb = "ads_placement_config:\n";
@@ -226,7 +226,7 @@ public partial class AdsManager : MonoBehaviour
     /// <summary>
     /// Get ads network priority order. If there is remote config, get from config, otherwise use default
     /// </summary>
-    List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacement.Type placementType)
+    public List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacement.Type placementType)
     {
         List<CustomMediation.AD_NETWORK> adPriority;
         if (configPlacementAdsNetworkPriority != null)
