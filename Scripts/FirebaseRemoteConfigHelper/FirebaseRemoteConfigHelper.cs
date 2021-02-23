@@ -53,7 +53,10 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         string id = await GetFirebaseInstanceId();
         if (Debug.isDebugBuild && showFirebaseInstanceId)
         {
-            //UniClipboard.SetText(id);
+            TextEditor te = new TextEditor();
+            te.text = id;
+            te.SelectAll();
+            te.Copy();
             //Manager.Add(PopupController.POPUP_SCENE_NAME, new PopupData(PopupType.OK, System.String.Format("Instance ID Token {0}", id)));
         }
         if (FirebaseManager.FirebaseReady)
