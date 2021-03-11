@@ -1,3 +1,8 @@
+2.1.0
+New features:
+- Added Interstitial Rewarded. Update is required for all AdsHelper class.
+
+===
 2.0.0
 Changes:
 - Change enum AdsPlacementType to a struct in partial class AdsPlacement.Type so user can add their own PlacementType without having to change CustomMediation.cs
