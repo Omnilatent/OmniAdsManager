@@ -43,6 +43,7 @@ public partial class AdsManager : MonoBehaviour
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
     List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
+    IAdsNetworkHelper currentRewardInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
 
     //List<CustomMediation.AD_NETWORK> showingBanners = new List<CustomMediation.AD_NETWORK>(); //store list of banners that was showed
 
@@ -487,14 +488,25 @@ public partial class AdsManager : MonoBehaviour
 
             if (rewardResult.type == RewardResult.Type.Finished)
             {
-                currentAdsHelper = adsHelper;
+                currentRewardInterAdsHelper = adsHelper;
                 break;
             }
             if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
         }
-        onAdLoaded?.Invoke(rewardResult);
         if (showLoading)
             Manager.LoadingAnimation(false);
+        onAdLoaded?.Invoke(rewardResult);
+    }
+
+    public void ShowInterstitialRewarded(AdPlacement.Type placeType, RewardDelegate onAdClosed = null)
+    {
+        if (currentRewardInterAdsHelper == null)
+        {
+            Debug.LogError("currentRewardInterAdsHelper is null due to all ads failed to load");
+            onAdClosed?.Invoke(new RewardResult(RewardResult.Type.LoadFailed));
+            return;
+        }
+        currentRewardInterAdsHelper.ShowInterstitialRewarded(placeType, onAdClosed);
     }
 
     public static void ShowError(string msg, AdPlacement.Type placementType)
