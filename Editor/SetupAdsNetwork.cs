@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-namespace Omnilatent.AdsManager
+namespace Omnilatent.AdsMediation
 {
     public class SetupAdsNetwork
     {
