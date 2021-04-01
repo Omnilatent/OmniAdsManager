@@ -469,7 +469,7 @@ public partial class AdsManager : MonoBehaviour
         return enoughTimeHasPassed;
     }
 
-    bool DoNotShowAds(AdPlacement.Type placementType)
+    public bool DoNotShowAds(AdPlacement.Type placementType)
     {
         bool isNoAds = false;
         if (noAds != null)
