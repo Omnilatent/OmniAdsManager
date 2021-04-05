@@ -103,6 +103,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         {
             return config.GetAdNetworkPriority();
         }
+        else { Debug.LogError($"Config for placement {placementType} not found. Check Firebase remote config."); }
         return null;
     }
 }

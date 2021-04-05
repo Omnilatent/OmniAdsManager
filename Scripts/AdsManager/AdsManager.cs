@@ -228,12 +228,12 @@ public partial class AdsManager : MonoBehaviour
     /// </summary>
     public List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacement.Type placementType)
     {
-        List<CustomMediation.AD_NETWORK> adPriority;
+        List<CustomMediation.AD_NETWORK> adPriority = null;
         if (configPlacementAdsNetworkPriority != null)
         {
             adPriority = configPlacementAdsNetworkPriority(placementType);
         }
-        else
+        if (adPriority == null)
         {
             adPriority = defaultAdsNetworkPriority;
         }
