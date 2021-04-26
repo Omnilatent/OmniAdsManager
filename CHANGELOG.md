@@ -1,3 +1,9 @@
+2.1.0
+Changes:
+- Update to use Firebase API 7.1.0, add Firebase DefaultInstance, switch to use Firebase Installation
+
+
+===
 2.0.0
 Changes:
 - Change enum AdsPlacementType to a struct in partial class AdsPlacement.Type so user can add their own PlacementType without having to change CustomMediation.cs

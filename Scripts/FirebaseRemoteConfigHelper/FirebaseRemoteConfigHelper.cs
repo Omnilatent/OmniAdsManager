@@ -69,7 +69,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
 
         if (Debug.isDebugBuild)
         {
-            var setting = FirebaseRemoteConfig.Settings;
+            var setting = FirebaseRemoteConfig.DefaultInstance.ConfigSettings;
             setting.IsDeveloperMode = true;
         }
     }
@@ -98,7 +98,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
 
     static ConfigValue GetConfig(string key)
     {
-        return FirebaseRemoteConfig.GetValue(key);
+        return GetFirebaseInstance().GetValue(key);
     }
 
     async Task<string> GetFirebaseInstanceId()
@@ -107,7 +107,17 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         if (FirebaseManager.FirebaseReady)
         {
             //Firebase.InstanceId.FirebaseInstanceId.GetInstanceId(FirebaseManager.app);
-            await Firebase.InstanceId.FirebaseInstanceId.DefaultInstance.GetTokenAsync().ContinueWith(
+            await Firebase.Installations.FirebaseInstallations.DefaultInstance.GetIdAsync().ContinueWith(
+                task =>
+                {
+                    if (!(task.IsCanceled || task.IsFaulted) && task.IsCompleted)
+                    {
+                        UnityEngine.Debug.Log(System.String.Format("Instance ID Token {0}", task.Result));
+                        result = task.Result;
+                    }
+                });
+
+            /*await Firebase.InstanceId.FirebaseInstanceId.DefaultInstance.GetTokenAsync().ContinueWith(
             task =>
             {
                 if (!(task.IsCanceled || task.IsFaulted) && task.IsCompleted)
@@ -115,7 +125,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
                     UnityEngine.Debug.Log(System.String.Format("Instance ID Token {0}", task.Result));
                     result = task.Result;
                 }
-            });
+            });*/
         }
         return result;
     }
@@ -127,7 +137,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
             FetchDataAsync((task) =>
             {
                 Debug.Log("Fetch async done");
-                FirebaseRemoteConfig.ActivateFetched();
+                //FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
                 onFetchComplete?.Invoke(null, true);
             });
         }
@@ -142,19 +152,19 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     static Task FetchDataAsync(Action<Task> FetchComplete)
     {
         Debug.Log("Fetching data...");
-        System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.FetchAsync(
-            TimeSpan.Zero);
+        //System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(TimeSpan.Zero);
+        System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAndActivateAsync();
         return fetchTask.ContinueWithOnMainThread(FetchComplete);
     }
 
     void SetDefaultValues()
     {
         System.Collections.Generic.Dictionary<string, object> defaults = new System.Collections.Generic.Dictionary<string, object>();
-        
+
         //defaults.Add(Const.RMCF_TIME_BETWEEN_ADS, AdsManager.TIME_BETWEEN_ADS);
         defaults.Add(RemoteConfigAdsPlacement.RMCF_ADS_PLACEMENT_CONFIG, "");
 
-        Firebase.RemoteConfig.FirebaseRemoteConfig.SetDefaults(defaults);
+        Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.SetDefaultsAsync(defaults);
     }
 
     /// <summary>
@@ -165,4 +175,9 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         if (initSuccess.HasValue) callback(null, InitSuccessValue);
         else onFetchComplete += callback;
     }
- }
+
+    static FirebaseRemoteConfig GetFirebaseInstance()
+    {
+        return FirebaseRemoteConfig.DefaultInstance;
+    }
+}
