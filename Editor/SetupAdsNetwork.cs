@@ -142,10 +142,18 @@ namespace Omnilatent.AdsMediation
                 Debug.LogError($"Creating AdsManager prefab in {path} failed");
         }
 
-        [MenuItem("Tools/Omnilatent/Ads Manager/Add Extra Package")]
-        public static void AddExtraPackage()
+        [MenuItem("Tools/Omnilatent/Ads Manager/Import Extra Package")]
+        public static void ImportExtraPackage()
         {
             string path = "Assets/Omnilatent/OmniAdsManager/Extra.unitypackage";
+            AssetDatabase.ImportPackage(path, true);
+        }
+
+        [MenuItem("Tools/Omnilatent/Ads Manager/Import AudienceNetwork Assembly Fix")]
+        public static void ImportAudienceNetworkAssemblyFix()
+        {
+            //For fixing "error CS0117: 'AudienceNetworkAds' does not contain a definition for 'IsInitialized'":
+            string path = "Assets/Omnilatent/OmniAds FAN/AudienceNetworkAssemblyFix.unitypackage";
             AssetDatabase.ImportPackage(path, true);
         }
     }
