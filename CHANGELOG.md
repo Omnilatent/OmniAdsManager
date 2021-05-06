@@ -1,7 +1,12 @@
+===
 2.1.0
 Changes:
 - Update to use Firebase API 7.1.0, add Firebase DefaultInstance, switch to use Firebase Installation
 
+===
+2.0.1
+New features:
+- Added Interstitial Rewarded. Update is required for all AdsHelper class.
 
 ===
 2.0.0

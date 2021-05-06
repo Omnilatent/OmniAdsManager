@@ -63,9 +63,9 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
             }
 
             /*string deb = "ads_placement_config:\n";
-            foreach (var item in configSheetData)
+            foreach (var item in configData)
             {
-                deb += ($"{item.Key} {item.Value.show}\n");
+                deb += ($"{item.Key} {item.Value.show} {item.Value.priority[0]}\n");
             }
             Debug.Log(deb);*/
 

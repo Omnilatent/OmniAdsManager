@@ -43,6 +43,7 @@ public partial class AdsManager : MonoBehaviour
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
     List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
+    IAdsNetworkHelper currentRewardInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
 
     //List<CustomMediation.AD_NETWORK> showingBanners = new List<CustomMediation.AD_NETWORK>(); //store list of banners that was showed
 
@@ -401,7 +402,8 @@ public partial class AdsManager : MonoBehaviour
 
     IEnumerator CoReward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
-        RewardResult rewardResult = new RewardResult(); string errorMsg = string.Empty;
+        RewardResult rewardResult = new RewardResult();
+        string errorMsg = string.Empty;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
 
         List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
@@ -450,6 +452,63 @@ public partial class AdsManager : MonoBehaviour
         if (rewardResult.type == RewardResult.Type.LoadFailed) { ShowError(rewardResult.message, placementType); }
     }
 
+    public void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
+    {
+        if (IsAdsHiddenRemoteConfig(placementType))
+        {
+            onAdLoaded?.Invoke(new RewardResult(RewardResult.Type.LoadFailed, "This Ads has been disabled"));
+            return;
+        }
+        if (showLoading)
+            Manager.LoadingAnimation(true);
+        StartCoroutine(CoRequestInterstitialRewardedNoShow(placementType, onAdLoaded, showLoading));
+        timeLastShowInterstitial = time;
+    }
+
+    IEnumerator CoRequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
+    {
+        RewardResult rewardResult = new RewardResult();
+        string errorMsg = string.Empty;
+        WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
+
+        var adPriority = GetAdsNetworkPriority(placementType);
+
+        for (int i = 0; i < adPriority.Count; i++)
+        {
+            bool checkAdNetworkDone = false;
+            IAdsNetworkHelper adsHelper = GetAdsNetworkHelper(adPriority[i]);
+            if (adsHelper == null) continue;
+            adsHelper.RequestInterstitialRewardedNoShow(placementType,
+                        (success) => { checkAdNetworkDone = true; rewardResult = success; });
+
+            while (!checkAdNetworkDone) //Wait for ads load to complete
+            {
+                yield return checkInterval;
+            }
+
+            if (rewardResult.type == RewardResult.Type.Finished)
+            {
+                currentRewardInterAdsHelper = adsHelper;
+                break;
+            }
+            if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
+        }
+        if (showLoading)
+            Manager.LoadingAnimation(false);
+        onAdLoaded?.Invoke(rewardResult);
+    }
+
+    public void ShowInterstitialRewarded(AdPlacement.Type placeType, RewardDelegate onAdClosed = null)
+    {
+        if (currentRewardInterAdsHelper == null)
+        {
+            Debug.LogError("currentRewardInterAdsHelper is null due to all ads failed to load");
+            onAdClosed?.Invoke(new RewardResult(RewardResult.Type.LoadFailed));
+            return;
+        }
+        currentRewardInterAdsHelper.ShowInterstitialRewarded(placeType, onAdClosed);
+    }
+
     public static void ShowError(string msg, AdPlacement.Type placementType)
     {
         onAdLoadFailed?.Invoke(msg, placementType);
@@ -469,6 +528,9 @@ public partial class AdsManager : MonoBehaviour
         return enoughTimeHasPassed;
     }
 
+    /// <summary>
+    /// Check if user has purchased remove ads and remote config. Return true if this ads is hidden
+    /// </summary>
     public bool DoNotShowAds(AdPlacement.Type placementType)
     {
         bool isNoAds = false;
@@ -482,6 +544,15 @@ public partial class AdsManager : MonoBehaviour
         }
         //.Log($"AdsManager: do not show ads {placementType}: {isNoAds}");
         if (isNoAds) return true;
+        if (IsAdsHiddenRemoteConfig(placementType)) return true;
+        return false;
+    }
+
+    /// <summary>
+    /// Check remote config for this ads placement. Return true if this ads is disabled
+    /// </summary>
+    bool IsAdsHiddenRemoteConfig(AdPlacement.Type placementType)
+    {
         if (configPlacementHideAds != null && configPlacementHideAds(placementType)) return true;
         return false;
     }
