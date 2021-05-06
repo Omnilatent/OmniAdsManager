@@ -145,7 +145,7 @@ namespace Omnilatent.AdsMediation
         [MenuItem("Tools/Omnilatent/Ads Manager/Import Extra Package")]
         public static void ImportExtraPackage()
         {
-            string path = "Assets/Omnilatent/OmniAdsManager/Extra.unitypackage";
+            string path = GetPackagePath("Assets/Omnilatent/OmniAdsManager/OmniAdsManagerExtra.unitypackage", "OmniAdsManagerExtra");
             AssetDatabase.ImportPackage(path, true);
         }
 
@@ -153,8 +153,27 @@ namespace Omnilatent.AdsMediation
         public static void ImportAudienceNetworkAssemblyFix()
         {
             //For fixing "error CS0117: 'AudienceNetworkAds' does not contain a definition for 'IsInitialized'":
-            string path = "Assets/Omnilatent/OmniAds FAN/AudienceNetworkAssemblyFix.unitypackage";
+            string path = GetPackagePath("Assets/Omnilatent/OmniAds FAN/AudienceNetworkAssemblyFix.unitypackage", "AudienceNetworkAssemblyFix");
             AssetDatabase.ImportPackage(path, true);
+        }
+
+        static string GetPackagePath(string path, string filename)
+        {
+            if (!File.Exists($"{Application.dataPath}/../{path}"))
+            {
+                Debug.Log($"{filename} not found at {path}, attempting to search whole project for {filename}");
+                string[] guids = AssetDatabase.FindAssets($"{filename} l:package");
+                if (guids.Length > 0)
+                {
+                    path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                }
+                else
+                {
+                    Debug.LogError($"{filename} not found at {Application.dataPath}/../{path}");
+                    return null;
+                }
+            }
+            return path;
         }
     }
 }
