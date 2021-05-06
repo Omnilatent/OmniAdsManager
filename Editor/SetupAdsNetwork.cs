@@ -141,5 +141,12 @@ namespace Omnilatent.AdsMediation
             else
                 Debug.LogError($"Creating AdsManager prefab in {path} failed");
         }
+
+        [MenuItem("Tools/Omnilatent/Ads Manager/Add Extra Package")]
+        public static void AddExtraPackage()
+        {
+            string path = "Assets/Omnilatent/OmniAdsManager/Extra.unitypackage";
+            AssetDatabase.ImportPackage(path, true);
+        }
     }
 }
