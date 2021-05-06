@@ -229,12 +229,12 @@ public partial class AdsManager : MonoBehaviour
     /// </summary>
     public List<CustomMediation.AD_NETWORK> GetAdsNetworkPriority(AdPlacement.Type placementType)
     {
-        List<CustomMediation.AD_NETWORK> adPriority;
+        List<CustomMediation.AD_NETWORK> adPriority = null;
         if (configPlacementAdsNetworkPriority != null)
         {
             adPriority = configPlacementAdsNetworkPriority(placementType);
         }
-        else
+        if (adPriority == null)
         {
             adPriority = defaultAdsNetworkPriority;
         }
@@ -531,7 +531,7 @@ public partial class AdsManager : MonoBehaviour
     /// <summary>
     /// Check if user has purchased remove ads and remote config. Return true if this ads is hidden
     /// </summary>
-    bool DoNotShowAds(AdPlacement.Type placementType)
+    public bool DoNotShowAds(AdPlacement.Type placementType)
     {
         bool isNoAds = false;
         if (noAds != null)
