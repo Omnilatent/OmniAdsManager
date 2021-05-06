@@ -544,7 +544,7 @@ public partial class AdsManager : MonoBehaviour
         }
         //.Log($"AdsManager: do not show ads {placementType}: {isNoAds}");
         if (isNoAds) return true;
-        IsAdsHiddenRemoteConfig(placementType);
+        if (IsAdsHiddenRemoteConfig(placementType)) return true;
         return false;
     }
 
