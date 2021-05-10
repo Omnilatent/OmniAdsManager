@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Omnilatent.AdsMediation;
 
 public struct RewardResult
 {
@@ -246,6 +247,7 @@ public partial class AdsManager : MonoBehaviour
         return (Application.internetReachability == NetworkReachability.NotReachable);
     }
 
+    [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
         if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
@@ -254,7 +256,7 @@ public partial class AdsManager : MonoBehaviour
             onAdLoaded?.Invoke(false);
             return;
         };
-        StartCoroutine(CoShowBanner(placementType, onAdLoaded));
+        StartCoroutine(CoShowBanner(placementType, BannerTransform.defaultValue, onAdLoaded));
         /*switch (CurrentAdNetwork)
         {
             case CustomMediation.AD_NETWORK.Unity:
@@ -267,8 +269,21 @@ public partial class AdsManager : MonoBehaviour
         showingBanners.Add(CurrentAdNetwork);*/
     }
 
-    IEnumerator CoShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
+    public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BoolDelegate onAdLoaded = null)
     {
+        if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
+        if (DoNotShowAds(placementType))
+        {
+            onAdLoaded?.Invoke(false);
+            return;
+        };
+        StartCoroutine(CoShowBanner(placementType, bannerTransform, onAdLoaded));
+    }
+
+    IEnumerator CoShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null, BoolDelegate onAdLoaded = null)
+    {
+        if (bannerTransform == null) bannerTransform = BannerTransform.defaultValue;
+
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
 
@@ -279,7 +294,7 @@ public partial class AdsManager : MonoBehaviour
             bool checkAdNetworkDone = false;
             var adsHelper = GetAdsNetworkHelper(adPriority[i]);
             if (adsHelper == null) continue;
-            adsHelper.ShowBanner(placementType,
+            adsHelper.ShowBanner(placementType, bannerTransform,
                 (success) => { checkAdNetworkDone = true; isSuccess = success; onAdLoaded?.Invoke(success); });
             while (!checkAdNetworkDone)
             {

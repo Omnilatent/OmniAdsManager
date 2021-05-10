@@ -20,6 +20,7 @@ public class RemoteConfigAdsPlacementData
         }
         return adNetworkPriority;
     }
+
     public override string ToString()
     {
         return $"{placementID}: show:{show}, priority:{priority}";
