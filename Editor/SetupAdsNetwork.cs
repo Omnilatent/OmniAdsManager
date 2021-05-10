@@ -3,12 +3,59 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 namespace Omnilatent.AdsMediation
 {
-    public class SetupAdsNetwork
+    [InitializeOnLoad]
+    public static class SetupAdsNetwork
     {
         const string packageName = "com.omnilatent.adsmanager";
+
+        public static bool isDebugAd;
+        const string debugAdMenuName = "Tools/Omnilatent/Ads Manager/Debug Ad";
+        const string debugAdDefineSymbol = "DEBUG_ADS";
+
+        static SetupAdsNetwork()
+        {
+            string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+            List<string> allDefines = definesString.Split(';').ToList();
+            isDebugAd = allDefines.Contains(debugAdDefineSymbol);
+            Menu.SetChecked(debugAdMenuName, isDebugAd);
+        }
+
+        /// <summary>
+        /// Add a define symbol
+        /// </summary>
+        /// <returns>True if added, false if removed</returns>
+        static bool AddDefineSymbols(string newSymbol)
+        {
+            string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+            List<string> allDefines = definesString.Split(';').ToList();
+
+            bool isAdd = false;
+            if (allDefines.Contains(newSymbol))
+            {
+                allDefines.Remove(newSymbol);
+            }
+            else
+            {
+                allDefines.Add(newSymbol);
+                isAdd = true;
+            }
+
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                EditorUserBuildSettings.selectedBuildTargetGroup,
+                string.Join(";", allDefines.ToArray()));
+            return isAdd;
+        }
+
+        [MenuItem(debugAdMenuName)]
+        private static void ToggleDebugAd()
+        {
+            isDebugAd = AddDefineSymbols(debugAdDefineSymbol);
+            Menu.SetChecked(debugAdMenuName, isDebugAd);
+        }
 
         static string GetScriptPath()
         {
@@ -38,7 +85,8 @@ namespace Omnilatent.AdsMediation
             return path;
         }
 
-        [MenuItem("Tools/Omnilatent/Ads Manager/Toggle Admob")]
+        #region Obsolete
+        /*[MenuItem("Tools/Omnilatent/Ads Manager/Toggle Admob")]
         public static void AddAdmobHelper()
         {
             AddNetworkHelper("AdsManagerAdmob");
@@ -48,8 +96,11 @@ namespace Omnilatent.AdsMediation
         public static void AddFAN()
         {
             AddNetworkHelper("AdsManagerFAN");
-        }
+        }*/
 
+        /// <summary>
+        /// For modifying AdsManagerAdmob.cs and ad network manager script to include new functions. But it's not needed anymore
+        /// </summary>
         static void AddNetworkHelper(string scriptToAdd)
         {
             string packagePath = Path.GetFullPath($"Packages/{packageName}/Scripts/Modules");
@@ -122,7 +173,11 @@ namespace Omnilatent.AdsMediation
                 Debug.Log($"{scriptToAdd} has been removed.");
         }
 
-        [MenuItem("Tools/Omnilatent/Ads Manager/Create AdsManager Prefab")]
+        [System.Obsolete("Use Import Extra Package instead")]
+        /// <summary>
+        /// For creating AdsManager prefab in Resources. 
+        /// </summary>
+        //[MenuItem("Tools/Omnilatent/Ads Manager/Create AdsManager Prefab")]
         public static void CreateAdsManagerPrefab()
         {
             string[] guids2 = AssetDatabase.FindAssets("AdsManagerSamplePrefab t:prefab");
@@ -141,6 +196,7 @@ namespace Omnilatent.AdsMediation
             else
                 Debug.LogError($"Creating AdsManager prefab in {path} failed");
         }
+        #endregion
 
         [MenuItem("Tools/Omnilatent/Ads Manager/Import Extra Package")]
         public static void ImportExtraPackage()
