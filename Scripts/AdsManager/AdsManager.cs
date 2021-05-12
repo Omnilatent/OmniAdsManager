@@ -419,29 +419,43 @@ public partial class AdsManager : MonoBehaviour
     {
         RewardResult rewardResult = new RewardResult();
         string errorMsg = string.Empty;
-        WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
 
-        List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
-
-        for (int i = 0; i < adPriority.Count; i++)
+        if (IsAdsHiddenRemoteConfig(placementType))
         {
-            bool checkAdNetworkDone = false;
-            IAdsNetworkHelper adsHelper = GetAdsNetworkHelper(adPriority[i]);
-            if (adsHelper == null) continue;
-            adsHelper.Reward(placementType, (result) =>
+            rewardResult.type = RewardResult.Type.LoadFailed;
+            rewardResult.message = "Disabled";
+        }
+        else if (HasNoInternet())
+        {
+            rewardResult.type = RewardResult.Type.LoadFailed;
+            rewardResult.message = "No Internet connection";
+        }
+        else
+        {
+            WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
+
+            List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
+
+            for (int i = 0; i < adPriority.Count; i++)
             {
-                checkAdNetworkDone = true; rewardResult = result;
-            });
-            while (!checkAdNetworkDone)
-            {
-                yield return checkInterval;
+                bool checkAdNetworkDone = false;
+                IAdsNetworkHelper adsHelper = GetAdsNetworkHelper(adPriority[i]);
+                if (adsHelper == null) continue;
+                adsHelper.Reward(placementType, (result) =>
+                {
+                    checkAdNetworkDone = true; rewardResult = result;
+                });
+                while (!checkAdNetworkDone)
+                {
+                    yield return checkInterval;
+                }
+                if (rewardResult.type == RewardResult.Type.Finished)
+                {
+                    currentAdsHelper = adsHelper;
+                    break;
+                }
+                if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
             }
-            if (rewardResult.type == RewardResult.Type.Finished)
-            {
-                currentAdsHelper = adsHelper;
-                break;
-            }
-            if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
         }
 
         /*for (int i = 0; i < adsNetworkHelpers.Count; i++)
