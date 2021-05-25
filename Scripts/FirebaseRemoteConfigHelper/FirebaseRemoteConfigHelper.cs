@@ -78,12 +78,18 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     {
         //FetchData();
         //if (!InitSuccessValue) Debug.Log("Firebase Remote: init not success");
-        return InitSuccessValue ? (int)GetConfig(key).DoubleValue : defaultValue;
+        ConfigValue config = GetConfig(key);
+        if (InitSuccessValue && !string.IsNullOrEmpty(config.StringValue))
+            return (int)config.DoubleValue;
+        else return defaultValue;
     }
 
     public static float GetFloat(string key, float defaultValue = 0)
     {
-        return InitSuccessValue ? (float)GetConfig(key).DoubleValue : defaultValue;
+        ConfigValue config = GetConfig(key);
+        if (InitSuccessValue && !string.IsNullOrEmpty(config.StringValue))
+            return (float)config.DoubleValue;
+        else return defaultValue;
     }
 
     public static bool GetBool(string key, bool defaultValue)
