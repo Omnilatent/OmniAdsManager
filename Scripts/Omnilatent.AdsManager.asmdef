@@ -4,9 +4,9 @@
         "SS.View",
         "GoogleMobileAds",
         "LitJSON",
-        "OmniLatent.FirebaseManager",
         "AudienceNetwork",
-        "UnityEngine.Advertisements"
+        "UnityEngine.Advertisements",
+        "Omnilatent.Firebase"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
