@@ -168,7 +168,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         System.Collections.Generic.Dictionary<string, object> defaults = new System.Collections.Generic.Dictionary<string, object>();
 
         //defaults.Add(Const.RMCF_TIME_BETWEEN_ADS, AdsManager.TIME_BETWEEN_ADS);
-        defaults.Add(RemoteConfigAdsPlacement.RMCF_ADS_PLACEMENT_CONFIG, "");
+        defaults.Add(RemoteConfigAdsPlacement.instance.adsPlacementConfigKey, "");
 
         Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.SetDefaultsAsync(defaults);
     }
