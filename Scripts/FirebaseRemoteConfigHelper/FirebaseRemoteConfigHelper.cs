@@ -107,18 +107,29 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         return GetFirebaseInstance().GetValue(key);
     }
 
+    //Since Firebase 7.2.0, get Firebase Installation Auth Token instead
     async Task<string> GetFirebaseInstanceId()
     {
         string result = null;
         if (FirebaseManager.FirebaseReady)
         {
             //Firebase.InstanceId.FirebaseInstanceId.GetInstanceId(FirebaseManager.app);
-            await Firebase.Installations.FirebaseInstallations.DefaultInstance.GetIdAsync().ContinueWith(
+            /*await Firebase.Installations.FirebaseInstallations.DefaultInstance.GetIdAsync().ContinueWith(
                 task =>
                 {
                     if (!(task.IsCanceled || task.IsFaulted) && task.IsCompleted)
                     {
                         UnityEngine.Debug.Log(System.String.Format("Instance ID Token {0}", task.Result));
+                        result = task.Result;
+                    }
+                });*/
+
+            await Firebase.Installations.FirebaseInstallations.DefaultInstance.GetTokenAsync(false).ContinueWith(
+                task =>
+                {
+                    if (!(task.IsCanceled || task.IsFaulted) && task.IsCompleted)
+                    {
+                        UnityEngine.Debug.Log(System.String.Format("Installations token {0}", task.Result));
                         result = task.Result;
                     }
                 });
