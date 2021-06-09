@@ -569,6 +569,7 @@ public partial class AdsManager : MonoBehaviour
             for (int i = 0; i < noAdsInvokeList.Length; i++)
             {
                 isNoAds = isNoAds || (bool)noAdsInvokeList[i].DynamicInvoke();
+                //.Log($"AdsManager: {noAdsInvokeList[i].Method.Name}");
             }
         }
         //.Log($"AdsManager: do not show ads {placementType}: {isNoAds}");

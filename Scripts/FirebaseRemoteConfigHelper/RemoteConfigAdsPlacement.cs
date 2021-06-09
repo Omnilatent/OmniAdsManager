@@ -32,8 +32,24 @@ public class RemoteConfigAdsPlacementData
  */
 public class RemoteConfigAdsPlacement : MonoBehaviour
 {
+    [Tooltip("Remote Config key set on Firebase")]
+    public string adsPlacementConfigKey = "ads_placement_config_2";
     Dictionary<string, RemoteConfigAdsPlacementData> configData;
-    public const string RMCF_ADS_PLACEMENT_CONFIG = "ads_placement_config_2";
+    //public const string RMCF_ADS_PLACEMENT_CONFIG = "ads_placement_config_2";
+
+    public static RemoteConfigAdsPlacement instance;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -42,7 +58,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
 
     void SetupRemoteConfig(object sender, bool isSuccess)
     {
-        string configJsonData = FirebaseRemoteConfigHelper.GetString(RMCF_ADS_PLACEMENT_CONFIG, null);
+        string configJsonData = FirebaseRemoteConfigHelper.GetString(adsPlacementConfigKey, null);
 
         //test json data
         //configJsonData = Resources.Load<TextAsset>("TestPlacementConfig").text;
