@@ -65,13 +65,15 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
             SetDefaultValues();
             initSuccess = true;
         }
-        FetchData();
 
         if (Debug.isDebugBuild)
         {
             var setting = FirebaseRemoteConfig.DefaultInstance.ConfigSettings;
             setting.IsDeveloperMode = true;
+            setting.MinimumFetchInternalInMilliseconds = 2000;
         }
+
+        FetchData();
     }
 
     public static int GetInt(string key, int defaultValue = 0)
@@ -166,12 +168,17 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     // By default the timespan is 12 hours, and for production apps, this is a good
     // number. For this example though, it's set to a timespan of zero, so that
     // changes in the console will always show up immediately.
-    static Task FetchDataAsync(Action<Task> FetchComplete)
+    async static void FetchDataAsync(Action<Task> FetchComplete)
     {
         Debug.Log("Fetching data...");
         //System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(TimeSpan.Zero);
-        System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAndActivateAsync();
-        return fetchTask.ContinueWithOnMainThread(FetchComplete);
+        TimeSpan expireDuration = Debug.isDebugBuild ? TimeSpan.Zero : new TimeSpan(12, 0, 0);
+        System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(expireDuration);
+        await fetchTask;
+        System.Threading.Tasks.Task activateFetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
+        await activateFetchTask.ContinueWithOnMainThread(FetchComplete);
+        /*System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAndActivateAsync();
+        return fetchTask.ContinueWithOnMainThread(FetchComplete);*/
     }
 
     void SetDefaultValues()
