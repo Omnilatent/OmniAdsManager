@@ -171,7 +171,6 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     async static void FetchDataAsync(Action<Task> FetchComplete)
     {
         Debug.Log("Fetching data...");
-        //System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(TimeSpan.Zero);
         TimeSpan expireDuration = Debug.isDebugBuild ? TimeSpan.Zero : new TimeSpan(12, 0, 0);
         System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(expireDuration);
         await fetchTask;
