@@ -171,11 +171,31 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     async static void FetchDataAsync(Action<Task> FetchComplete)
     {
         Debug.Log("Fetching data...");
-        TimeSpan expireDuration = Debug.isDebugBuild ? TimeSpan.Zero : new TimeSpan(12, 0, 0);
-        System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(expireDuration);
-        await fetchTask;
-        System.Threading.Tasks.Task activateFetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
-        await activateFetchTask.ContinueWithOnMainThread(FetchComplete);
+        try
+        {
+            TimeSpan expireDuration = Debug.isDebugBuild ? TimeSpan.Zero : new TimeSpan(12, 0, 0);
+            System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(expireDuration);
+            await fetchTask;
+            System.Threading.Tasks.Task activateFetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
+            await activateFetchTask.ContinueWithOnMainThread(FetchComplete);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning(e);
+            Firebase.FirebaseException firebaseException = e as Firebase.FirebaseException;
+            if (firebaseException != null)
+            {
+                string errorCodeMsg = $"Firebase Error code: {firebaseException.ErrorCode}";
+                Debug.LogWarning(errorCodeMsg);
+                FirebaseManager.LogCrashlytics(errorCodeMsg);
+                FirebaseManager.LogException(firebaseException);
+            }
+            else
+            {
+                FirebaseManager.LogException(e);
+            }
+            FetchComplete(null);
+        }
         /*System.Threading.Tasks.Task fetchTask = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAndActivateAsync();
         return fetchTask.ContinueWithOnMainThread(FetchComplete);*/
     }
