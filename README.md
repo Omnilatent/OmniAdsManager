@@ -38,16 +38,17 @@ Usage:
 
 Files included in Extra package:
 Extra
-|- AdsPlacementID
-|   |- AdditionalPlacementID.cs
-|   |- CustomMediationAdmobID.cs
-|   |- CustomMediationAudienceNetworkID.cs
-|   |- CustomMediationUnityID.cs
-|   |- Omnilatent.AdsManager Reference.asmref
-|- HandleAdsManagerMessage.cs
+|- AdsManagerExtra
+|-  |- AdsPlacementID
+|-  |   |- AdditionalPlacementID.cs
+|-  |   |- CustomMediationAdmobID.cs
+|-  |   |- CustomMediationAudienceNetworkID.cs
+|-  |   |- CustomMediationUnityID.cs
+|-  |   |- Omnilatent.AdsManager Reference.asmref
+|-  |- HandleAdsManagerMessage.cs
+|-  |- Resources
+|-  |-  |- AdsManager.prefab
 |- MessagePopup
 |-  |- MessagePopup.cs
 |-  |- Resources
-|-  |-  |- MessagePopupCanvas.Prefab
-|- Resources
-|-  |- AdsManager.prefab
+|-  |-  |- MessagePopupCanvas.prefab
