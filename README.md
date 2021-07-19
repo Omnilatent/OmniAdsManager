@@ -35,3 +35,19 @@ Usage:
      https://github.com/Omnilatent/OmniAdmobAdsManager
      https://github.com/Omnilatent/OmniUnityAdsManager
      https://github.com/Omnilatent/OmniAudienceNetworkAdsManager
+
+Files included in Extra package:
+Extra
+|- AdsPlacementID
+|   |- AdditionalPlacementID.cs
+|   |- CustomMediationAdmobID.cs
+|   |- CustomMediationAudienceNetworkID.cs
+|   |- CustomMediationUnityID.cs
+|   |- Omnilatent.AdsManager Reference.asmref
+|- HandleAdsManagerMessage.cs
+|- MessagePopup
+|-  |- MessagePopup.cs
+|-  |- Resources
+|-  |-  |- MessagePopupCanvas.Prefab
+|- Resources
+|-  |- AdsManager.prefab
