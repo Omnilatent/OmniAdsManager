@@ -1,4 +1,8 @@
-Setup:
+## Dependencies:
+- Firebase Remote Config SDK 7.2.0
+- Omni Firebase Manager
+
+## Setup:
 - Import Extra files: Tools/Omnilatent/Ads Manager/Import Extra Package
 - Add AdsManager prefab into the first scene loaded.
 - Set Common Ads placement ID in CustomMediation.cs > AdPlacementType.
@@ -9,7 +13,7 @@ Tools/Omnilatent/Ads Manager/Import AudienceNetwork Assembly Fix
     OR
 Create a .asmdef file named "AudienceNetwork.asmdef" in AudienceNetwork's folder.
 
-Usage:
+## Usage:
 - To switch between using real Ads ID and test Ads ID:
     Tools/Omnilatent/AdsManager/Debug Ad
         OR
@@ -37,6 +41,7 @@ Usage:
      https://github.com/Omnilatent/OmniAudienceNetworkAdsManager
 
 Files included in Extra package:
+```
 Extra
 |- AdsManagerExtra
 |-  |- AdsPlacementID
@@ -52,3 +57,4 @@ Extra
 |-  |- MessagePopup.cs
 |-  |- Resources
 |-  |-  |- MessagePopupCanvas.prefab
+```
