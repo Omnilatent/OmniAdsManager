@@ -82,6 +82,11 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
             /*string deb = "ads_placement_config:\n";
             foreach (var item in configData)
             {
+                if (item.Value.priority == null)
+                {
+                    Debug.LogError("Ad Placement Config item priority is null");
+                    Debug.LogError(item.Key);
+                }
                 deb += ($"{item.Key} {item.Value.show} {item.Value.priority[0]}\n");
             }
             Debug.Log(deb);*/
