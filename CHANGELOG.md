@@ -1,3 +1,11 @@
+2.2.0
+New features:
+- Added support for Admob's App Open Ad format.
+
+Changes:
+- Add LogError function to separate ShowError & LogError functions so that plugins can choose to log error and show error depend on use case.
+- Change HandleOnAdLoadFailed's 2nd parameter to string type so plugins can log the error placementID without needing to know what AdPlacement.Type it's using.
+
 ===
 2.1.0
 Changes:
