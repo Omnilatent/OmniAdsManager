@@ -67,7 +67,11 @@ public partial class AdsManager : MonoBehaviour
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
 
-    bool isShowingBanner = false;
+    bool IsShowingBanner { get => currentShowingBanner != null; }
+    AdPlacement.Type? currentShowingBanner = null;
+    public AdPlacement.Type? CurrentShowingBanner { get => currentShowingBanner; }
+    BannerTransform currentShowingBannerTransform;
+    public BannerTransform CurrentShowingBannerTransform { get => currentShowingBannerTransform; }
 
     Dictionary<string, RemoteConfigAdsNetworkData> configData;
 
@@ -252,7 +256,7 @@ public partial class AdsManager : MonoBehaviour
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
-        if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
+        if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
         if (DoNotShowAds(placementType))
         {
             onAdLoaded?.Invoke(false);
@@ -273,7 +277,7 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BoolDelegate onAdLoaded = null)
     {
-        if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
+        if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
         if (DoNotShowAds(placementType))
         {
             onAdLoaded?.Invoke(false);
@@ -305,7 +309,9 @@ public partial class AdsManager : MonoBehaviour
             if (isSuccess)
             {
                 //showingBanners.Add(CurrentAdNetwork);
-                isShowingBanner = true;
+                //isShowingBanner = true;
+                currentShowingBanner = placementType;
+                currentShowingBannerTransform = bannerTransform;
                 break;
             }
         }
@@ -319,7 +325,9 @@ public partial class AdsManager : MonoBehaviour
             HideBanner(item);
         }
         //showingBanners.Clear();
-        isShowingBanner = false;
+        //isShowingBanner = false;
+        currentShowingBanner = null;
+        currentShowingBannerTransform = null;
     }
 
     void HideBanner(IAdsNetworkHelper adNetwork)
