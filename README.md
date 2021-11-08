@@ -1,6 +1,7 @@
 ## Dependencies:
 - Firebase Remote Config SDK 7.2.0
 - Omni Firebase Manager
+- Unity LitJson https://github.com/Omnilatent/UnityLitJson
 
 ## Setup:
 - Import Extra files: Tools/Omnilatent/Ads Manager/Import Extra Package
