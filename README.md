@@ -15,6 +15,52 @@ Tools/Omnilatent/Ads Manager/Import AudienceNetwork Assembly Fix
 OR
 Create a .asmdef file named "AudienceNetwork.asmdef" in AudienceNetwork's folder.
 
+### Setup Remote Config:
+
+To setup remote config of ad placement, first check the remote config key (adsPlacementConfigKey field) in AdsManager's RemoteConfigAdsPlacement component, by default it is "ads_placement_config_2".
+
+Next, go to Firebase's Remote Config, create a parameter with key the same as adsPlacementConfigKey (default: ads_placement_config_2), set the value to a JSON string with this format:
+
+Example:
+```
+{
+  "0": [
+    {
+      "placementID": 6,
+      "name": "Home_Gameplay_Banner",
+      "show": true,
+      "priority": [
+        3,
+		2,
+		1
+      ]
+    },
+    {
+      "placementID": 7,
+      "name": "Gameplay_Interstitial",
+      "show": true,
+      "priority": [
+        3
+      ]
+    }
+}
+```
+
+Format of a RemoteConfigAdsPlacementData in JSON:
+```
+{
+      "placementID": [placement ID],
+      "name": [name for readability],
+      "show": [if true the ad will be shown, if false the ad won't be loaded and won't be shown],
+      "priority": [
+        [an array of ads network ID used for this placement. 
+		Google Admob: 3,
+		Facebook: 2,
+		Unity Ads: 1]
+      ]
+}
+```
+
 ## Usage:
 - To switch between using real Ads ID and test Ads ID:
 
