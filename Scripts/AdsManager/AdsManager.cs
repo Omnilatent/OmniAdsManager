@@ -597,6 +597,11 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
     {
+        if (DoNotShowAds(placementType))
+        {
+            onAdClosed?.Invoke(false);
+            return;
+        }
         var adsHelper = GetAdsNetworkHelper(CustomMediation.AD_NETWORK.GoogleAdmob);
         if (adsHelper != null)
         {
