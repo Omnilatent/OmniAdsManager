@@ -197,7 +197,7 @@ public partial class AdsManager : MonoBehaviour
         }
     }
 
-    IAdsNetworkHelper GetAdsNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID)
+    public IAdsNetworkHelper GetAdsNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID)
     {
         IAdsNetworkHelper adsHelper = null;
         switch (adsNetworkID)
