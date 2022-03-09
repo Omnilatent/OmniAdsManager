@@ -1,3 +1,13 @@
+===
+2.3.0
+- Show Open Ad: will check for placement config & remove ad before showing.
+Reason: weird behavior that show Open Ad even though request Open Ad was blocked
+- Update to Firebase 8.6.2: remove IsDeveloperMode deprecated Firebase Config
+- Update extra package to have show add on app resume script
+- Make Get Ads Network Helper public. update extra: HandleAdsManagerMessage: add callback from Admob manager to log event from interstitial ads
+- Deprecate premade AdPlacement Type
+
+===
 2.2.0
 New features:
 - Added support for Admob's App Open Ad format.
