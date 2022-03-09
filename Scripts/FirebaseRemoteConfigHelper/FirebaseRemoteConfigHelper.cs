@@ -69,7 +69,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         if (Debug.isDebugBuild)
         {
             var setting = FirebaseRemoteConfig.DefaultInstance.ConfigSettings;
-            setting.IsDeveloperMode = true;
+            //setting.IsDeveloperMode = true; //deprecated in Firebase 8.6.2
             setting.MinimumFetchInternalInMilliseconds = 2000;
         }
 

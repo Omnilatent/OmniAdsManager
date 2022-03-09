@@ -54,18 +54,24 @@ public partial class AdsManager : MonoBehaviour
     public delegate bool ConfigPlacementHideAds(AdPlacement.Type placementType);
     public ConfigPlacementHideAds configPlacementHideAds; //get remote config value to check if show or hide this placement
 
-    public delegate void HandleOnAdLoadFailed(string message, AdPlacement.Type placementType);
+    public delegate void HandleOnAdLoadFailed(string message, string placementID); //TODO: param placement has to be string since ad library dont know what AdPlacementType it use
     public static HandleOnAdLoadFailed onAdLoadFailed;
+    public static HandleOnAdLoadFailed showErrorMessage; //show error message on ad load failed
 
     bool isDoneInitRemoteConfig;
     bool isLoadingInterstitial; //to prevent duplicate call of RequestInterstitial & duplicate callback when previous load isn't done yet. Should work when cacheInterstitial is false
+    bool isLoadingAppOpenAd;
     const string admobManagerResourcesPath = "AdmobManager";
 
     float time; //counting time in app
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
 
-    bool isShowingBanner = false;
+    bool IsShowingBanner { get => currentShowingBanner != null; }
+    AdPlacement.Type? currentShowingBanner = null;
+    public AdPlacement.Type? CurrentShowingBanner { get => currentShowingBanner; }
+    BannerTransform currentShowingBannerTransform;
+    public BannerTransform CurrentShowingBannerTransform { get => currentShowingBannerTransform; }
 
     Dictionary<string, RemoteConfigAdsNetworkData> configData;
 
@@ -114,7 +120,8 @@ public partial class AdsManager : MonoBehaviour
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
     }
 
-    void InitializeRemoteConfig(object sender, bool isReady)
+    #region Deprecated codes
+    /*void InitializeRemoteConfig(object sender, bool isReady)
     {
         int[] adsPriorityInt = GetRemoteAdsPriorityInt(isReady);
         if (adsPriorityInt == null) return;
@@ -126,9 +133,9 @@ public partial class AdsManager : MonoBehaviour
         }
         isDoneInitRemoteConfig = true;
         return;
-    }
+    }*/
 
-    int[] GetRemoteAdsPriorityInt(bool isReady)
+    /*int[] GetRemoteAdsPriorityInt(bool isReady)
     {
         //Initialize remote config
         //0 is admob, 1 is unity
@@ -152,9 +159,9 @@ public partial class AdsManager : MonoBehaviour
             Debug.Log($"ads priority int: {adsPriorityInt[i]}");
         }
         return adsPriorityInt;
-    }
+    }*/
 
-    void SetupRemoteConfig(object sender, bool isSuccess)
+    /*void SetupRemoteConfig(object sender, bool isSuccess)
     {
         string configJsonData = FirebaseRemoteConfigHelper.GetString(RMCF_ADS_PRIORITY, null);
         if (!string.IsNullOrEmpty(configJsonData))
@@ -189,9 +196,10 @@ public partial class AdsManager : MonoBehaviour
         {
             Debug.LogError($"AdsManager: {RMCF_ADS_PRIORITY} is null");
         }
-    }
+    }*/
+    #endregion
 
-    IAdsNetworkHelper GetAdsNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID)
+    public IAdsNetworkHelper GetAdsNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID)
     {
         IAdsNetworkHelper adsHelper = null;
         switch (adsNetworkID)
@@ -250,7 +258,7 @@ public partial class AdsManager : MonoBehaviour
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
-        if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
+        if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
         if (DoNotShowAds(placementType))
         {
             onAdLoaded?.Invoke(false);
@@ -271,7 +279,7 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BoolDelegate onAdLoaded = null)
     {
-        if (isShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
+        if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
         if (DoNotShowAds(placementType))
         {
             onAdLoaded?.Invoke(false);
@@ -303,7 +311,9 @@ public partial class AdsManager : MonoBehaviour
             if (isSuccess)
             {
                 //showingBanners.Add(CurrentAdNetwork);
-                isShowingBanner = true;
+                //isShowingBanner = true;
+                currentShowingBanner = placementType;
+                currentShowingBannerTransform = bannerTransform;
                 break;
             }
         }
@@ -317,7 +327,9 @@ public partial class AdsManager : MonoBehaviour
             HideBanner(item);
         }
         //showingBanners.Clear();
-        isShowingBanner = false;
+        //isShowingBanner = false;
+        currentShowingBanner = null;
+        currentShowingBannerTransform = null;
     }
 
     void HideBanner(IAdsNetworkHelper adNetwork)
@@ -478,7 +490,11 @@ public partial class AdsManager : MonoBehaviour
         }*/
         onFinish(rewardResult.type == RewardResult.Type.Finished);
         Manager.LoadingAnimation(false);
-        if (rewardResult.type == RewardResult.Type.LoadFailed) { ShowError(rewardResult.message, placementType); }
+        if (rewardResult.type == RewardResult.Type.LoadFailed)
+        {
+            LogError(rewardResult.message, placementType.ToString());
+            ShowError(rewardResult.message, placementType.ToString());
+        }
     }
 
     public void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
@@ -538,16 +554,78 @@ public partial class AdsManager : MonoBehaviour
         currentRewardInterAdsHelper.ShowInterstitialRewarded(placeType, onAdClosed);
     }
 
-    public static void ShowError(string msg, AdPlacement.Type placementType)
+    public void RequestAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = false)
     {
-        onAdLoadFailed?.Invoke(msg, placementType);
+        if (DoNotShowAds(placementType))
+        {
+            onAdLoaded?.Invoke(false);
+            return;
+        }
+        if (isLoadingAppOpenAd)
+        {
+            Debug.LogWarning("Previous app open ad request is still loading");
+            onAdLoaded?.Invoke(false); //added this so game can continue even with interstitial not finished loading
+            return;
+        }
+        if (showLoading)
+            Manager.LoadingAnimation(true);
+        StartCoroutine(CoRequestAppOpenAd(placementType, onAdLoaded, showLoading));
+        timeLastShowInterstitial = time;
     }
 
-    public static void ShowError(string msg, string placementName)
+    IEnumerator CoRequestAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = false)
     {
+        isLoadingAppOpenAd = true;
+        bool isSuccess = false;
+        WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
+        var adsHelper = GetAdsNetworkHelper(CustomMediation.AD_NETWORK.GoogleAdmob);
+        bool checkAdNetworkDone = false;
+        if (adsHelper != null)
+        {
+            adsHelper.RequestAppOpenAd(placementType,
+                        (success) => { checkAdNetworkDone = true; isSuccess = success; });
+            while (!checkAdNetworkDone)
+            {
+                yield return checkInterval;
+            }
+        }
+
+        //.Log($"AdsManager: CoRequestInterstitialNoShow done {isSuccess}");
+        onAdLoaded?.Invoke(isSuccess);
+        isLoadingAppOpenAd = false;
+        if (showLoading)
+            Manager.LoadingAnimation(false);
+    }
+
+    public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
+    {
+        if (DoNotShowAds(placementType))
+        {
+            onAdClosed?.Invoke(false);
+            return;
+        }
+        var adsHelper = GetAdsNetworkHelper(CustomMediation.AD_NETWORK.GoogleAdmob);
+        if (adsHelper != null)
+        {
+            adsHelper.ShowAppOpenAd(placementType, onAdClosed);
+        }
+        else
+        {
+            Debug.LogError("Show Open Ad failed. No Admob Helper.");
+            onAdClosed?.Invoke(false);
+        }
+    }
+
+    public static void ShowError(string msg, string placementType)
+    {
+        showErrorMessage?.Invoke(msg, placementType);
         //string text = string.Format("There was a problem displaying this ads. {0}. Please try again later.", msg);
-        //Manager.Add(PopupController.POPUP_SCENE_NAME, new PopupData(PopupType.OK, text));
         //FirebaseManager.LogEvent($"AdsError_{placementName}", "message", msg);
+    }
+
+    public static void LogError(string msg, string placementType)
+    {
+        onAdLoadFailed?.Invoke(msg, placementType);
     }
 
     public bool HasEnoughTimeBetweenInterstitial()

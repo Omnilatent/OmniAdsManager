@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,9 +24,15 @@ public partial class AdPlacement
             return _Value.ToString();
         }
     }
-    public static readonly Type Banner = 1;
-    public static readonly Type Interstitial = 2;
-    public static readonly Type Reward = 3;
+
+    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs", true)]
+    public static Type Banner = 1001;
+
+    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs", true)]
+    public static Type Interstitial = 1002;
+
+    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs", true)]
+    public static Type Reward = 1003;
 }
 
 public static partial class CustomMediation
