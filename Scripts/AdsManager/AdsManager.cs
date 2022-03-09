@@ -1,5 +1,4 @@
-﻿using SS.View;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Omnilatent.AdsMediation;
@@ -81,6 +80,8 @@ public partial class AdsManager : MonoBehaviour
 
     public const string RMCF_ADS_PRIORITY = "ads_priority";
 
+    static System.Action<bool> onToggleLoading;
+
     public static AdsManager Instance
     {
         get
@@ -106,6 +107,11 @@ public partial class AdsManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+
+#if !DISABLE_SSCENE
+        onToggleLoading = SS.View.Manager.LoadingAnimation;
+#endif
+
         noAds += HasNoInternet;
 
         //init default ads helper
@@ -372,7 +378,7 @@ public partial class AdsManager : MonoBehaviour
             return;
         }
         if (showLoading)
-            Manager.LoadingAnimation(true);
+            ToggleLoading(true);
         StartCoroutine(CoRequestInterstitialNoShow(placementType, onAdLoaded, showLoading));
         timeLastShowInterstitial = time;
         /*switch (CurrentAdNetwork)
@@ -417,13 +423,13 @@ public partial class AdsManager : MonoBehaviour
         onAdLoaded?.Invoke(isSuccess);
         isLoadingInterstitial = false;
         if (showLoading)
-            Manager.LoadingAnimation(false);
+            ToggleLoading(false);
     }
 
 
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
-        Manager.LoadingAnimation(true);
+        ToggleLoading(true);
         instance.StartCoroutine(instance.CoReward(onFinish, placementType));
     }
 
@@ -489,7 +495,7 @@ public partial class AdsManager : MonoBehaviour
             if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
         }*/
         onFinish(rewardResult.type == RewardResult.Type.Finished);
-        Manager.LoadingAnimation(false);
+        ToggleLoading(false);
         if (rewardResult.type == RewardResult.Type.LoadFailed)
         {
             LogError(rewardResult.message, placementType.ToString());
@@ -505,7 +511,7 @@ public partial class AdsManager : MonoBehaviour
             return;
         }
         if (showLoading)
-            Manager.LoadingAnimation(true);
+            ToggleLoading(true);
         StartCoroutine(CoRequestInterstitialRewardedNoShow(placementType, onAdLoaded, showLoading));
         timeLastShowInterstitial = time;
     }
@@ -539,7 +545,7 @@ public partial class AdsManager : MonoBehaviour
             if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
         }
         if (showLoading)
-            Manager.LoadingAnimation(false);
+            ToggleLoading(false);
         onAdLoaded?.Invoke(rewardResult);
     }
 
@@ -568,7 +574,7 @@ public partial class AdsManager : MonoBehaviour
             return;
         }
         if (showLoading)
-            Manager.LoadingAnimation(true);
+            ToggleLoading(true);
         StartCoroutine(CoRequestAppOpenAd(placementType, onAdLoaded, showLoading));
         timeLastShowInterstitial = time;
     }
@@ -594,7 +600,7 @@ public partial class AdsManager : MonoBehaviour
         onAdLoaded?.Invoke(isSuccess);
         isLoadingAppOpenAd = false;
         if (showLoading)
-            Manager.LoadingAnimation(false);
+            ToggleLoading(false);
     }
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
@@ -663,6 +669,16 @@ public partial class AdsManager : MonoBehaviour
     {
         if (configPlacementHideAds != null && configPlacementHideAds(placementType)) return true;
         return false;
+    }
+
+    static void ToggleLoading(bool active)
+    {
+        if (onToggleLoading == null)
+        {
+            Debug.LogWarning($"Loading overlay should be toggled {active}. Assign a function to this Action or use SS library");
+            return;
+        }
+        onToggleLoading.Invoke(active);
     }
 
     private void Update()
