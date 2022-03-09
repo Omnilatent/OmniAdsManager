@@ -120,7 +120,8 @@ public partial class AdsManager : MonoBehaviour
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
     }
 
-    void InitializeRemoteConfig(object sender, bool isReady)
+    #region Deprecated codes
+    /*void InitializeRemoteConfig(object sender, bool isReady)
     {
         int[] adsPriorityInt = GetRemoteAdsPriorityInt(isReady);
         if (adsPriorityInt == null) return;
@@ -132,9 +133,9 @@ public partial class AdsManager : MonoBehaviour
         }
         isDoneInitRemoteConfig = true;
         return;
-    }
+    }*/
 
-    int[] GetRemoteAdsPriorityInt(bool isReady)
+    /*int[] GetRemoteAdsPriorityInt(bool isReady)
     {
         //Initialize remote config
         //0 is admob, 1 is unity
@@ -158,9 +159,9 @@ public partial class AdsManager : MonoBehaviour
             Debug.Log($"ads priority int: {adsPriorityInt[i]}");
         }
         return adsPriorityInt;
-    }
+    }*/
 
-    void SetupRemoteConfig(object sender, bool isSuccess)
+    /*void SetupRemoteConfig(object sender, bool isSuccess)
     {
         string configJsonData = FirebaseRemoteConfigHelper.GetString(RMCF_ADS_PRIORITY, null);
         if (!string.IsNullOrEmpty(configJsonData))
@@ -195,7 +196,8 @@ public partial class AdsManager : MonoBehaviour
         {
             Debug.LogError($"AdsManager: {RMCF_ADS_PRIORITY} is null");
         }
-    }
+    }*/
+    #endregion
 
     public IAdsNetworkHelper GetAdsNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID)
     {
