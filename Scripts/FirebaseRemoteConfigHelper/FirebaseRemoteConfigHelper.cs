@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Firebase.Analytics;
-using Firebase.RemoteConfig;
 using SS.View;
 using System.Threading.Tasks;
 using System;
+
+#if !DISABLE_FIREBASE
+using Firebase.RemoteConfig;
 using Firebase.Extensions;
+#endif
 
 public class FirebaseRemoteConfigHelper : MonoBehaviour
 {
+#if !DISABLE_FIREBASE
     public static System.EventHandler<bool> onFetchComplete;
     public static FirebaseRemoteConfigHelper instance;
     private void Awake()
@@ -223,4 +226,5 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     {
         return FirebaseRemoteConfig.DefaultInstance;
     }
+#endif
 }

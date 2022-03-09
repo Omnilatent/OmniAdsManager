@@ -53,9 +53,12 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
 
     void Start()
     {
+#if !DISABLE_FIREBASE
         FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig);
+#endif
     }
 
+#if !DISABLE_FIREBASE
     void SetupRemoteConfig(object sender, bool isSuccess)
     {
         string configJsonData = FirebaseRemoteConfigHelper.GetString(adsPlacementConfigKey, null);
@@ -99,6 +102,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
             Debug.LogError("RemoteConfigAdsPlacement: ads_placement_config is null");
         }
     }
+#endif
 
     RemoteConfigAdsPlacementData GetPlacementConfigData(AdPlacement.Type placementType)
     {
