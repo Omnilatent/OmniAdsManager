@@ -25,13 +25,13 @@ public partial class AdPlacement
         }
     }
 
-    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs", true)]
+    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs")]
     public static Type Banner = 1001;
 
-    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs", true)]
+    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs")]
     public static Type Interstitial = 1002;
 
-    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs", true)]
+    [Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs")]
     public static Type Reward = 1003;
 }
 
