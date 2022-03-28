@@ -1,14 +1,18 @@
 ## Dependencies:
-- Firebase Remote Config SDK 7.2.0
-- Firebase Installation SDK 7.2.0
-- Omni Firebase Manager
 - Unity LitJson https://github.com/Omnilatent/UnityLitJson
+
+If you use Remote config features:
+- Omni Firebase Manager
+- Firebase Remote Config SDK 8.6.2
+- Firebase Installation SDK 8.6.2
+
+If you do not have Firebase in your project, add DISABLE_FIREBASE in Scripting Define Symbols.
 
 ## Setup:
 - Import Extra files: Tools/Omnilatent/Ads Manager/Import Extra Package
-- Add AdsManager prefab into the first scene loaded.
 - Set Common Ads placement ID in CustomMediation.cs > AdPlacementType.
-- Set Admob Placement ID in AdMobConst.
+- Set Ad Placement ID for each Ad network in AdsPlacementID folder (included in Ads Manager's extra package).
+- Add AdsManager prefab into the first scene loaded.
 
 - Audience Network: Facebook's Audience Network's script does not have .asmdef file (Scripting Assembly Definition). To fix this:
 Tools/Omnilatent/Ads Manager/Import AudienceNetwork Assembly Fix
