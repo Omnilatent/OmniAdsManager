@@ -187,7 +187,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
             Firebase.FirebaseException firebaseException = e as Firebase.FirebaseException;
             if (firebaseException != null)
             {
-                string errorCodeMsg = $"Firebase Error code: {firebaseException.ErrorCode}";
+                string errorCodeMsg = $"Firebase Error: code {firebaseException.ErrorCode}, {firebaseException.Message}";
                 Debug.LogWarning(errorCodeMsg);
                 FirebaseManager.LogCrashlytics(errorCodeMsg);
                 FirebaseManager.LogException(firebaseException);
