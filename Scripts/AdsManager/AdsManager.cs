@@ -5,7 +5,7 @@ using Omnilatent.AdsMediation;
 
 public struct RewardResult
 {
-    public enum Type { LoadFailed = 0, Finished = 1, Canceled = 2 }
+    public enum Type { LoadFailed = 0, Finished = 1, Canceled = 2, Loading = 3 }
     public Type type;
     public string message;
 
