@@ -426,14 +426,23 @@ public partial class AdsManager : MonoBehaviour
             ToggleLoading(false);
     }
 
-
+    [System.Obsolete("Use Reward(AdPlacement.Type, RewardDelegate) instead.")]
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
+    {
+        ToggleLoading(true);
+        instance.StartCoroutine(instance.CoReward((rewardResult) =>
+        {
+            onFinish.Invoke(rewardResult.type == RewardResult.Type.Finished);
+        }, placementType));
+    }
+
+    public static void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
     {
         ToggleLoading(true);
         instance.StartCoroutine(instance.CoReward(onFinish, placementType));
     }
 
-    IEnumerator CoReward(BoolDelegate onFinish, AdPlacement.Type placementType)
+    IEnumerator CoReward(RewardDelegate onFinish, AdPlacement.Type placementType)
     {
         RewardResult rewardResult = new RewardResult();
         string errorMsg = string.Empty;
@@ -494,7 +503,7 @@ public partial class AdsManager : MonoBehaviour
             }
             if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
         }*/
-        onFinish(rewardResult.type == RewardResult.Type.Finished);
+        onFinish(rewardResult);
         ToggleLoading(false);
         if (rewardResult.type == RewardResult.Type.LoadFailed)
         {
