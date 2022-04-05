@@ -505,9 +505,12 @@ public partial class AdsManager : MonoBehaviour
         }*/
         onFinish(rewardResult);
         ToggleLoading(false);
-        if (rewardResult.type == RewardResult.Type.LoadFailed)
+        if (rewardResult.type == RewardResult.Type.LoadFailed || rewardResult.type == RewardResult.Type.Loading)
         {
-            LogError(rewardResult.message, placementType.ToString());
+            if (rewardResult.type == RewardResult.Type.LoadFailed)
+            {
+                LogError(rewardResult.message, placementType.ToString());
+            }
             ShowError(rewardResult.message, placementType.ToString());
         }
     }
