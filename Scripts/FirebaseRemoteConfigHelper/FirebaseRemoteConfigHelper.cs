@@ -189,8 +189,15 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
             {
                 string errorCodeMsg = $"Firebase Error: code {firebaseException.ErrorCode}, {firebaseException.Message}";
                 Debug.LogWarning(errorCodeMsg);
-                FirebaseManager.LogCrashlytics(errorCodeMsg);
-                FirebaseManager.LogException(firebaseException);
+                if (firebaseException.ErrorCode == 1)
+                {
+                    FirebaseManager.LogEvent("FirebaseRCH_Fetch_ErrorCode_1", "message", firebaseException.Message);
+                }
+                else
+                {
+                    FirebaseManager.LogCrashlytics(errorCodeMsg);
+                    FirebaseManager.LogException(firebaseException);
+                }
             }
             else
             {
