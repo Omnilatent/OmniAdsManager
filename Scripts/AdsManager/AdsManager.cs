@@ -55,7 +55,9 @@ public partial class AdsManager : MonoBehaviour
 
     public delegate void HandleOnAdLoadFailed(string message, string placementID); //TODO: param placement has to be string since ad library dont know what AdPlacementType it use
     public static HandleOnAdLoadFailed onAdLoadFailed;
-    public static HandleOnAdLoadFailed showErrorMessage; //show error message on ad load failed
+
+    public delegate void HandleOnShowErrorMessage(RewardResult message, string placementID);
+    public static HandleOnShowErrorMessage showErrorMessage; //show error message on ad load failed
 
     bool isDoneInitRemoteConfig;
     bool isLoadingInterstitial; //to prevent duplicate call of RequestInterstitial & duplicate callback when previous load isn't done yet. Should work when cacheInterstitial is false
@@ -511,7 +513,7 @@ public partial class AdsManager : MonoBehaviour
             {
                 LogError(rewardResult.message, placementType.ToString());
             }
-            ShowError(rewardResult.message, placementType.ToString());
+            ShowError(rewardResult, placementType.ToString());
         }
     }
 
@@ -634,7 +636,7 @@ public partial class AdsManager : MonoBehaviour
         }
     }
 
-    public static void ShowError(string msg, string placementType)
+    public static void ShowError(RewardResult msg, string placementType)
     {
         showErrorMessage?.Invoke(msg, placementType);
         //string text = string.Format("There was a problem displaying this ads. {0}. Please try again later.", msg);
