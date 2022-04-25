@@ -14,6 +14,8 @@ public struct RewardResult
         this.type = type;
         this.message = message;
     }
+
+    public bool IsFinished { get { return type == Type.Finished; } }
 }
 public delegate void RewardDelegate(RewardResult result);
 
