@@ -8,6 +8,8 @@ If you use Remote config features:
 
 If you do not have Firebase in your project, add DISABLE_FIREBASE in Scripting Define Symbols.
 
+If used with Omni Admob Manager: Require Omni Admob Manager v1.3.1 or above
+
 ## Setup:
 - Import Extra files: Tools/Omnilatent/Ads Manager/Import Extra Package
 - Set Common Ads placement ID in CustomMediation.cs > AdPlacementType.
