@@ -33,6 +33,8 @@ public partial class AdPlacement
 
     //[Obsolete("Declare custom AdPlacement in AdditionalPlacementID.cs")]
     public static Type Reward = 1003;
+
+    public static readonly Type App_Open_Ad = 1005;
 }
 
 public static partial class CustomMediation
