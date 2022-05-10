@@ -1,15 +1,17 @@
 ===
 2.4.0
 Changes:
+- Move Unity Main Thread Dispatcher from Omni Ads Manager to Omni Admob*
 - Update reward method: use param reward result instead of bool, change order of params to match other ad method.
 - Allow disable SS by using scripting define symbol. custom loading function can be assigned through "onToggleLoading" in AdsManager.
 - Default reward ad placement made not obsolete because cache admob use this for sharing ad cache of same type
 - Show message when detect reward ad is loading. only log error if reward ad load failed
 - Show error will pass reward result object instead of string
 
+*Due to this change, Ads Manager will require Omni Admob Ad Manager v1.3.1 and above.
+
 Minor changes:
 - Update to deprecate premade AdPlacement Type: make obsolete warning instead of error
-- Move Unity Main Thread Dispatcher from Omni Ads Manager to Omni Admob
 - Firebase remote fetch try catch: add log exception message
 - Firebase remote config helper: if fetch fail with error code = 1, log event, otherwise log exception to Crashlytic
 - Reward result type: add type loading
