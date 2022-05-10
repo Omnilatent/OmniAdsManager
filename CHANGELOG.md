@@ -1,4 +1,11 @@
 ===
+2.5.0
+Changes:
+- Request app open ad with parameter callback of type RewardDelegate instead of InterstitialDelegate.
+- Add placement type for generic app open ad for using in same ad type share cache.
+Now require Omni Admob Ad Manager v1.4.1 and above.
+
+===
 2.4.0
 Changes:
 - Move Unity Main Thread Dispatcher from Omni Ads Manager to Omni Admob*
