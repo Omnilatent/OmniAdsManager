@@ -605,7 +605,7 @@ public partial class AdsManager : MonoBehaviour
         if (adsHelper != null)
         {
             adsHelper.RequestAppOpenAd(placementType,
-                        (success) => { checkAdNetworkDone = true; isSuccess = success; });
+                        (result) => { checkAdNetworkDone = true; isSuccess = result.type == RewardResult.Type.Finished; });
             while (!checkAdNetworkDone)
             {
                 yield return checkInterval;
