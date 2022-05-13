@@ -356,6 +356,7 @@ public partial class AdsManager : MonoBehaviour
             return;
         }
         currentAdsHelper.ShowInterstitial(placeType, onAdClosed);
+        timeLastShowInterstitial = time;
         /*switch (CurrentAdNetwork)
         {
             case CustomMediation.AD_NETWORK.Unity:
@@ -384,7 +385,7 @@ public partial class AdsManager : MonoBehaviour
         if (showLoading)
             ToggleLoading(true);
         StartCoroutine(CoRequestInterstitialNoShow(placementType, onAdLoaded, showLoading));
-        timeLastShowInterstitial = time;
+        //timeLastShowInterstitial = time; //moved to ShowInterstitial
         /*switch (CurrentAdNetwork)
         {
             case CustomMediation.AD_NETWORK.Unity:
@@ -529,7 +530,7 @@ public partial class AdsManager : MonoBehaviour
         if (showLoading)
             ToggleLoading(true);
         StartCoroutine(CoRequestInterstitialRewardedNoShow(placementType, onAdLoaded, showLoading));
-        timeLastShowInterstitial = time;
+        //timeLastShowInterstitial = time;
     }
 
     IEnumerator CoRequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
@@ -592,7 +593,6 @@ public partial class AdsManager : MonoBehaviour
         if (showLoading)
             ToggleLoading(true);
         StartCoroutine(CoRequestAppOpenAd(placementType, onAdLoaded, showLoading));
-        timeLastShowInterstitial = time;
     }
 
     IEnumerator CoRequestAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = false)
