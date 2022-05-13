@@ -68,7 +68,11 @@ public partial class AdsManager : MonoBehaviour
 
     float time; //counting time in app
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
+    float timeLastShowAppOpenAd = -9999f; //the value of time when last app open ad was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
+
+    static float TIME_BETWEEN_APP_OPEN_ADS = 5f; //minimum time between app open ad
+    public static float TimeBetweenAppOpenAds { get => TIME_BETWEEN_APP_OPEN_ADS; set => TIME_BETWEEN_APP_OPEN_ADS = value; }
 
     bool IsShowingBanner { get => currentShowingBanner != null; }
     AdPlacement.Type? currentShowingBanner = null;
@@ -621,7 +625,7 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
     {
-        if (DoNotShowAds(placementType))
+        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd())
         {
             onAdClosed?.Invoke(false);
             return;
@@ -630,6 +634,7 @@ public partial class AdsManager : MonoBehaviour
         if (adsHelper != null)
         {
             adsHelper.ShowAppOpenAd(placementType, onAdClosed);
+            timeLastShowAppOpenAd = time;
         }
         else
         {
@@ -654,6 +659,12 @@ public partial class AdsManager : MonoBehaviour
     {
         bool enoughTimeHasPassed = (time - timeLastShowInterstitial) >= TIME_BETWEEN_ADS;
         //.Log($"time between inter {time - timeLastShowInterstitial}");
+        return enoughTimeHasPassed;
+    }
+
+    public bool HasEnoughTimeBetweenAppOpenAd() //Different from Interstitial, this is to prevent repeated app open ad show when resuming game
+    {
+        bool enoughTimeHasPassed = (time - timeLastShowAppOpenAd) >= TIME_BETWEEN_APP_OPEN_ADS;
         return enoughTimeHasPassed;
     }
 
