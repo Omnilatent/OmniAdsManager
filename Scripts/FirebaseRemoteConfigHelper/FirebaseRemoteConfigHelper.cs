@@ -157,9 +157,17 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         {
             FetchDataAsync((task) =>
             {
-                Debug.Log("Fetch async done");
-                //FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
-                onFetchComplete?.Invoke(null, true);
+                if (task != null && task.IsCompleted)
+                {
+                    Debug.Log("Fetch async done");
+                    //FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
+                    onFetchComplete?.Invoke(null, true);
+                }
+                else
+                {
+                    Debug.Log("Fetch async failed. Either because Firebase fetch failed or an exception was thrown in callbacks");
+                    onFetchComplete?.Invoke(null, false);
+                }
             });
         }
     }
