@@ -39,7 +39,11 @@ public partial class AdPlacement
 
 public static partial class CustomMediation
 {
-    public enum AD_NETWORK { None = 0, Unity = 1, FAN = 2, GoogleAdmob = 3 }
+    public enum AD_NETWORK
+    {
+        None = 0, Unity = 1, FAN = 2, GoogleAdmob = 3,
+        IronSource = 4
+    }
     private static AD_NETWORK currentAdNetwork;
 
     public static AD_NETWORK CurrentAdNetwork

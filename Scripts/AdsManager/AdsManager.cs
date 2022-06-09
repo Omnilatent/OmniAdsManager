@@ -42,6 +42,7 @@ public partial class AdsManager : MonoBehaviour
     IAdsNetworkHelper _FANHelper;
     IAdsNetworkHelper _adMobHelper;
     IAdsNetworkHelper _unityAdsHelper;
+    IAdsNetworkHelper _ironSourceHelper;
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
     List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
@@ -130,6 +131,7 @@ public partial class AdsManager : MonoBehaviour
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.FAN, InitFANHelper());
 #endif
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.Unity, InitUnityAdsManager());
+        AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.IronSource, InitISHelper());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
     }
@@ -226,6 +228,9 @@ public partial class AdsManager : MonoBehaviour
                 break;
             case CustomMediation.AD_NETWORK.FAN:
                 adsHelper = _FANHelper;
+                break;
+            case CustomMediation.AD_NETWORK.IronSource:
+                adsHelper = _ironSourceHelper;
                 break;
         }
         if (adsHelper == null)
