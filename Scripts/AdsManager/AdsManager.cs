@@ -43,6 +43,7 @@ public partial class AdsManager : MonoBehaviour
     IAdsNetworkHelper _adMobHelper;
     IAdsNetworkHelper _unityAdsHelper;
     IAdsNetworkHelper _ironSourceHelper;
+    IAdsNetworkHelper _MAXHelper; //AppLovin
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
     List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
@@ -131,7 +132,8 @@ public partial class AdsManager : MonoBehaviour
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.FAN, InitFANHelper());
 #endif
         AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.Unity, InitUnityAdsManager());
-        AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.IronSource, InitISHelper());
+        _ironSourceHelper = AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.IronSource, AdWrapperFinder.InitISHelper());
+        _MAXHelper = AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.AppLovinMAX, AdWrapperFinder.InitMAXHelper());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
     }
@@ -243,13 +245,14 @@ public partial class AdsManager : MonoBehaviour
         adsNetworkHelpers.Add(adsHelper);
     }
 
-    void AddDefaultNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID, IAdsNetworkHelper adsHelper)
+    IAdsNetworkHelper AddDefaultNetworkHelper(CustomMediation.AD_NETWORK adsNetworkID, IAdsNetworkHelper adsHelper)
     {
         if (adsHelper != null)
         {
             defaultAdsNetworkHelpers.Add(adsHelper);
             defaultAdsNetworkPriority.Add(adsNetworkID);
         }
+        return adsHelper;
     }
 
     /// <summary>
