@@ -7,7 +7,7 @@ namespace Omnilatent.AdsMediation
     public static partial class AdWrapperFinder
     {
 #if true //MODULE_MAKER
-        const string MAXAdHelperResourcesPath = "Omnilatent/MAXAdsHelper";
+        const string MAXAdHelperResourcesPath = "OmniRes/MAXAdsHelper";
         public static IAdsNetworkHelper InitMAXHelper()
         {
             var resGO = Resources.Load<GameObject>(MAXAdHelperResourcesPath);
