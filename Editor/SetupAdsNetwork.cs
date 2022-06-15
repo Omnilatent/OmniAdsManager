@@ -228,6 +228,13 @@ namespace Omnilatent.AdsMediation
             AssetDatabase.ImportPackage(path, true);
         }
 
+        [MenuItem("Tools/Omnilatent/Ads Manager/Import MAX Extra Package")]
+        public static void ImportMAXExtraPackage()
+        {
+            string path = GetPackagePath("Assets/Omnilatent/MAXAdsManager/MAXAdsWrapperExtra.unitypackage", "MAXAdsWrapperExtra");
+            AssetDatabase.ImportPackage(path, true);
+        }
+
         static string GetPackagePath(string path, string filename)
         {
             if (!File.Exists($"{Application.dataPath}/../{path}"))
