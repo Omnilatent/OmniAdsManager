@@ -12,12 +12,18 @@ namespace Omnilatent.AdsMediation
         None = 0, Loading, Ready, Showing, Shown, Closed, LoadFailed, ShowFailed
     }
 
-    public class InterstitialAdObject
+    public class AdObject
     {
-        public AdPlacement.Type adPlacementType;
+        protected AdObjectState state;
+        public AdObjectState State { get => state; set => state = value; }
+        protected AdPlacement.Type adPlacementType;
+        public AdPlacement.Type AdPlacementType { get => adPlacementType; set => adPlacementType = value; }
+    }
+
+    public class InterstitialAdObject : AdObject
+    {
         public AdsManager.InterstitialDelegate onAdLoaded;
         public AdsManager.InterstitialDelegate onAdClosed;
-        public AdObjectState state;
 
         public InterstitialAdObject()
         {
@@ -25,7 +31,7 @@ namespace Omnilatent.AdsMediation
 
         public InterstitialAdObject(AdPlacement.Type adPlacementType, AdsManager.InterstitialDelegate onAdLoaded)
         {
-            this.adPlacementType = adPlacementType;
+            this.AdPlacementType = adPlacementType;
             this.onAdLoaded = onAdLoaded;
         }
 
@@ -33,17 +39,15 @@ namespace Omnilatent.AdsMediation
         {
             get
             {
-                return state == AdObjectState.Ready;
+                return State == AdObjectState.Ready;
             }
         }
     }
 
-    public class RewardAdObject
+    public class RewardAdObject : AdObject
     {
-        public AdPlacement.Type adPlacementType;
         public RewardDelegate onAdLoaded;
         public RewardDelegate onAdClosed;
-        public AdObjectState state;
 
         public RewardAdObject()
         {
@@ -51,7 +55,7 @@ namespace Omnilatent.AdsMediation
 
         public RewardAdObject(AdPlacement.Type adPlacementType, RewardDelegate onAdClosed)
         {
-            this.adPlacementType = adPlacementType;
+            this.AdPlacementType = adPlacementType;
             this.onAdClosed = onAdClosed;
         }
 
@@ -59,23 +63,20 @@ namespace Omnilatent.AdsMediation
         {
             get
             {
-                return state == AdObjectState.Ready;
+                return State == AdObjectState.Ready;
             }
         }
     }
 
-    public class BannerAdObject
+    public class BannerAdObject : AdObject
     {
-        public AdPlacement.Type adPlacementType;
-        public AdObjectState state;
-
         public BannerAdObject()
         {
         }
 
         public BannerAdObject(AdPlacement.Type adPlacementType)
         {
-            this.adPlacementType = adPlacementType;
+            this.AdPlacementType = adPlacementType;
         }
     }
 }
