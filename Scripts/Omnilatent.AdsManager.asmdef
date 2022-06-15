@@ -1,12 +1,14 @@
 {
     "name": "Omnilatent.AdsManager",
+    "rootNamespace": "",
     "references": [
         "SS.View",
         "GoogleMobileAds",
         "LitJSON",
         "AudienceNetwork",
         "UnityEngine.Advertisements",
-        "Omnilatent.Firebase"
+        "Omnilatent.Firebase",
+        "IronSource"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

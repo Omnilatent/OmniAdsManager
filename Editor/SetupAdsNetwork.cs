@@ -213,6 +213,21 @@ namespace Omnilatent.AdsMediation
             AssetDatabase.ImportPackage(path, true);
         }
 
+        [MenuItem("Tools/Omnilatent/Ads Manager/Import IronSource Extra Package")]
+        public static void ImportIronSourceExtraPackage()
+        {
+            string path = GetPackagePath("Assets/Omnilatent/IronSourceAdsManager/IronSourceHelperExtra.unitypackage", "IronSourceHelperExtra");
+            AssetDatabase.ImportPackage(path, true);
+        }
+
+        [MenuItem("Tools/Omnilatent/Ads Manager/Import IronSource Assembly Definition")]
+        public static void ImportIronSourceAssemblyDefinition()
+        {
+            //To make IronSource work with package imported using Unity Package Manager
+            string path = GetPackagePath("Assets/Omnilatent/IronSourceAdsManager/IronSourceAssemblyDefinition.unitypackage", "IronSourceAssemblyDefinition");
+            AssetDatabase.ImportPackage(path, true);
+        }
+
         static string GetPackagePath(string path, string filename)
         {
             if (!File.Exists($"{Application.dataPath}/../{path}"))
