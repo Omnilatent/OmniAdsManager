@@ -1,4 +1,13 @@
 ===
+2.5.1
+New:
+- Add time last show App open ad, always check if enough time has passed since last show open ad before showing it. This is work around for unwanted behaviour calling OnApplicationPause immediately after closing app open ad
+
+Fixes:
+- Fix set time last show interstitial: only update time last show interstitial when calling ShowInterstitial, remove incorrect set time last show interstitial
+- Firebase remote config fetch data async: Check task completed before invoking callbacks to prevent callbacks getting called twice when an exception occurred during callback invocation.
+
+===
 2.5.0
 Changes:
 - Request app open ad with parameter callback of type RewardDelegate instead of InterstitialDelegate.
