@@ -1,4 +1,12 @@
 ===
+2.5.2
+New:
+- Added support for Omni IronSource Ad Wrapper (v1.0.1).
+- Added support for Omni MAX Ad Wrapper.
+- Separate functions to load IronSource and MAX's prefab to new class AdWrapperFinder.
+- Class AdObject to standardize how ad networks handle ad loading, callbacks and ad placement.
+
+===
 2.5.1
 New:
 - Add time last show App open ad, always check if enough time has passed since last show open ad before showing it. This is work around for unwanted behaviour calling OnApplicationPause immediately after closing app open ad
