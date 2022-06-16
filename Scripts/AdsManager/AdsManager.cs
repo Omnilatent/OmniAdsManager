@@ -234,9 +234,12 @@ public partial class AdsManager : MonoBehaviour
             case CustomMediation.AD_NETWORK.IronSource:
                 adsHelper = _ironSourceHelper;
                 break;
+            case CustomMediation.AD_NETWORK.AppLovinMAX:
+                adsHelper = _MAXHelper;
+                break;
         }
         if (adsHelper == null)
-            Debug.LogError($"Reference to ads Helper of {adsNetworkID} is null");
+            Debug.LogError($"Reference to ads Helper of {adsNetworkID} is null. Check if the ad network was included in switch/case or its gameObject was instantiated correctly.");
         return adsHelper;
     }
 
