@@ -1,4 +1,4 @@
-## Dependencies:
+# Dependencies:
 - Unity LitJson https://github.com/Omnilatent/UnityLitJson
 
 If you use Remote config features:
@@ -10,7 +10,7 @@ If you do not have Firebase in your project, add DISABLE_FIREBASE in Scripting D
 
 If used with Omni Admob Manager: Require Omni Admob Manager v1.5.0 or above
 
-## Setup:
+# Setup:
 - Import Extra files: Tools/Omnilatent/Ads Manager/Import Extra Package
 - Set Common Ads placement ID in CustomMediation.cs > AdPlacementType.
 - Set Ad Placement ID for each Ad network in AdsPlacementID folder (included in Ads Manager's extra package).
@@ -21,7 +21,7 @@ Tools/Omnilatent/Ads Manager/Import AudienceNetwork Assembly Fix
 OR
 Create a .asmdef file named "AudienceNetwork.asmdef" in AudienceNetwork's folder.
 
-### Setup Remote Config:
+## Setup Remote Config:
 
 To setup remote config of ad placement, first check the remote config key (adsPlacementConfigKey field) in AdsManager's RemoteConfigAdsPlacement component, by default it is "ads_placement_config_2".
 
@@ -67,7 +67,14 @@ Format of a RemoteConfigAdsPlacementData in JSON:
 }
 ```
 
-## Usage:
+## Ad Network ID:
+Unity = 1  
+FAN = 2  
+Google Admob = 3  
+IronSource = 4  
+AppLovin MAX = 5  
+
+# Usage:
 - To switch between using real Ads ID and test Ads ID:
 
     Tools/Omnilatent/AdsManager/Debug Ad
@@ -103,6 +110,8 @@ Format of a RemoteConfigAdsPlacementData in JSON:
      https://github.com/Omnilatent/OmniUnityAdsManager
      
      https://github.com/Omnilatent/OmniAudienceNetworkAdsManager
+
+     https://github.com/Omnilatent/MAXAdsManager
 
 Files included in Extra package:
 ```
