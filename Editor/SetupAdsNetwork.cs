@@ -235,6 +235,14 @@ namespace Omnilatent.AdsMediation
             AssetDatabase.ImportPackage(path, true);
         }
 
+        [MenuItem("Tools/Omnilatent/Ads Manager/Import network_security_config")]
+        public static void ImportNetworkSecurityConfig()
+        {
+            string path = GetPackagePath("Assets/Omnilatent/OmniAdsManager/network_security_config.unitypackage", "network_security_config");
+            AssetDatabase.ImportPackage(path, true);
+            Debug.Log("Remember to add the following attribute to the application tag in your AndroidManifest.xml file: \nandroid:networkSecurityConfig=\"@xml/network_security_config\"");
+        }
+
         static string GetPackagePath(string path, string filename)
         {
             if (!File.Exists($"{Application.dataPath}/../{path}"))
