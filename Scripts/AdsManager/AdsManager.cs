@@ -71,6 +71,7 @@ public partial class AdsManager : MonoBehaviour
     float time; //counting time in app
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
     float timeLastShowAppOpenAd = -9999f; //the value of time when last app open ad was shown
+    float timeLastShowRewardAd = -9999f; //the value of time when last reward ad was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
 
     static float TIME_BETWEEN_APP_OPEN_ADS = 5f; //minimum time between app open ad
@@ -91,6 +92,11 @@ public partial class AdsManager : MonoBehaviour
     public const string RMCF_ADS_PRIORITY = "ads_priority";
 
     static System.Action<bool> onToggleLoading;
+
+    bool showingInterstitial;
+    bool showingRewardAd;
+    public bool ShowingInterstitial { get => showingInterstitial; }
+    public bool ShowingRewardAd { get => showingRewardAd; }
 
     public static AdsManager Instance
     {
@@ -370,7 +376,12 @@ public partial class AdsManager : MonoBehaviour
             Debug.LogError("currentAdsHelper is null due to all ads failed to load");
             return;
         }
-        currentAdsHelper.ShowInterstitial(placeType, onAdClosed);
+        showingInterstitial = true;
+        currentAdsHelper.ShowInterstitial(placeType, (success) =>
+        {
+            Instance.showingInterstitial = false;
+            onAdClosed?.Invoke(success);
+        });
         timeLastShowInterstitial = time;
         /*switch (CurrentAdNetwork)
         {
@@ -479,6 +490,8 @@ public partial class AdsManager : MonoBehaviour
         }
         else
         {
+            timeLastShowRewardAd = time;
+            showingRewardAd = true;
             WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
 
             List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
@@ -525,6 +538,7 @@ public partial class AdsManager : MonoBehaviour
         }*/
         onFinish(rewardResult);
         ToggleLoading(false);
+        showingRewardAd = false;
         if (rewardResult.type == RewardResult.Type.LoadFailed || rewardResult.type == RewardResult.Type.Loading)
         {
             if (rewardResult.type == RewardResult.Type.LoadFailed)
@@ -666,9 +680,12 @@ public partial class AdsManager : MonoBehaviour
         onAdLoadFailed?.Invoke(msg, placementType);
     }
 
+    public float GetTimeSinceLastShowInterstitial() { return time - timeLastShowInterstitial; }
+    public float GetTimeSinceLastShowRewardAd() { return time - timeLastShowRewardAd; }
+
     public bool HasEnoughTimeBetweenInterstitial()
     {
-        bool enoughTimeHasPassed = (time - timeLastShowInterstitial) >= TIME_BETWEEN_ADS;
+        bool enoughTimeHasPassed = GetTimeSinceLastShowInterstitial() >= TIME_BETWEEN_ADS;
         //.Log($"time between inter {time - timeLastShowInterstitial}");
         return enoughTimeHasPassed;
     }
