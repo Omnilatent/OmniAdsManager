@@ -1,5 +1,6 @@
 {
     "name": "Omnilatent.AdsManager",
+    "rootNamespace": "",
     "references": [
         "SS.View",
         "GoogleMobileAds",
@@ -8,7 +9,8 @@
         "UnityEngine.Advertisements",
         "Omnilatent.Firebase",
         "IronSource",
-        "MaxSdk.Scripts"
+        "MaxSdk.Scripts",
+        "Omnilatent.AdjustUnity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
