@@ -372,6 +372,7 @@ public partial class AdsManager : MonoBehaviour
 
     public void HideBanner()
     {
+        if (!Initialized) return;
         foreach (var item in adsNetworkHelpers)
         {
             //Debug.Log("hiding banner " + item.ToString());
