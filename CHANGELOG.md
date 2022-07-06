@@ -1,3 +1,8 @@
+## 2.5.4
+- Remember time last show reward ad. Add bool field to check if it's showing interstitial & reward ad.
+- Add network security config file as a package. Reason: MAX Mediation for Facebook in Android API 31 require this file.
+- Add reference to Omnilatent.AdjustUnity to asmdef.
+
 ## 2.5.3
 - Add onAdLoaded field to BannerAdObject.
 
