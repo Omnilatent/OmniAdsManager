@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
-namespace Omnilatent.AdsMediation
+namespace Omnilatent.AdsMediation.Editor
 {
     [InitializeOnLoad]
     public static class SetupAdsNetwork
@@ -205,6 +205,7 @@ namespace Omnilatent.AdsMediation
             AssetDatabase.ImportPackage(path, true);
         }
 
+        #region Ad Networks Extra Setup
         [MenuItem("Tools/Omnilatent/Ads Manager/Import AudienceNetwork Assembly Fix")]
         public static void ImportAudienceNetworkAssemblyFix()
         {
@@ -234,6 +235,7 @@ namespace Omnilatent.AdsMediation
             string path = GetPackagePath("Assets/Omnilatent/MAXAdsManager/MAXAdsWrapperExtra.unitypackage", "MAXAdsWrapperExtra");
             AssetDatabase.ImportPackage(path, true);
         }
+        #endregion
 
         [MenuItem("Tools/Omnilatent/Ads Manager/Import network_security_config")]
         public static void ImportNetworkSecurityConfig()
@@ -260,6 +262,13 @@ namespace Omnilatent.AdsMediation
                 }
             }
             return path;
+        }
+
+        //Setting is not implemented yet
+        //[MenuItem("Tools/Omnilatent/Ads Manager/Setting")]
+        public static void OpenInspectorSetting()
+        {
+            Selection.activeObject = AdsMediationSetting.LoadInstance();
         }
     }
 }

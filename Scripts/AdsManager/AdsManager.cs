@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Omnilatent.AdsMediation;
+using System;
 
 public struct RewardResult
 {
@@ -31,6 +32,12 @@ public class RemoteConfigAdsNetworkData
 
 public partial class AdsManager : MonoBehaviour
 {
+    [SerializeField] bool initializeAutomatically = true;
+    private static bool initialized = false;
+    public static bool Initialized { get => initialized; }
+
+    public static Action<bool> OnInitializedEvent;
+
     public delegate void BoolDelegate(bool reward);
 
     public delegate void InterstitialDelegate(bool isSuccess = false);
@@ -121,9 +128,20 @@ public partial class AdsManager : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+            return;
         }
         DontDestroyOnLoad(gameObject);
 
+        if (initializeAutomatically)
+        {
+            Initialize();
+        }
+    }
+
+    public void Initialize()
+    {
+        if (initialized)
+            return;
 #if !DISABLE_SSCENE
         onToggleLoading = SS.View.Manager.LoadingAnimation;
 #endif
@@ -142,6 +160,8 @@ public partial class AdsManager : MonoBehaviour
         _MAXHelper = AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.AppLovinMAX, AdWrapperFinder.InitMAXHelper());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
+        initialized = true;
+        OnInitializedEvent?.Invoke(initialized);
     }
 
     #region Deprecated codes
@@ -701,6 +721,11 @@ public partial class AdsManager : MonoBehaviour
     /// </summary>
     public bool DoNotShowAds(AdPlacement.Type placementType)
     {
+        if (!Initialized)
+        {
+            Debug.LogError("AdsManager has not been initialized.");
+            return true;
+        }
         bool isNoAds = false;
         if (noAds != null)
         {
