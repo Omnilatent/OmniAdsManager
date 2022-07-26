@@ -1,3 +1,7 @@
+## 2.6.1
+- Update handle ads manager message to initialize admob callback on ads manager init event.
+- Add static field for inter ad load, load failed, closed events & reward ad closed event.
+
 ## 2.6.0
 New:
 
