@@ -41,8 +41,15 @@ public partial class AdsManager : MonoBehaviour
     public delegate void BoolDelegate(bool reward);
 
     public delegate void InterstitialDelegate(bool isSuccess = false);
-    public InterstitialDelegate interstitialFinishDelegate;
-    public InterstitialDelegate interstitialLoadedDelegate;
+
+    public static Action<AdPlacement.Type> OnInterAdLoadedEvent;
+    public static Action<AdPlacement.Type, string> OnInterAdLoadFailedEvent;
+    /// <summary>
+    /// Called on inter ad closed. First param is ad placement type, second param is true if ad was displayed successfully.
+    /// </summary>
+    public static Action<AdPlacement.Type, bool> OnInterAdClosedEvent;
+
+    public static Action<AdPlacement.Type, RewardResult> OnRewardAdClosedEvent;
 
     public static CustomMediation.AD_NETWORK CurrentAdNetwork { get { return CustomMediation.CurrentAdNetwork; } set { CustomMediation.CurrentAdNetwork = value; } }
 
@@ -402,6 +409,7 @@ public partial class AdsManager : MonoBehaviour
         {
             Instance.showingInterstitial = false;
             onAdClosed?.Invoke(success);
+            OnInterAdClosedEvent?.Invoke(placeType, success);
         });
         timeLastShowInterstitial = time;
         /*switch (CurrentAdNetwork)
@@ -425,8 +433,10 @@ public partial class AdsManager : MonoBehaviour
         }
         if (isLoadingInterstitial)
         {
-            Debug.LogWarning("Previous interstitial request is still loading");
+            string message = "Previous interstitial request is still loading";
+            Debug.LogWarning(message);
             onAdLoaded?.Invoke(false); //added this so game can continue even with interstitial not finished loading
+            OnInterAdLoadFailedEvent?.Invoke(placementType, message);
             return;
         }
         if (showLoading)
@@ -473,6 +483,11 @@ public partial class AdsManager : MonoBehaviour
         }
         //.Log($"AdsManager: CoRequestInterstitialNoShow done {isSuccess}");
         onAdLoaded?.Invoke(isSuccess);
+        if (isSuccess)
+        {
+            OnInterAdLoadedEvent?.Invoke(placementType);
+        }
+        else OnInterAdLoadFailedEvent?.Invoke(placementType, "All ad networks load failed");
         isLoadingInterstitial = false;
         if (showLoading)
             ToggleLoading(false);
@@ -558,6 +573,7 @@ public partial class AdsManager : MonoBehaviour
             if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
         }*/
         onFinish(rewardResult);
+        OnRewardAdClosedEvent?.Invoke(placementType, rewardResult);
         ToggleLoading(false);
         showingRewardAd = false;
         if (rewardResult.type == RewardResult.Type.LoadFailed || rewardResult.type == RewardResult.Type.Loading)
