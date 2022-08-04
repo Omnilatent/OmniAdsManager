@@ -361,7 +361,17 @@ public partial class AdsManager : MonoBehaviour
             var adsHelper = GetAdsNetworkHelper(adPriority[i]);
             if (adsHelper == null) continue;
             adsHelper.ShowBanner(placementType, bannerTransform,
-                (success) => { checkAdNetworkDone = true; isSuccess = success; onAdLoaded?.Invoke(success); });
+                (success) =>
+                {
+                    checkAdNetworkDone = true;
+                    isSuccess = success;
+                    onAdLoaded?.Invoke(success);
+                    if (!success)
+                    {
+                        currentShowingBanner = null;
+                        currentShowingBannerTransform = null;
+                    }
+                });
             while (!checkAdNetworkDone)
             {
                 yield return checkInterval;
