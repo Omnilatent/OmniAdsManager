@@ -517,7 +517,7 @@ public partial class AdsManager : MonoBehaviour
                 {
                     ShowInterstitial(placementType, (showSuccess) =>
                     {
-                        requestOption.onAdClose?.Invoke(showSuccess);
+                        requestOption.onAdClosed?.Invoke(showSuccess);
                         if (showSuccess)
                         {
                             RequestInterstitialNoShow(placementType, showLoading: false);
@@ -529,7 +529,7 @@ public partial class AdsManager : MonoBehaviour
         else
         {
             requestOption.onAdLoaded?.Invoke(false);
-            requestOption.onAdClose?.Invoke(false);
+            requestOption.onAdClosed?.Invoke(false);
         }
     }
 

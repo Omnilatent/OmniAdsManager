@@ -8,17 +8,17 @@ namespace Omnilatent.AdsMediation
     public struct AdRequestOption
     {
         public AdsManager.InterstitialDelegate onAdLoaded;
-        public AdsManager.InterstitialDelegate onAdClose;
+        public AdsManager.InterstitialDelegate onAdClosed;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="onAdLoaded">Callback when ad is loaded</param>
-        /// <param name="onAdClose">Callback when ad is closed</param>
-        public AdRequestOption(AdsManager.InterstitialDelegate onAdLoaded = null, AdsManager.InterstitialDelegate onAdClose = null)
+        /// <param name="onAdClosed">Callback when ad is closed</param>
+        public AdRequestOption(AdsManager.InterstitialDelegate onAdLoaded = null, AdsManager.InterstitialDelegate onAdClosed = null)
         {
             this.onAdLoaded = onAdLoaded;
-            this.onAdClose = onAdClose;
+            this.onAdClosed = onAdClosed;
         }
     }
 }
