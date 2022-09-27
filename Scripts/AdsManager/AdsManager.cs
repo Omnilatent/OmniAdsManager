@@ -503,6 +503,36 @@ public partial class AdsManager : MonoBehaviour
             ToggleLoading(false);
     }
 
+    /// <summary>
+    /// Check if enough time has passed between interstitial, request and show ad, and preload the next ad
+    /// </summary>
+    public void RequestAndShowInterstitial(AdPlacement.Type placementType, AdRequestOption requestOption)
+    {
+        if (HasEnoughTimeBetweenInterstitial())
+        {
+            RequestInterstitialNoShow(placementType, (loadSuccess) =>
+            {
+                requestOption.onAdLoaded?.Invoke(loadSuccess);
+                if (loadSuccess)
+                {
+                    ShowInterstitial(placementType, (showSuccess) =>
+                    {
+                        requestOption.onAdClose?.Invoke(showSuccess);
+                        if (showSuccess)
+                        {
+                            RequestInterstitialNoShow(placementType, showLoading: false);
+                        }
+                    });
+                }
+            }, true);
+        }
+        else
+        {
+            requestOption.onAdLoaded?.Invoke(false);
+            requestOption.onAdClose?.Invoke(false);
+        }
+    }
+
     [System.Obsolete("Use Reward(AdPlacement.Type, RewardDelegate) instead.")]
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
