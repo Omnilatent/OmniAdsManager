@@ -524,6 +524,7 @@ public partial class AdsManager : MonoBehaviour
                         }
                     });
                 }
+                else { requestOption.onAdClosed?.Invoke(false); }
             }, true);
         }
         else
