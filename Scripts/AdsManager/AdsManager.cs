@@ -409,9 +409,15 @@ public partial class AdsManager : MonoBehaviour
     /// <param name="onAdClosed">Warning: not completely functional yet, only Admob will call onAdClosed when the interstitial is closed</param>
     public void ShowInterstitial(AdPlacement.Type placeType, InterstitialDelegate onAdClosed = null)
     {
+        if (DoNotShowAds(placeType))
+        {
+            onAdClosed?.Invoke(false);
+            return;
+        }
         if (currentAdsHelper == null)
         {
             Debug.LogError("currentAdsHelper is null due to all ads failed to load");
+            onAdClosed?.Invoke(false);
             return;
         }
         showingInterstitial = true;
