@@ -1,3 +1,13 @@
+## 2.6.2
+News:
+- New function: RequestAndShowInterstitial. Check if enough time has passed between interstitial, request and show ad, and preload the next ad. Goal: simplify code where user wants to do all of those things.
+
+Fixes:
+- Set current showing banner to null on banner ad load fail so next show banner call can attempt to load banner again.
+
+Changes:
+- Move unity main thread dispatcher back to Omni Ads Manager because MAX & Iron Source Ad Wrapper depend on it. Requires Admob Manager 1.5.4
+
 ## 2.6.1
 - Update handle ads manager message to initialize admob callback on ads manager init event.
 - Add static field for inter ad load, load failed, closed events & reward ad closed event.
