@@ -702,12 +702,12 @@ public partial class AdsManager : MonoBehaviour
             onAdLoaded?.Invoke(false);
             return;
         }
-        if (isLoadingAppOpenAd)
+        /*if (isLoadingAppOpenAd)
         {
             Debug.LogWarning("Previous app open ad request is still loading");
             onAdLoaded?.Invoke(false); //added this so game can continue even with interstitial not finished loading
             return;
-        }
+        }*/
         if (showLoading)
             ToggleLoading(true);
         StartCoroutine(CoRequestAppOpenAd(placementType, onAdLoaded, showLoading));
