@@ -1,3 +1,8 @@
+## 2.6.3
+Changes:
+- Show interstitial: check DoNotShowAds before showing, call onAdClosed if all ads failed to load.
+- Ad Request Option: add show loading variable.
+
 ## 2.6.2
 News:
 - New function: RequestAndShowInterstitial. Check if enough time has passed between interstitial, request and show ad, and preload the next ad. Goal: simplify code where user wants to do all of those things.
