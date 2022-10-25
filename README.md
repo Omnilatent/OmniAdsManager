@@ -3,8 +3,8 @@
 
 If you use Remote config features:
 - Omni Firebase Manager
-- Firebase Remote Config SDK 8.6.2
-- Firebase Installation SDK 8.6.2
+- Firebase Remote Config SDK 8.6.2+
+- Firebase Installation SDK 8.6.2+
 
 If you do not have Firebase in your project, add DISABLE_FIREBASE in Scripting Define Symbols.
 
