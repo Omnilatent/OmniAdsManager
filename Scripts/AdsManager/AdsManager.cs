@@ -106,6 +106,11 @@ public partial class AdsManager : MonoBehaviour
     public const string RMCF_ADS_PRIORITY = "ads_priority";
 
     static System.Action<bool> onToggleLoading;
+    /// <summary>
+    /// Return true when an interstitial or reward ad's loading overlay is being displayed
+    /// </summary>
+    public static bool LoadingActive { get => loadingActive; }
+    private static bool loadingActive;
 
     bool showingInterstitial;
     bool showingRewardAd;
@@ -817,6 +822,7 @@ public partial class AdsManager : MonoBehaviour
 
     static void ToggleLoading(bool active)
     {
+        loadingActive = active;
         if (onToggleLoading == null)
         {
             Debug.LogWarning($"Loading overlay should be toggled {active}. Assign a function to this Action or use SS library");
