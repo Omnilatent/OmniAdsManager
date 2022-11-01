@@ -82,4 +82,28 @@ namespace Omnilatent.AdsMediation
             this.onAdLoaded = onAdLoaded;
         }
     }
+
+    public class AppOpenAdObject : AdObject
+    {
+        public RewardDelegate onAdLoaded;
+        public AdsManager.InterstitialDelegate onAdClosed;
+
+        public AppOpenAdObject()
+        {
+        }
+
+        public AppOpenAdObject(AdPlacement.Type adPlacementType, RewardDelegate onAdLoaded)
+        {
+            this.AdPlacementType = adPlacementType;
+            this.onAdLoaded = onAdLoaded;
+        }
+
+        public bool CanShow
+        {
+            get
+            {
+                return State == AdObjectState.Ready;
+            }
+        }
+    }
 }
