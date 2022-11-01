@@ -718,15 +718,20 @@ public partial class AdsManager : MonoBehaviour
         isLoadingAppOpenAd = true;
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
-        var adsHelper = GetAdsNetworkHelper(CustomMediation.AD_NETWORK.GoogleAdmob);
-        bool checkAdNetworkDone = false;
-        if (adsHelper != null)
+
+        List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
+        for (int i = 0; i < adPriority.Count; i++)
         {
-            adsHelper.RequestAppOpenAd(placementType,
-                        (result) => { checkAdNetworkDone = true; isSuccess = result.type == RewardResult.Type.Finished; });
-            while (!checkAdNetworkDone)
+            var adsHelper = GetAdsNetworkHelper(adPriority[i]);
+            bool checkAdNetworkDone = false;
+            if (adsHelper != null)
             {
-                yield return checkInterval;
+                adsHelper.RequestAppOpenAd(placementType,
+                            (result) => { checkAdNetworkDone = true; isSuccess = result.type == RewardResult.Type.Finished; });
+                while (!checkAdNetworkDone)
+                {
+                    yield return checkInterval;
+                }
             }
         }
 
@@ -744,16 +749,21 @@ public partial class AdsManager : MonoBehaviour
             onAdClosed?.Invoke(false);
             return;
         }
-        var adsHelper = GetAdsNetworkHelper(CustomMediation.AD_NETWORK.GoogleAdmob);
-        if (adsHelper != null)
+
+        List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
+        for (int i = 0; i < adPriority.Count; i++)
         {
-            adsHelper.ShowAppOpenAd(placementType, onAdClosed);
-            timeLastShowAppOpenAd = time;
-        }
-        else
-        {
-            Debug.LogError("Show Open Ad failed. No Admob Helper.");
-            onAdClosed?.Invoke(false);
+            var adsHelper = GetAdsNetworkHelper(adPriority[i]);
+            if (adsHelper != null)
+            {
+                adsHelper.ShowAppOpenAd(placementType, onAdClosed);
+                timeLastShowAppOpenAd = time;
+            }
+            else
+            {
+                Debug.LogError("Show Open Ad failed. No Admob Helper.");
+                onAdClosed?.Invoke(false);
+            }
         }
     }
 
