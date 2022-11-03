@@ -114,6 +114,7 @@ public partial class AdsManager : MonoBehaviour
 
     bool showingInterstitial;
     bool showingRewardAd;
+    bool showingAppOpenAd;
     public bool ShowingInterstitial { get => showingInterstitial; }
     public bool ShowingRewardAd { get => showingRewardAd; }
 
@@ -744,7 +745,7 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
     {
-        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd())
+        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd() || showingAppOpenAd)
         {
             onAdClosed?.Invoke(false);
             return;
@@ -756,7 +757,12 @@ public partial class AdsManager : MonoBehaviour
             var adsHelper = GetAdsNetworkHelper(adPriority[i]);
             if (adsHelper != null)
             {
-                adsHelper.ShowAppOpenAd(placementType, onAdClosed);
+                showingAppOpenAd = true;
+                adsHelper.ShowAppOpenAd(placementType, (success) =>
+                {
+                    showingAppOpenAd = false;
+                    onAdClosed?.Invoke(success);
+                });
                 timeLastShowAppOpenAd = time;
             }
             else
