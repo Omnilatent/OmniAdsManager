@@ -734,6 +734,7 @@ public partial class AdsManager : MonoBehaviour
                     yield return checkInterval;
                 }
             }
+            if (isSuccess) break;
         }
 
         //.Log($"AdsManager: CoRequestInterstitialNoShow done {isSuccess}");
