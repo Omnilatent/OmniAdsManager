@@ -62,6 +62,7 @@ public partial class AdsManager : MonoBehaviour
     List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentRewardInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
+    IAdsNetworkHelper currentAppOpenAdsHelper;
 
     //List<CustomMediation.AD_NETWORK> showingBanners = new List<CustomMediation.AD_NETWORK>(); //store list of banners that was showed
 
@@ -734,7 +735,11 @@ public partial class AdsManager : MonoBehaviour
                     yield return checkInterval;
                 }
             }
-            if (isSuccess) break;
+            if (isSuccess)
+            {
+                currentAppOpenAdsHelper = adsHelper;
+                break;
+            }
         }
 
         //.Log($"AdsManager: CoRequestInterstitialNoShow done {isSuccess}");
@@ -746,20 +751,20 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
     {
-        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd() || showingAppOpenAd)
+        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd() || showingAppOpenAd || showingRewardAd || showingInterstitial)
         {
             onAdClosed?.Invoke(false);
             return;
         }
 
         List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
-        for (int i = 0; i < adPriority.Count; i++)
+        //for (int i = 0; i < adPriority.Count; i++)
         {
-            var adsHelper = GetAdsNetworkHelper(adPriority[i]);
-            if (adsHelper != null)
+            //var adsHelper = GetAdsNetworkHelper(adPriority[i]);
+            if (currentAppOpenAdsHelper != null)
             {
                 showingAppOpenAd = true;
-                adsHelper.ShowAppOpenAd(placementType, (success) =>
+                currentAppOpenAdsHelper.ShowAppOpenAd(placementType, (success) =>
                 {
                     showingAppOpenAd = false;
                     onAdClosed?.Invoke(success);
