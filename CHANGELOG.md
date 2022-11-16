@@ -1,3 +1,18 @@
+## 2.7.0
+
+News:
+- Support showing App Open Ads of more ad networks other than Admob.
+- Add loadingActive field and property to return whether an ad loading overlay is being displayed.
+- Allow multiple simultaneous App open ad requests since Admob manager supports it.
+- Add AppOpenAdObject.
+
+Fixes:
+- Check if app open ad is showing before showing another app open ad to prevent app open ad stacking on each other when using more than 1 ad networks.
+
+Changes:
+- Update extra files: ShowAdOnAppResume will check if Ads manager is loading before showing ad; Handle Ads Manager Message will check Ads Manager initialized before adding Admob callback.
+- Update extra files: Improve get admob ID make it easier to add ad placement.
+
 ## 2.6.3
 Changes:
 - Show interstitial: check DoNotShowAds before showing, call onAdClosed if all ads failed to load.
