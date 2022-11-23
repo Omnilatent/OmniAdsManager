@@ -31,17 +31,14 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
 
     [SerializeField] bool showFirebaseInstanceId = false;
     static bool? initSuccess;
-    static bool InitSuccessValue
+    public static bool HasInitialized(bool logError = true)
     {
-        get
+        bool returnVal = initSuccess.HasValue ? initSuccess.Value : false;
+        if (!returnVal && logError)
         {
-            bool returnVal = initSuccess.HasValue ? initSuccess.Value : false;
-            if (!returnVal)
-            {
-                Debug.Log("Firebase Remote: init not success");
-            }
-            return returnVal;
+            Debug.Log("Firebase Remote has not initialized successfully.");
         }
+        return returnVal;
     }
 
     void OnFirebaseReady(object sender, bool isReady)
@@ -81,9 +78,9 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     public static int GetInt(string key, int defaultValue = 0)
     {
         //FetchData();
-        //if (!InitSuccessValue) Debug.Log("Firebase Remote: init not success");
+        //if (!HasInitialized()) Debug.Log("Firebase Remote: init not success");
         ConfigValue config = GetConfig(key);
-        if (InitSuccessValue && !string.IsNullOrEmpty(config.StringValue))
+        if (HasInitialized() && !string.IsNullOrEmpty(config.StringValue))
             return (int)config.DoubleValue;
         else return defaultValue;
     }
@@ -91,19 +88,19 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     public static float GetFloat(string key, float defaultValue = 0)
     {
         ConfigValue config = GetConfig(key);
-        if (InitSuccessValue && !string.IsNullOrEmpty(config.StringValue))
+        if (HasInitialized() && !string.IsNullOrEmpty(config.StringValue))
             return (float)config.DoubleValue;
         else return defaultValue;
     }
 
     public static bool GetBool(string key, bool defaultValue)
     {
-        return InitSuccessValue ? GetConfig(key).BooleanValue : defaultValue;
+        return HasInitialized() ? GetConfig(key).BooleanValue : defaultValue;
     }
 
     public static string GetString(string key, string defaultValue)
     {
-        return InitSuccessValue ? GetConfig(key).StringValue : defaultValue;
+        return HasInitialized() ? GetConfig(key).StringValue : defaultValue;
     }
 
     static ConfigValue GetConfig(string key)
@@ -232,7 +229,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     /// </summary>
     public static void CheckAndHandleFetchConfig(System.EventHandler<bool> callback)
     {
-        if (initSuccess.HasValue) callback(null, InitSuccessValue);
+        if (initSuccess.HasValue) callback(null, HasInitialized());
         else onFetchComplete += callback;
     }
 
