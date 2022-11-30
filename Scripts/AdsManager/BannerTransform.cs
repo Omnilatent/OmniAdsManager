@@ -20,6 +20,7 @@ namespace Omnilatent.AdsMediation
     public class BannerTransform
     {
         public AdPosition adPosition = AdPosition.Bottom;
+        public object adSizeData;
 
         public static BannerTransform defaultValue = new BannerTransform();
 
