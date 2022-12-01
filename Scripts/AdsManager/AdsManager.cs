@@ -106,7 +106,7 @@ public partial class AdsManager : MonoBehaviour
 
     public const string RMCF_ADS_PRIORITY = "ads_priority";
 
-    static System.Action<bool> onToggleLoading;
+    public static System.Action<bool> onToggleLoading;
     /// <summary>
     /// Return true when an interstitial or reward ad's loading overlay is being displayed
     /// </summary>
