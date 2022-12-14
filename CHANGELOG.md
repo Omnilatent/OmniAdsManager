@@ -1,3 +1,12 @@
+## 2.7.1
+
+News:
+- Banner transform: add field adSizeData (object) for Admob custom ad size
+
+Changes:
+- Firebase Remote Config Helper: Change property InitSuccessValue to method HasInitialized(), make that method public to allow user to check if Firebase Remote Config has initialized. By default, it logs error if Firebase has not initialized.
+- Make AdsManager.onToggleLoading public field.
+
 ## 2.7.0
 
 News:
