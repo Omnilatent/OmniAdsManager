@@ -124,6 +124,7 @@ public partial class AdsManager : MonoBehaviour
         }
     }
     public bool ShowingRewardAd { get => showingRewardAd; }
+    public bool ShowingAppOpenAd { get => showingAppOpenAd; }
 
     public static AdsManager Instance
     {
