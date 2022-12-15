@@ -13,6 +13,8 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
 {
 #if !DISABLE_FIREBASE
     public static System.EventHandler<bool> onFetchComplete;
+    string firebaseInstanceId;
+
     public static FirebaseRemoteConfigHelper instance;
     private void Awake()
     {
@@ -49,7 +51,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
 
     async void Init()
     {
-        string id = await GetFirebaseInstanceId();
+        string id = await GetFirebaseInstallationIdAsync();
         if (Debug.isDebugBuild && showFirebaseInstanceId)
         {
             TextEditor te = new TextEditor();
@@ -109,7 +111,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
     }
 
     //Since Firebase 7.2.0, get Firebase Installation Auth Token instead
-    async Task<string> GetFirebaseInstanceId()
+    async Task<string> GetFirebaseInstallationIdAsync()
     {
         string result = null;
         if (FirebaseManager.FirebaseReady)
@@ -131,7 +133,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
                     if (!(task.IsCanceled || task.IsFaulted) && task.IsCompleted)
                     {
                         UnityEngine.Debug.Log(System.String.Format("Installations token {0}", task.Result));
-                        result = task.Result;
+                        firebaseInstanceId = result = task.Result;
                     }
                 });
 
@@ -146,6 +148,12 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
             });*/
         }
         return result;
+    }
+
+    public string GetFirebaseInstallationId()
+    {
+        HasInitialized();
+        return firebaseInstanceId;
     }
 
     static void FetchData()
