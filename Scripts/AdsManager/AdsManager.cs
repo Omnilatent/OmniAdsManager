@@ -116,7 +116,13 @@ public partial class AdsManager : MonoBehaviour
     bool showingInterstitial;
     bool showingRewardAd;
     bool showingAppOpenAd;
-    public bool ShowingInterstitial { get => showingInterstitial; }
+    public bool ShowingInterstitial
+    {
+        get => showingInterstitial; private set
+        {
+            showingInterstitial = value;
+        }
+    }
     public bool ShowingRewardAd { get => showingRewardAd; }
 
     public static AdsManager Instance
@@ -427,13 +433,13 @@ public partial class AdsManager : MonoBehaviour
             onAdClosed?.Invoke(false);
             return;
         }
-        showingInterstitial = true;
-        currentAdsHelper.ShowInterstitial(placeType, (success) =>
+        ShowingInterstitial = true;
+        currentAdsHelper.ShowInterstitial(placeType, (InterstitialDelegate)((success) =>
         {
-            Instance.showingInterstitial = false;
+            Instance.ShowingInterstitial = false;
             onAdClosed?.Invoke(success);
             OnInterAdClosedEvent?.Invoke(placeType, success);
-        });
+        }));
         timeLastShowInterstitial = time;
         /*switch (CurrentAdNetwork)
         {
@@ -751,7 +757,9 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
     {
-        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd() || showingAppOpenAd || showingRewardAd || showingInterstitial)
+        //.Log($"showingAppOpenAd:{showingAppOpenAd}, showingRewardAd:{showingRewardAd}, showingInterstitial:{ShowingInterstitial}, LoadingActive:{LoadingActive}");
+        if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd() || showingAppOpenAd || showingRewardAd || ShowingInterstitial
+            || LoadingActive) //to prevent app open ad to show behind interstitial when an interstitial is loading
         {
             onAdClosed?.Invoke(false);
             return;
