@@ -1,5 +1,14 @@
-## 2.7.1
+## 2.7.2
+News:
+- Add public method to get Firebase installation ID.
+- App open ad: do not show ad if loading is active to prevent app open ad showing behind an interstitial ad.
+- Add public property to get showingAppOpenAd.
+- Automatically add scripting define symbol OMNILATENT_ADS_MANAGER to project. Update extra package: add component Unity main thread dispatcher to Ads manager prefab.
 
+Fixes:
+- Update extra files: update ShowAdOnAppResume to fix issue with app open ad overlapping with interstitial/rewarded ad.
+
+## 2.7.1
 News:
 - Banner transform: add field adSizeData (object) for Admob custom ad size
 
@@ -8,7 +17,6 @@ Changes:
 - Make AdsManager.onToggleLoading public field.
 
 ## 2.7.0
-
 News:
 - Support showing App Open Ads of more ad networks other than Admob.
 - Add loadingActive field and property to return whether an ad loading overlay is being displayed.
