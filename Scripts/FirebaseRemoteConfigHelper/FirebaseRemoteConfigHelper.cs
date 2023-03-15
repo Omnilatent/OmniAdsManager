@@ -45,8 +45,12 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
 
     void OnFirebaseReady(object sender, bool isReady)
     {
-        initSuccess = isReady;
+        // initSuccess = isReady; //change: assign initSuccess to after fetched remote config
         if (isReady) Init();
+        else
+        {
+            initSuccess = false;
+        }
     }
 
     async void Init()
@@ -64,7 +68,7 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
         {
             Debug.Log($"Firebase ready: {FirebaseManager.FirebaseReady}");
             SetDefaultValues();
-            initSuccess = true;
+            // initSuccess = true;
         }
 
         if (Debug.isDebugBuild)
@@ -166,11 +170,13 @@ public class FirebaseRemoteConfigHelper : MonoBehaviour
                 {
                     Debug.Log("Fetch async done");
                     //FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
+                    initSuccess = true;
                     onFetchComplete?.Invoke(null, true);
                 }
                 else
                 {
                     Debug.Log("Fetch async failed. Either because Firebase fetch failed or an exception was thrown in callbacks");
+                    initSuccess = false;
                     onFetchComplete?.Invoke(null, false);
                 }
             });
