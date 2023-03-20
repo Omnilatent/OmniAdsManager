@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 #if !OMNILATENT_ADS_MANAGER
-namespace Omnilatent.AdsManager.Editor
+namespace Omnilatent.AdsMediation.Editor
 {
     public static class ScriptingDefineSymbolAdsManager
     {
