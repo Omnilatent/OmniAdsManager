@@ -9,6 +9,7 @@ public class RemoteConfigAdsPlacementData
     public bool show;
     public List<int> priority;
     List<CustomMediation.AD_NETWORK> adNetworkPriority;
+
     public List<CustomMediation.AD_NETWORK> GetAdNetworkPriority()
     {
         if (adNetworkPriority == null)
@@ -19,6 +20,7 @@ public class RemoteConfigAdsPlacementData
                 adNetworkPriority.Add((CustomMediation.AD_NETWORK)priority[i]);
             }
         }
+
         return adNetworkPriority;
     }
 
@@ -35,12 +37,26 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
 {
     [Tooltip("Remote Config key set on Firebase")]
     public string adsPlacementConfigKey = "ads_placement_config_2";
+
     Dictionary<string, RemoteConfigAdsPlacementData> configData;
     //public const string RMCF_ADS_PLACEMENT_CONFIG = "ads_placement_config_2";
 
     public static RemoteConfigAdsPlacement instance;
     public static Action<bool> OnRemoteConfigFetchCompleted;
-    
+
+    static bool? initSuccess;
+
+    public static bool HasInitialized(bool logError = true)
+    {
+        bool returnVal = initSuccess.HasValue ? initSuccess.Value : false;
+        if (!returnVal && logError)
+        {
+            Debug.Log("Remote config for ads manager has not initialized successfully.");
+        }
+
+        return returnVal;
+    }
+
     private void Awake()
     {
         if (instance == null)
@@ -104,6 +120,8 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         {
             Debug.LogError("RemoteConfigAdsPlacement: ads_placement_config is null");
         }
+
+        initSuccess = isSuccess;
         OnRemoteConfigFetchCompleted?.Invoke(isSuccess);
     }
 #endif
@@ -133,7 +151,17 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         {
             return config.GetAdNetworkPriority();
         }
-        else { Debug.LogError($"Config for placement {placementType} not found. Check Firebase remote config."); }
+        else
+        {
+            Debug.LogError($"Config for placement {placementType} not found. Check Firebase remote config.");
+        }
+
         return null;
+    }
+
+    public static void CheckAndHandleFetchConfig(Action<bool> callback)
+    {
+        if (initSuccess.HasValue) callback(HasInitialized());
+        else OnRemoteConfigFetchCompleted += callback;
     }
 }
