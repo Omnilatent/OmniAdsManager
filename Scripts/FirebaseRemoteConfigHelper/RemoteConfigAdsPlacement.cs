@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +39,8 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
     //public const string RMCF_ADS_PLACEMENT_CONFIG = "ads_placement_config_2";
 
     public static RemoteConfigAdsPlacement instance;
+    public static Action<bool> OnRemoteConfigFetchCompleted;
+    
     private void Awake()
     {
         if (instance == null)
@@ -101,6 +104,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
         {
             Debug.LogError("RemoteConfigAdsPlacement: ads_placement_config is null");
         }
+        OnRemoteConfigFetchCompleted?.Invoke(isSuccess);
     }
 #endif
 
