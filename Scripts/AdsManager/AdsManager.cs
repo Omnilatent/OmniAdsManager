@@ -50,7 +50,10 @@ public partial class AdsManager : MonoBehaviour
     public static Action<AdPlacement.Type, bool> OnInterAdClosedEvent;
 
     public static Action<AdPlacement.Type, RewardResult> OnRewardAdClosedEvent;
-
+    
+    public static Action<AdPlacement.Type> OnAppOpenAdOpened;
+    public static Action<AdPlacement.Type> OnAppOpenAdClosed;
+    
     public static CustomMediation.AD_NETWORK CurrentAdNetwork { get { return CustomMediation.CurrentAdNetwork; } set { CustomMediation.CurrentAdNetwork = value; } }
 
     IAdsNetworkHelper _FANHelper;
@@ -763,6 +766,7 @@ public partial class AdsManager : MonoBehaviour
             || LoadingActive) //to prevent app open ad to show behind interstitial when an interstitial is loading
         {
             onAdClosed?.Invoke(false);
+            OnAppOpenAdClosed?.Invoke(placementType);
             return;
         }
 
@@ -773,10 +777,12 @@ public partial class AdsManager : MonoBehaviour
             if (currentAppOpenAdsHelper != null)
             {
                 showingAppOpenAd = true;
+                OnAppOpenAdOpened?.Invoke(placementType);
                 currentAppOpenAdsHelper.ShowAppOpenAd(placementType, (success) =>
                 {
                     showingAppOpenAd = false;
                     onAdClosed?.Invoke(success);
+                    OnAppOpenAdClosed?.Invoke(placementType);
                 });
                 timeLastShowAppOpenAd = time;
             }
@@ -784,6 +790,7 @@ public partial class AdsManager : MonoBehaviour
             {
                 Debug.LogError("Show Open Ad failed. No Admob Helper.");
                 onAdClosed?.Invoke(false);
+                OnAppOpenAdClosed?.Invoke(placementType);
             }
         }
     }
