@@ -1,3 +1,15 @@
+## 2.7.3
+News:
+- Add callback on app open ad opened and closed.
+- Add callback when remote config fetch complete.
+- Update extra files for admob 8.x, separate admob callback handle to a separate class.
+- Update extra file: Show ad on app resume has method to allow setting ad placement.
+
+Changes:
+- On toggle loading SS load: use addiction instead of overwriting.
+- Scripting define symbol manager: fix rename Omnilatent.AdsManager namespace to Omnilatent.AdsMediation.
+- Firebase remote config: change order of assigning Firebase remote config's initSuccess.
+
 ## 2.7.2
 News:
 - Add public method to get Firebase installation ID.
