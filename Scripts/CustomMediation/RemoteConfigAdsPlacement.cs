@@ -72,12 +72,12 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
 
     void Start()
     {
-#if !DISABLE_FIREBASE
+#if OMNILATENT_FIREBASE_MANAGER
         FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig);
 #endif
     }
 
-#if !DISABLE_FIREBASE
+#if OMNILATENT_FIREBASE_MANAGER
     void SetupRemoteConfig(object sender, bool isSuccess)
     {
         string configJsonData = FirebaseRemoteConfigHelper.GetString(adsPlacementConfigKey, null);
