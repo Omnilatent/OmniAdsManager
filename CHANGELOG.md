@@ -1,3 +1,9 @@
+## 2.8.0
+Changes:
+- Moved Firebase Remote Config Helper class to Omni Firebase Manager package.
+
+Require Omni Firebase Manager 1.3.0 from here on if you want to use Firebase Remote Config to control Ads.
+
 ## 2.7.3
 News:
 - Add callback on app open ad opened and closed.
