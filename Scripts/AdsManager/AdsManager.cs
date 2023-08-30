@@ -166,9 +166,9 @@ public partial class AdsManager : MonoBehaviour
     {
         if (initialized)
             return;
-#if !DISABLE_SSCENE
+/*#if !DISABLE_SSCENE
         onToggleLoading += SS.View.Manager.LoadingAnimation;
-#endif
+#endif*/
 
         noAds += HasNoInternet;
 
