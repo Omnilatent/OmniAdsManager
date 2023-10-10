@@ -8,6 +8,7 @@ public class RemoteConfigAdsPlacementData
     public int placementID;
     public bool show;
     public List<int> priority;
+    public float timeBetweenShow; //custom time required to pass before next ad of the same placement can be shown 
     List<CustomMediation.AD_NETWORK> adNetworkPriority;
 
     public List<CustomMediation.AD_NETWORK> GetAdNetworkPriority()
@@ -126,7 +127,7 @@ public class RemoteConfigAdsPlacement : MonoBehaviour
     }
 #endif
 
-    RemoteConfigAdsPlacementData GetPlacementConfigData(AdPlacement.Type placementType)
+    public RemoteConfigAdsPlacementData GetPlacementConfigData(AdPlacement.Type placementType)
     {
         string key = ((int)placementType).ToString();
         if (configData != null && configData.ContainsKey(key)) return configData[key];

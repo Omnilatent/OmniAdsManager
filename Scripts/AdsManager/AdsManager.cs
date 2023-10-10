@@ -531,7 +531,7 @@ public partial class AdsManager : MonoBehaviour
     /// </summary>
     public void RequestAndShowInterstitial(AdPlacement.Type placementType, AdRequestOption requestOption)
     {
-        if (HasEnoughTimeBetweenInterstitial())
+        if (HasEnoughTimeBetweenInterstitial(placementType))
         {
             RequestInterstitialNoShow(placementType, (loadSuccess) =>
             {
@@ -810,8 +810,14 @@ public partial class AdsManager : MonoBehaviour
     public float GetTimeSinceLastShowInterstitial() { return time - timeLastShowInterstitial; }
     public float GetTimeSinceLastShowRewardAd() { return time - timeLastShowRewardAd; }
 
-    public bool HasEnoughTimeBetweenInterstitial()
+    public bool HasEnoughTimeBetweenInterstitial(AdPlacement.Type? adType = null)
     {
+        float _timeBetweenAds = TIME_BETWEEN_ADS;
+        if (adType.HasValue)
+        {
+            var adConfig = RemoteConfigAdsPlacement.instance.GetPlacementConfigData(adType.Value);
+            if (adConfig.timeBetweenShow > 0f) { _timeBetweenAds = adConfig.timeBetweenShow; }
+        }
         bool enoughTimeHasPassed = GetTimeSinceLastShowInterstitial() >= TIME_BETWEEN_ADS;
         //.Log($"time between inter {time - timeLastShowInterstitial}");
         return enoughTimeHasPassed;
