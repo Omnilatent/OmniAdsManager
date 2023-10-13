@@ -24,6 +24,7 @@ namespace Omnilatent.AdsMediation
     {
         public AdsManager.InterstitialDelegate onAdLoaded;
         public AdsManager.InterstitialDelegate onAdClosed;
+        public AdsManager.InterstitialDelegate onAdDisplay;
 
         public InterstitialAdObject()
         {

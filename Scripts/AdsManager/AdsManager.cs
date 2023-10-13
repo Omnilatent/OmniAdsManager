@@ -456,6 +456,43 @@ public partial class AdsManager : MonoBehaviour
         }*/
     }
 
+    public void ShowInterstitial(AdPlacement.Type placeType, InterstitialDelegate onAdDisplay = null, InterstitialDelegate onAdClosed = null)
+    {
+        if (DoNotShowAds(placeType))
+        {
+            onAdClosed?.Invoke(false);
+            return;
+        }
+        if (currentAdsHelper == null)
+        {
+            Debug.LogError("currentAdsHelper is null due to all ads failed to load");
+            onAdClosed?.Invoke(false);
+            return;
+        }
+        ShowingInterstitial = true;
+        currentAdsHelper.ShowInterstitial(placeType, (success) =>
+        {
+            onAdDisplay?.Invoke(success);
+        }, ((success) =>
+        {
+            Instance.ShowingInterstitial = false;
+            onAdClosed?.Invoke(success);
+            OnInterAdClosedEvent?.Invoke(placeType, success);
+        }));
+
+        timeLastShowInterstitial = time;
+        /*switch (CurrentAdNetwork)
+        {
+            case CustomMediation.AD_NETWORK.Unity:
+                UnityAdsManager.ShowInterstitial(CustomMediation.GetUnityPlacementId(placeType));
+                break;
+            case CustomMediation.AD_NETWORK.FAN:
+                _FANHelper.ShowInterstitial(CustomMediation.GetFANPlacementId(placeType));
+                break;
+        }*/
+    }
+
+
     public void RequestInterstitialNoShow(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = true)
     {
         //if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenInterstitial()) //skip checking interstitial time so we can use this function for preloading interstitial ads
@@ -538,7 +575,7 @@ public partial class AdsManager : MonoBehaviour
                 requestOption.onAdLoaded?.Invoke(loadSuccess);
                 if (loadSuccess)
                 {
-                    ShowInterstitial(placementType, (showSuccess) =>
+                    ShowInterstitial(placementType, requestOption.onAdDisplay, (showSuccess) =>
                     {
                         requestOption.onAdClosed?.Invoke(showSuccess);
                         if (showSuccess)
@@ -554,6 +591,7 @@ public partial class AdsManager : MonoBehaviour
         {
             requestOption.onAdLoaded?.Invoke(false);
             requestOption.onAdClosed?.Invoke(false);
+            requestOption.onAdDisplay?.Invoke(false);
         }
     }
 
