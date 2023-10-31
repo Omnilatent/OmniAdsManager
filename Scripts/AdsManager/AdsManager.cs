@@ -365,6 +365,7 @@ public partial class AdsManager : MonoBehaviour
 
     IEnumerator CoShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null, BoolDelegate onAdLoaded = null)
     {
+        OnBannerAdRequestEvent.Invoke(placementType);
         if (bannerTransform == null) bannerTransform = BannerTransform.defaultValue;
 
         bool isSuccess = false;
@@ -489,6 +490,7 @@ public partial class AdsManager : MonoBehaviour
 
     IEnumerator CoRequestInterstitialNoShow(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = true)
     {
+        OnInterAdRequestEvent.Invoke(placementType);
         isLoadingInterstitial = true;
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
@@ -590,6 +592,7 @@ public partial class AdsManager : MonoBehaviour
         }
         else
         {
+            OnRewardAdRequestEvent.Invoke(placementType);
             timeLastShowRewardAd = time;
             showingRewardAd = true;
             WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
@@ -727,6 +730,7 @@ public partial class AdsManager : MonoBehaviour
 
     IEnumerator CoRequestAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = false)
     {
+        OnAppOnAdRequestEvent.Invoke(placementType);
         isLoadingAppOpenAd = true;
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
