@@ -730,7 +730,6 @@ public partial class AdsManager : MonoBehaviour
 
     IEnumerator CoRequestAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = false)
     {
-        OnAppOnAdRequestEvent.Invoke(placementType);
         isLoadingAppOpenAd = true;
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
@@ -765,6 +764,7 @@ public partial class AdsManager : MonoBehaviour
 
     public void ShowAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdClosed = null)
     {
+        OnAppOnAdRequestEvent.Invoke(placementType);
         //.Log($"showingAppOpenAd:{showingAppOpenAd}, showingRewardAd:{showingRewardAd}, showingInterstitial:{ShowingInterstitial}, LoadingActive:{LoadingActive}");
         if (DoNotShowAds(placementType) || !HasEnoughTimeBetweenAppOpenAd() || showingAppOpenAd || showingRewardAd || ShowingInterstitial
             || LoadingActive) //to prevent app open ad to show behind interstitial when an interstitial is loading
