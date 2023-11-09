@@ -730,6 +730,7 @@ public partial class AdsManager : MonoBehaviour
 
     IEnumerator CoRequestAppOpenAd(AdPlacement.Type placementType, InterstitialDelegate onAdLoaded = null, bool showLoading = false)
     {
+        OnAppOnAdRequestEvent?.Invoke(placementType);
         isLoadingAppOpenAd = true;
         bool isSuccess = false;
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.05f);
