@@ -5,9 +5,10 @@ using UnityEngine;
 
 public partial class AdPlacement
 {
+    [Serializable]
     public struct Type
     {
-        private int _Value;
+        [SerializeField] private int _Value;
 
         public static implicit operator Type(int value)
         {
