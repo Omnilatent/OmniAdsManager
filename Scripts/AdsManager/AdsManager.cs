@@ -816,7 +816,7 @@ public partial class AdsManager : MonoBehaviour
         if (adType.HasValue)
         {
             var adConfig = RemoteConfigAdsPlacement.instance.GetPlacementConfigData(adType.Value);
-            if (adConfig.timeBetweenShow > 0f) { _timeBetweenAds = adConfig.timeBetweenShow; }
+            if (adConfig != null && adConfig.timeBetweenShow > 0f) { _timeBetweenAds = adConfig.timeBetweenShow; }
         }
         bool enoughTimeHasPassed = GetTimeSinceLastShowInterstitial() >= _timeBetweenAds;
         //.Log($"time between inter {time - timeLastShowInterstitial}");
