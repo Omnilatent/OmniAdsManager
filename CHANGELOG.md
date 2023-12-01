@@ -1,3 +1,7 @@
+## 2.9.0
+Changes:
+- No longer automatically add listener to event onToggleLoading for SScene library. Symbol DISABLE_SSCENE is no longer used.
+
 ## 2.8.0
 Changes:
 - Moved Firebase Remote Config Helper class to Omni Firebase Manager package.
