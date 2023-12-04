@@ -1,3 +1,8 @@
+## 2.9.1
+News:
+- Add time between ad to Remote Config Ads Placement to allow customize time between show of each Ad Placements. If set to 0, it will default to TIME_BETWEEN_ADS.
+- Make AdPlacement.Type serializable.
+
 ## 2.9.0
 Changes:
 - No longer automatically add listener to event onToggleLoading for SScene library. Symbol DISABLE_SSCENE is no longer used.

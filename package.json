@@ -1,7 +1,7 @@
 {
     "name": "com.omnilatent.adsmanager",
     "displayName": "Omni Ads Manager",
-    "version": "2.9.0",
+    "version": "2.9.1",
     "unity": "2018.1",
     "description": "Manage multiple Ads Networks.",
     "keywords": ["ads"],
