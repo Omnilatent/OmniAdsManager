@@ -9,7 +9,8 @@ public struct RewardResult
         LoadFailed = 0,
         Finished = 1,
         Canceled = 2,
-        Loading = 3
+        Loading = 3,
+        Loaded = 4
     }
 
     public Type type;
@@ -38,6 +39,8 @@ namespace Omnilatent.AdsMediation
         {
             _adsManager = manager;
         }
+
+        public float TimeLastShowRewardAd => timeLastShowRewardAd;
 
         public void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
         {
@@ -95,7 +98,7 @@ namespace Omnilatent.AdsMediation
                     } //if a reward ads was shown and user skipped it, stop looking for more ads
                 }
             }
-            
+
             onFinish(rewardResult);
             AdsManager.OnRewardAdClosedEvent?.Invoke(placementType, rewardResult);
             AdsManager.ToggleLoading(false);
@@ -107,6 +110,76 @@ namespace Omnilatent.AdsMediation
                     AdsManager.LogError(rewardResult.message, placementType.ToString());
                 }
 
+                AdsManager.ShowError(rewardResult, placementType.ToString());
+            }
+        }
+
+        public void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
+        {
+            if (showLoading)
+            {
+                AdsManager.ToggleLoading(true);
+            }
+
+            _adsManager.StartCoroutine(CoRequestRewardAd(placementType, onFinish, showLoading));
+        }
+
+        IEnumerator CoRequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
+        {
+            RewardResult rewardResult = new RewardResult();
+            string errorMsg = string.Empty;
+
+            if (_adsManager.IsAdsHiddenRemoteConfig(placementType))
+            {
+                rewardResult.type = RewardResult.Type.LoadFailed;
+                rewardResult.message = "Disabled";
+            }
+            else if (AdsManager.HasNoInternet())
+            {
+                rewardResult.type = RewardResult.Type.LoadFailed;
+                rewardResult.message = "No Internet connection";
+            }
+            else
+            {
+                WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
+
+                List<CustomMediation.AD_NETWORK> adPriority = _adsManager.GetAdsNetworkPriority(placementType);
+
+                for (int i = 0; i < adPriority.Count; i++)
+                {
+                    bool checkAdNetworkDone = false;
+                    IAdsNetworkHelper adsHelper = _adsManager.GetAdsNetworkHelper(adPriority[i]);
+                    if (adsHelper == null) continue;
+                    adsHelper.RequestRewardAd(placementType, (result) =>
+                    {
+                        checkAdNetworkDone = true;
+                        rewardResult = result;
+                    });
+                    while (!checkAdNetworkDone)
+                    {
+                        yield return checkInterval;
+                    }
+
+                    if (rewardResult.type == RewardResult.Type.Loaded)
+                    {
+                        currentAdsHelper = adsHelper;
+                        break;
+                    }
+
+                    if (rewardResult.type == RewardResult.Type.LoadFailed)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            onFinish(rewardResult);
+            AdsManager.OnRewardAdLoadedEvent?.Invoke(placementType, rewardResult);
+            if (showLoading)
+                AdsManager.ToggleLoading(false);
+            if (rewardResult.type == RewardResult.Type.LoadFailed)
+            {
+                AdsManager.LogError(rewardResult.message, placementType.ToString());
                 AdsManager.ShowError(rewardResult, placementType.ToString());
             }
         }

@@ -33,6 +33,7 @@ public partial class AdsManager : MonoBehaviour
     /// </summary>
     public static Action<AdPlacement.Type, bool> OnInterAdClosedEvent;
 
+    public static Action<AdPlacement.Type, RewardResult> OnRewardAdLoadedEvent;
     public static Action<AdPlacement.Type, RewardResult> OnRewardAdClosedEvent;
     
     public static Action<AdPlacement.Type> OnAppOpenAdOpened;
@@ -47,7 +48,7 @@ public partial class AdsManager : MonoBehaviour
     IAdsNetworkHelper _MAXHelper; //AppLovin
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
     List<IAdsNetworkHelper> adsNetworkHelpers;
-    IAdsNetworkHelper currentAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
+    IAdsNetworkHelper currentInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentRewardInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentAppOpenAdsHelper;
 
@@ -75,7 +76,6 @@ public partial class AdsManager : MonoBehaviour
 
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
     float timeLastShowAppOpenAd = -9999f; //the value of time when last app open ad was shown
-    float timeLastShowRewardAd = -9999f; //the value of time when last reward ad was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
 
     static float TIME_BETWEEN_APP_OPEN_ADS = 5f; //minimum time between app open ad
@@ -114,6 +114,8 @@ public partial class AdsManager : MonoBehaviour
     }
     public bool ShowingRewardAd { get => showingRewardAd; set => showingRewardAd = value; }
     public bool ShowingAppOpenAd { get => showingAppOpenAd; }
+
+    private RewardWrapper _rewardWrapper;
 
     public static AdsManager Instance
     {
@@ -170,6 +172,7 @@ public partial class AdsManager : MonoBehaviour
         _MAXHelper = AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.AppLovinMAX, AdWrapperFinder.InitMAXHelper());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
+        _rewardWrapper = new RewardWrapper(this);
         initialized = true;
         OnInitializedEvent?.Invoke(initialized);
     }
@@ -434,14 +437,14 @@ public partial class AdsManager : MonoBehaviour
             onAdClosed?.Invoke(false);
             return;
         }
-        if (currentAdsHelper == null)
+        if (currentInterAdsHelper == null)
         {
             Debug.LogError("currentAdsHelper is null due to all ads failed to load");
             onAdClosed?.Invoke(false);
             return;
         }
         ShowingInterstitial = true;
-        currentAdsHelper.ShowInterstitial(placeType, (InterstitialDelegate)((success) =>
+        currentInterAdsHelper.ShowInterstitial(placeType, (InterstitialDelegate)((success) =>
         {
             Instance.ShowingInterstitial = false;
             onAdClosed?.Invoke(success);
@@ -513,7 +516,7 @@ public partial class AdsManager : MonoBehaviour
             if (isSuccess)
             {
                 //CurrentAdNetwork = AdNetworkSetting.AdNetworks[i];
-                currentAdsHelper = adsHelper;
+                currentInterAdsHelper = adsHelper;
                 break;
             }
         }
@@ -564,93 +567,16 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
         ToggleLoading(true);
-        instance.StartCoroutine(instance.CoReward((rewardResult) =>
+        instance._rewardWrapper.Reward(placementType, rewardResult =>
         {
             onFinish.Invoke(rewardResult.type == RewardResult.Type.Finished);
-        }, placementType));
+        });
     }
 
     public static void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
     {
         ToggleLoading(true);
-        instance.StartCoroutine(instance.CoReward(onFinish, placementType));
-    }
-
-    IEnumerator CoReward(RewardDelegate onFinish, AdPlacement.Type placementType)
-    {
-        RewardResult rewardResult = new RewardResult();
-        string errorMsg = string.Empty;
-
-        if (IsAdsHiddenRemoteConfig(placementType))
-        {
-            rewardResult.type = RewardResult.Type.LoadFailed;
-            rewardResult.message = "Disabled";
-        }
-        else if (HasNoInternet())
-        {
-            rewardResult.type = RewardResult.Type.LoadFailed;
-            rewardResult.message = "No Internet connection";
-        }
-        else
-        {
-            timeLastShowRewardAd = _timeInGame;
-            showingRewardAd = true;
-            WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
-
-            List<CustomMediation.AD_NETWORK> adPriority = GetAdsNetworkPriority(placementType);
-
-            for (int i = 0; i < adPriority.Count; i++)
-            {
-                bool checkAdNetworkDone = false;
-                IAdsNetworkHelper adsHelper = GetAdsNetworkHelper(adPriority[i]);
-                if (adsHelper == null) continue;
-                adsHelper.Reward(placementType, (result) =>
-                {
-                    checkAdNetworkDone = true; rewardResult = result;
-                });
-                while (!checkAdNetworkDone)
-                {
-                    yield return checkInterval;
-                }
-                if (rewardResult.type == RewardResult.Type.Finished)
-                {
-                    currentAdsHelper = adsHelper;
-                    break;
-                }
-                if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
-            }
-        }
-
-        /*for (int i = 0; i < adsNetworkHelpers.Count; i++)
-        {
-            bool checkAdNetworkDone = false;
-            adsNetworkHelpers[i].Reward(placementType, (result) =>
-            {
-                checkAdNetworkDone = true; rewardResult = result;
-            });
-            while (!checkAdNetworkDone)
-            {
-                yield return checkInterval;
-            }
-            if (rewardResult.type == RewardResult.Type.Finished)
-            {
-                currentAdsHelper = adsNetworkHelpers[i];
-                break;
-            }
-            if (rewardResult.type == RewardResult.Type.Canceled) { break; } //if a reward ads was shown and user skipped it, stop looking for more ads
-        }*/
-        onFinish(rewardResult);
-        OnRewardAdClosedEvent?.Invoke(placementType, rewardResult);
-        ToggleLoading(false);
-        showingRewardAd = false;
-        if (rewardResult.type == RewardResult.Type.LoadFailed || rewardResult.type == RewardResult.Type.Loading)
-        {
-            if (rewardResult.type == RewardResult.Type.LoadFailed)
-            {
-                LogError(rewardResult.message, placementType.ToString());
-            }
-            ShowError(rewardResult, placementType.ToString());
-        }
+        instance._rewardWrapper.Reward(placementType, onFinish);
     }
 
     public void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
@@ -811,7 +737,7 @@ public partial class AdsManager : MonoBehaviour
     }
 
     public float GetTimeSinceLastShowInterstitial() { return _timeInGame - timeLastShowInterstitial; }
-    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - timeLastShowRewardAd; }
+    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - _rewardWrapper.TimeLastShowRewardAd; }
 
     public bool HasEnoughTimeBetweenInterstitial(AdPlacement.Type? adType = null)
     {
