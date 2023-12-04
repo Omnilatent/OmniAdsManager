@@ -579,6 +579,11 @@ public partial class AdsManager : MonoBehaviour
         instance._rewardWrapper.Reward(placementType, onFinish);
     }
 
+    public void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
+    {
+        _rewardWrapper.RequestRewardAd(placementType, onFinish, showLoading);
+    }
+
     public void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
     {
         if (IsAdsHiddenRemoteConfig(placementType))
