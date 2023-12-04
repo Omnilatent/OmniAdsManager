@@ -423,6 +423,24 @@ public partial class AdsManager : MonoBehaviour
         adNetwork.HideBanner();
     }
 
+    public void DestroyBanner()
+    {
+        if (!Initialized) return;
+        foreach (var item in adsNetworkHelpers)
+        {
+            DestroyBanner(item);
+        }
+        //showingBanners.Clear();
+        //isShowingBanner = false;
+        currentShowingBanner = null;
+        currentShowingBannerTransform = null;
+    }
+
+    void DestroyBanner(IAdsNetworkHelper adNetwork)
+    {
+        adNetwork.DestroyBanner();
+    }
+
     /// <param name="onAdClosed">Warning: not completely functional yet, only Admob will call onAdClosed when the interstitial is closed</param>
     public void ShowInterstitial(AdPlacement.Type placeType, InterstitialDelegate onAdClosed = null)
     {
