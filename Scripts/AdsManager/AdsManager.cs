@@ -430,8 +430,7 @@ public partial class AdsManager : MonoBehaviour
         {
             DestroyBanner(item);
         }
-        //showingBanners.Clear();
-        //isShowingBanner = false;
+        
         currentShowingBanner = null;
         currentShowingBannerTransform = null;
     }

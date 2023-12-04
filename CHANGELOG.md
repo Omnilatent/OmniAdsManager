@@ -1,3 +1,7 @@
+## 2.10.0
+News:
+Add DestroyBanner() function to IAdsNetworkHelper and AdsManager.
+
 ## 2.9.1
 News:
 - Add time between ad to Remote Config Ads Placement to allow customize time between show of each Ad Placements. If set to 0, it will default to TIME_BETWEEN_ADS.
