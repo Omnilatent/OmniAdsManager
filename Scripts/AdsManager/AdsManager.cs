@@ -4,22 +4,6 @@ using UnityEngine;
 using Omnilatent.AdsMediation;
 using System;
 
-public struct RewardResult
-{
-    public enum Type { LoadFailed = 0, Finished = 1, Canceled = 2, Loading = 3 }
-    public Type type;
-    public string message;
-
-    public RewardResult(Type type, string message = "")
-    {
-        this.type = type;
-        this.message = message;
-    }
-
-    public bool IsFinished { get { return type == Type.Finished; } }
-}
-public delegate void RewardDelegate(RewardResult result);
-
 public class RemoteConfigAdsNetworkData
 {
     public CustomMediation.AD_NETWORK adNetwork;
@@ -86,7 +70,9 @@ public partial class AdsManager : MonoBehaviour
     bool isLoadingAppOpenAd;
     const string admobManagerResourcesPath = "AdmobManager";
 
-    float time; //counting time in app
+    float _timeInGame; //counting time in app
+    public float TimeInGame { get => _timeInGame; }
+
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
     float timeLastShowAppOpenAd = -9999f; //the value of time when last app open ad was shown
     float timeLastShowRewardAd = -9999f; //the value of time when last reward ad was shown
@@ -126,7 +112,7 @@ public partial class AdsManager : MonoBehaviour
             showingInterstitial = value;
         }
     }
-    public bool ShowingRewardAd { get => showingRewardAd; }
+    public bool ShowingRewardAd { get => showingRewardAd; set => showingRewardAd = value; }
     public bool ShowingAppOpenAd { get => showingAppOpenAd; }
 
     public static AdsManager Instance
@@ -461,7 +447,7 @@ public partial class AdsManager : MonoBehaviour
             onAdClosed?.Invoke(success);
             OnInterAdClosedEvent?.Invoke(placeType, success);
         }));
-        timeLastShowInterstitial = time;
+        timeLastShowInterstitial = _timeInGame;
         /*switch (CurrentAdNetwork)
         {
             case CustomMediation.AD_NETWORK.Unity:
@@ -607,7 +593,7 @@ public partial class AdsManager : MonoBehaviour
         }
         else
         {
-            timeLastShowRewardAd = time;
+            timeLastShowRewardAd = _timeInGame;
             showingRewardAd = true;
             WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
 
@@ -801,7 +787,7 @@ public partial class AdsManager : MonoBehaviour
                     onAdClosed?.Invoke(success);
                     OnAppOpenAdClosed?.Invoke(placementType);
                 });
-                timeLastShowAppOpenAd = time;
+                timeLastShowAppOpenAd = _timeInGame;
             }
             else
             {
@@ -824,8 +810,8 @@ public partial class AdsManager : MonoBehaviour
         onAdLoadFailed?.Invoke(msg, placementType);
     }
 
-    public float GetTimeSinceLastShowInterstitial() { return time - timeLastShowInterstitial; }
-    public float GetTimeSinceLastShowRewardAd() { return time - timeLastShowRewardAd; }
+    public float GetTimeSinceLastShowInterstitial() { return _timeInGame - timeLastShowInterstitial; }
+    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - timeLastShowRewardAd; }
 
     public bool HasEnoughTimeBetweenInterstitial(AdPlacement.Type? adType = null)
     {
@@ -842,7 +828,7 @@ public partial class AdsManager : MonoBehaviour
 
     public bool HasEnoughTimeBetweenAppOpenAd() //Different from Interstitial, this is to prevent repeated app open ad show when resuming game
     {
-        bool enoughTimeHasPassed = (time - timeLastShowAppOpenAd) >= TIME_BETWEEN_APP_OPEN_ADS;
+        bool enoughTimeHasPassed = (_timeInGame - timeLastShowAppOpenAd) >= TIME_BETWEEN_APP_OPEN_ADS;
         return enoughTimeHasPassed;
     }
 
@@ -875,13 +861,13 @@ public partial class AdsManager : MonoBehaviour
     /// <summary>
     /// Check remote config for this ads placement. Return true if this ads is disabled
     /// </summary>
-    bool IsAdsHiddenRemoteConfig(AdPlacement.Type placementType)
+    public bool IsAdsHiddenRemoteConfig(AdPlacement.Type placementType)
     {
         if (configPlacementHideAds != null && configPlacementHideAds(placementType)) return true;
         return false;
     }
 
-    static void ToggleLoading(bool active)
+    public static void ToggleLoading(bool active)
     {
         loadingActive = active;
         if (onToggleLoading == null)
@@ -894,6 +880,6 @@ public partial class AdsManager : MonoBehaviour
 
     private void Update()
     {
-        time += Time.deltaTime;
+        _timeInGame += Time.deltaTime;
     }
 }
