@@ -21,6 +21,11 @@ namespace Omnilatent.AdsMediation
     {
         public AdPosition adPosition = AdPosition.Bottom;
         public object adSizeData;
+        
+        /// <summary>
+        /// Currently supported by Admob Banner, with position as top and bottom. If true, banner ad will be collapsible.
+        /// </summary>
+        public bool Collapsible;
 
         public static BannerTransform defaultValue = new BannerTransform();
 
