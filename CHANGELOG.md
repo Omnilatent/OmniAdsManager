@@ -1,3 +1,13 @@
+## 2.11.0 (In progress)
+News:
+- Add Request Reward Ad function.
+
+Changes:
+- Separate reward ad function to class RewardWrapper.
+- Refactor currentAdsHelper to currentInterAdsHelper.
+- Add OnRewardAdLoadedEvent.
+- Add new RewardResult Type: Loaded.
+
 ## 2.10.0
 News:
 Add DestroyBanner() function to IAdsNetworkHelper and AdsManager.
