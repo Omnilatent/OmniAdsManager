@@ -75,6 +75,8 @@ public partial class AdsManager : MonoBehaviour
     public float TimeInGame { get => _timeInGame; }
 
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
+    public float TimeLastShowInterstitial {  get => timeLastShowInterstitial; set => timeLastShowInterstitial = value; }
+    
     float timeLastShowAppOpenAd = -9999f; //the value of time when last app open ad was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
 
