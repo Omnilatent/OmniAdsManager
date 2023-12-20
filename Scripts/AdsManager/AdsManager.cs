@@ -371,7 +371,6 @@ public partial class AdsManager : MonoBehaviour
         WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
 
         var adPriority = GetAdsNetworkPriority(placementType);
-        Debug.Log("begin show banner");
         for (int i = 0; i < adPriority.Count; i++)
         {
             bool checkAdNetworkDone = false;
@@ -380,7 +379,6 @@ public partial class AdsManager : MonoBehaviour
             adsHelper.ShowBanner(placementType, bannerTransform,
                 (success) =>
                 {
-                    Debug.Log($"adsHelper show banner success : {success}");
                     checkAdNetworkDone = true;
                     isSuccess = success;
                     onAdLoaded?.Invoke(success);
@@ -395,7 +393,6 @@ public partial class AdsManager : MonoBehaviour
                 yield return checkInterval;
             }
 
-            Debug.Log($"ads manager show banner success : {isSuccess}");
             if (isSuccess)
             {
                 //showingBanners.Add(CurrentAdNetwork);
