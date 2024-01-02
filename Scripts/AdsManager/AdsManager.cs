@@ -649,6 +649,11 @@ public partial class AdsManager : MonoBehaviour
             onAdLoaded?.Invoke(false);
             return;
         }
+
+        if (showingAppOpenAd)
+        {
+            Debug.Log("An App Open Ad is showing, request an ad now could cause error.");
+        }
         /*if (isLoadingAppOpenAd)
         {
             Debug.LogWarning("Previous app open ad request is still loading");
