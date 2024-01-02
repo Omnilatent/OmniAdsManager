@@ -75,6 +75,7 @@ public partial class AdsManager : MonoBehaviour
     public float TimeInGame { get => _timeInGame; }
 
     float timeLastShowInterstitial = -9999f; //the value of time when last interstitial was shown
+
     float timeLastShowAppOpenAd = -9999f; //the value of time when last app open ad was shown
     public static float TIME_BETWEEN_ADS = 18f; //minimum time between interstitial
 
@@ -450,7 +451,7 @@ public partial class AdsManager : MonoBehaviour
             onAdClosed?.Invoke(success);
             OnInterAdClosedEvent?.Invoke(placeType, success);
         }));
-        timeLastShowInterstitial = _timeInGame;
+        ResetTimeLastShowInterstitial();
         /*switch (CurrentAdNetwork)
         {
             case CustomMediation.AD_NETWORK.Unity:
@@ -807,6 +808,11 @@ public partial class AdsManager : MonoBehaviour
             return;
         }
         onToggleLoading.Invoke(active);
+    }
+
+    public void ResetTimeLastShowInterstitial()
+    {
+        timeLastShowInterstitial = TimeInGame;
     }
 
     private void Update()
