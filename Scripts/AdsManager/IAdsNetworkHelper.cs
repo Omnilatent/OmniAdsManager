@@ -7,6 +7,7 @@ public interface IAdsNetworkHelper
 {
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     void ShowBanner(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdLoaded = null);
+    void ReloadCollapsibleBanner(AdPlacement.Type currentShowingBanner, BannerTransform bannerTransform);
     void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, AdsManager.InterstitialDelegate onAdLoaded = null);
     void HideBanner();
     void DestroyBanner();

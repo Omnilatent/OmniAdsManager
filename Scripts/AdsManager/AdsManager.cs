@@ -319,6 +319,15 @@ public partial class AdsManager : MonoBehaviour
         return (Application.internetReachability == NetworkReachability.NotReachable);
     }
 
+    public void ReloadCollapsibleBanner()
+    {
+        if(!initialized || !currentShowingBanner.HasValue) return;
+        foreach (var item in adsNetworkHelpers)
+        {
+            item.ReloadCollapsibleBanner(currentShowingBanner.Value, currentShowingBannerTransform);
+        }
+    }
+
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
