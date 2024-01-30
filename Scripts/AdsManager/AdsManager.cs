@@ -568,7 +568,7 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
         ToggleLoading(true);
-        instance._rewardWrapper.Reward(placementType, rewardResult =>
+        Instance._rewardWrapper.Reward(placementType, rewardResult =>
         {
             onFinish.Invoke(rewardResult.type == RewardResult.Type.Finished);
         });
@@ -577,7 +577,7 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
     {
         ToggleLoading(true);
-        instance._rewardWrapper.Reward(placementType, onFinish);
+        Instance._rewardWrapper.Reward(placementType, onFinish);
     }
 
     public void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
