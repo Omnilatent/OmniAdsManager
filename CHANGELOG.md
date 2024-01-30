@@ -1,12 +1,18 @@
-## 2.11.0 (In progress)
+## 2.11.0
 News:
 - Add Request Reward Ad function.
+- Add Collapsible field to class BannerTransform.
+- Add public function ResetTimeSinceLastShowInterstitial().
 
 Changes:
 - Separate reward ad function to class RewardWrapper.
 - Refactor currentAdsHelper to currentInterAdsHelper.
 - Add OnRewardAdLoadedEvent.
 - Add new RewardResult Type: Loaded.
+- Log message when an app open ad is requested when an app open ad is showing.
+- Update extra code for Handle ads manager message.
+- Update default additional placement id.
+- Reward() can now be called without an existing instance.
 
 ## 2.10.0
 News:
