@@ -30,7 +30,7 @@ namespace Omnilatent.AdsMediation
             try
             {
                 Initialize();
-                _pluginInstance.Call("showDialog", unityActivity);
+                _pluginInstance.CallStatic("showDialog", unityActivity);
             }
             catch (Exception e)
             {
@@ -45,7 +45,7 @@ namespace Omnilatent.AdsMediation
             try
             {
                 Initialize();
-                _pluginInstance.Call("closeDialog");
+                _pluginInstance.CallStatic("closeDialog");
             }
             catch (Exception e)
             {
