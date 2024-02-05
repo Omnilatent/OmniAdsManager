@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,9 +46,11 @@ namespace Omnilatent.AdsMediation
         public void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
         {
             AdsManager.ToggleLoading(true);
-            _adsManager.StartCoroutine(CoReward(onFinish, placementType));
+            // _adsManager.StartCoroutine(CoReward(onFinish, placementType));
+            RequestAndShowReward(placementType, onFinish);
         }
 
+        [Obsolete("Use RequestAndShowReward() instead")]
         IEnumerator CoReward(RewardDelegate onFinish, AdPlacement.Type placementType)
         {
             RewardResult rewardResult = new RewardResult();
@@ -112,6 +115,21 @@ namespace Omnilatent.AdsMediation
 
                 AdsManager.ShowError(rewardResult, placementType.ToString());
             }
+        }
+
+        void RequestAndShowReward(AdPlacement.Type placementType, RewardDelegate onFinish)
+        {
+            RequestRewardAd(placementType, result =>
+            {
+                if (result.type == RewardResult.Type.Loaded)
+                {
+                    ShowRewardAd(placementType, onFinish, true);
+                }
+                else
+                {
+                    onFinish?.Invoke(result);
+                }
+            }, true);
         }
 
         public void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
@@ -186,6 +204,10 @@ namespace Omnilatent.AdsMediation
 
         public void ShowRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
         {
+            if (showLoading)
+            {
+                AdsManager.ToggleLoading(true);
+            }
             _adsManager.StartCoroutine(CoShowReward(placementType, onFinish));
         }
 
