@@ -42,6 +42,25 @@ namespace Omnilatent.AdsMediation
             }
             #endif
         }
+        
+        /// <summary>
+        /// Show a black screen, dismiss it on app resume from Ad
+        /// </summary>
+        /// <param name="delayClose">The amount of miliseconds to wait before dismissing the screen on resume app</param>
+        public static void ShowThenDismissOnAppResume(int delayClose = 150)
+        {
+            #if UNITY_ANDROID && !UNITY_EDITOR
+            try
+            {
+                Initialize();
+                _pluginInstance.CallStatic("showDialogDismissOnResume", unityActivity, delayClose);
+            }
+            catch (Exception e)
+            {
+                LogException(e);
+            }
+            #endif
+        }
 
         public static void Hide()
         {
