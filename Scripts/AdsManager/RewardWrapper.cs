@@ -180,7 +180,10 @@ namespace Omnilatent.AdsMediation
             if (rewardResult.type == RewardResult.Type.LoadFailed)
             {
                 AdsManager.LogError(rewardResult.message, placementType.ToString());
-                AdsManager.ShowError(rewardResult, placementType.ToString());
+                if (showLoading)
+                {
+                    AdsManager.ShowError(rewardResult, placementType.ToString());
+                }
             }
         }
     }
