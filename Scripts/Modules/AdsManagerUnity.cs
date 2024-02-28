@@ -10,7 +10,7 @@ public partial class AdsManager : MonoBehaviour
         var resGO = Resources.Load<GameObject>(unityAdsManagerResourcesPath);
         if (resGO == null)
         {
-            Debug.Log($"{unityAdsManagerResourcesPath} not found in Resources");
+            //.Log($"{unityAdsManagerResourcesPath} not found in Resources");
             return null;
         }
         _unityAdsHelper = Instantiate(resGO).GetComponent<IAdsNetworkHelper>();

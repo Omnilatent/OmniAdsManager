@@ -13,7 +13,7 @@ namespace Omnilatent.AdsMediation
             var resGO = Resources.Load<GameObject>(MAXAdHelperResourcesPath);
             if (resGO == null)
             {
-                Debug.Log($"{MAXAdHelperResourcesPath} not found in Resources");
+                //.Log($"{MAXAdHelperResourcesPath} not found in Resources");
                 return null;
             }
             var adHelper = MonoBehaviour.Instantiate(resGO).GetComponent<IAdsNetworkHelper>();

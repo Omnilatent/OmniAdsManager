@@ -10,7 +10,7 @@ public partial class AdsManager : MonoBehaviour
         var resGO = Resources.Load<GameObject>(FANManagerResourcesPath);
         if (resGO == null)
         {
-            Debug.Log($"{FANManagerResourcesPath} not found in Resources");
+            //.Log($"{FANManagerResourcesPath} not found in Resources");
             return null;
         }
         _FANHelper = Instantiate(resGO).GetComponent<IAdsNetworkHelper>();

@@ -13,7 +13,7 @@ namespace Omnilatent.AdsMediation
             var resGO = Resources.Load<GameObject>(ISManagerResourcesPath);
             if (resGO == null)
             {
-                Debug.Log($"{ISManagerResourcesPath} not found in Resources");
+                //.Log($"{ISManagerResourcesPath} not found in Resources");
                 return null;
             }
             var _ironSourceHelper = MonoBehaviour.Instantiate(resGO).GetComponent<IAdsNetworkHelper>();
