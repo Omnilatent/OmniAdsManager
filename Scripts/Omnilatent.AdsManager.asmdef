@@ -10,7 +10,8 @@
         "Omnilatent.Firebase",
         "IronSource",
         "MaxSdk.Scripts",
-        "Omnilatent.AdjustUnity"
+        "Omnilatent.AdjustUnity",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
