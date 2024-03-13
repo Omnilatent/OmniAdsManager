@@ -397,7 +397,7 @@ public partial class AdsManager : MonoBehaviour
         //}
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper")]
     public void HideBanner()
     {
         if (!Initialized) return;
