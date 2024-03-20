@@ -116,7 +116,7 @@ public partial class AdsManager : MonoBehaviour
     public bool ShowingRewardAd { get => showingRewardAd; set => showingRewardAd = value; }
     public bool ShowingAppOpenAd { get => showingAppOpenAd; }
 
-    private RewardWrapper _rewardWrapper;
+    private RewardAdsManager _rewardAdsManager;
 
     public static AdsManager Instance
     {
@@ -173,7 +173,7 @@ public partial class AdsManager : MonoBehaviour
         _MAXHelper = AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.AppLovinMAX, AdWrapperFinder.InitMAXHelper());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
-        _rewardWrapper = new RewardWrapper(this);
+        _rewardAdsManager = new RewardAdsManager(this);
         initialized = true;
         OnInitializedEvent?.Invoke(initialized);
     }
@@ -568,7 +568,7 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
         ToggleLoading(true);
-        Instance._rewardWrapper.Reward(placementType, rewardResult =>
+        Instance._rewardAdsManager.Reward(placementType, rewardResult =>
         {
             onFinish.Invoke(rewardResult.type == RewardResult.Type.Finished);
         });
@@ -577,12 +577,12 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
     {
         ToggleLoading(true);
-        Instance._rewardWrapper.Reward(placementType, onFinish);
+        Instance._rewardAdsManager.Reward(placementType, onFinish);
     }
 
     public void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
     {
-        _rewardWrapper.RequestRewardAd(placementType, onFinish, showLoading);
+        _rewardAdsManager.RequestRewardAd(placementType, onFinish, showLoading);
     }
 
     public void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
@@ -748,7 +748,7 @@ public partial class AdsManager : MonoBehaviour
     }
 
     public float GetTimeSinceLastShowInterstitial() { return _timeInGame - timeLastShowInterstitial; }
-    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - _rewardWrapper.TimeLastShowRewardAd; }
+    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - _rewardAdsManager.TimeLastShowRewardAd; }
 
     public bool HasEnoughTimeBetweenInterstitial(AdPlacement.Type? adType = null)
     {
