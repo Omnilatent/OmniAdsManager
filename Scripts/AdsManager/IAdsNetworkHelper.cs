@@ -8,11 +8,11 @@ public interface IAdsNetworkHelper
 {
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.", true)]
     void ShowBanner(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdLoaded = null);
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, AdsManager.InterstitialDelegate onAdLoaded = null);
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     void HideBanner();
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     void DestroyBanner();
     void ShowInterstitial(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdClosed);
     void RequestInterstitialNoShow(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdLoaded = null, bool showLoading = true);

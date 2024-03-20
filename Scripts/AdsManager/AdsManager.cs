@@ -342,7 +342,6 @@ public partial class AdsManager : MonoBehaviour
         showingBanners.Add(CurrentAdNetwork);*/
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
     public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BoolDelegate onAdLoaded = null)
     {
         if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
@@ -354,7 +353,6 @@ public partial class AdsManager : MonoBehaviour
         StartCoroutine(CoShowBanner(placementType, bannerTransform, onAdLoaded));
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
     IEnumerator CoShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null, BoolDelegate onAdLoaded = null)
     {
         yield break;
@@ -397,7 +395,7 @@ public partial class AdsManager : MonoBehaviour
         //}
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     public void HideBanner()
     {
         if (!Initialized) return;
@@ -412,13 +410,13 @@ public partial class AdsManager : MonoBehaviour
         currentShowingBannerTransform = null;
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     void HideBanner(IAdsNetworkHelper adNetwork)
     {
         adNetwork.HideBanner();
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     public void DestroyBanner()
     {
         if (!Initialized) return;
@@ -431,7 +429,7 @@ public partial class AdsManager : MonoBehaviour
         currentShowingBannerTransform = null;
     }
 
-    [Obsolete("Use AdModManager.instance.InstanceBannerAdWrapper", true)]
+    
     void DestroyBanner(IAdsNetworkHelper adNetwork)
     {
         adNetwork.DestroyBanner();
