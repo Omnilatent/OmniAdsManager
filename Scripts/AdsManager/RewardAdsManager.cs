@@ -29,13 +29,13 @@ public delegate void RewardDelegate(RewardResult result);
 
 namespace Omnilatent.AdsMediation
 {
-    public class RewardWrapper
+    public class RewardAdsManager
     {
         private AdsManager _adsManager;
         private IAdsNetworkHelper currentAdsHelper;
         float timeLastShowRewardAd = -9999f; //the value of time when last reward ad was shown
 
-        public RewardWrapper(AdsManager manager)
+        public RewardAdsManager(AdsManager manager)
         {
             _adsManager = manager;
         }

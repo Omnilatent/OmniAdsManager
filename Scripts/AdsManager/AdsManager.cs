@@ -47,7 +47,7 @@ public partial class AdsManager : MonoBehaviour
     IAdsNetworkHelper _ironSourceHelper;
     IAdsNetworkHelper _MAXHelper; //AppLovin
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
-    List<IAdsNetworkHelper> adsNetworkHelpers;
+    public List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentRewardInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentAppOpenAdsHelper;
@@ -116,7 +116,8 @@ public partial class AdsManager : MonoBehaviour
     public bool ShowingRewardAd { get => showingRewardAd; set => showingRewardAd = value; }
     public bool ShowingAppOpenAd { get => showingAppOpenAd; }
 
-    private RewardWrapper _rewardWrapper;
+    private RewardAdsManager _rewardAdsManager;
+    private BannerManager _bannerManager;
 
     public static AdsManager Instance
     {
@@ -130,6 +131,8 @@ public partial class AdsManager : MonoBehaviour
             return instance;
         }
     }
+
+    public static BannerManager GetBannerManager() => Instance._bannerManager;
 
     public static AdsManager instance;
     private void Awake()
@@ -173,7 +176,8 @@ public partial class AdsManager : MonoBehaviour
         _MAXHelper = AddDefaultNetworkHelper(CustomMediation.AD_NETWORK.AppLovinMAX, AdWrapperFinder.InitMAXHelper());
         adsNetworkHelpers = defaultAdsNetworkHelpers;
         //FirebaseRemoteConfigHelper.CheckAndHandleFetchConfig(SetupRemoteConfig); //switched to use RemoteConfigAdsPlacement
-        _rewardWrapper = new RewardWrapper(this);
+        _rewardAdsManager = new RewardAdsManager(this);
+        _bannerManager = new BannerManager(this);
         initialized = true;
         OnInitializedEvent?.Invoke(initialized);
     }
@@ -323,111 +327,32 @@ public partial class AdsManager : MonoBehaviour
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
-        if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
-        if (DoNotShowAds(placementType))
-        {
-            onAdLoaded?.Invoke(false);
-            return;
-        };
-        StartCoroutine(CoShowBanner(placementType, BannerTransform.defaultValue, onAdLoaded));
-        /*switch (CurrentAdNetwork)
-        {
-            case CustomMediation.AD_NETWORK.Unity:
-                UnityAdsManager.ShowBanner(CustomMediation.GetUnityPlacementId(placementType));
-                break;
-            case CustomMediation.AD_NETWORK.FAN:
-                FacebookAudienceNetworkHelper.instance.ShowBanner(CustomMediation.GetFANPlacementId(placementType));
-                break;
-        }
-        showingBanners.Add(CurrentAdNetwork);*/
+        ShowBanner(placementType, null, onAdLoaded);
     }
 
     public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BoolDelegate onAdLoaded = null)
     {
-        if (IsShowingBanner) { Debug.Log("AdsManager: A banner is already being shown"); return; }
-        if (DoNotShowAds(placementType))
-        {
-            onAdLoaded?.Invoke(false);
-            return;
-        };
-        StartCoroutine(CoShowBanner(placementType, bannerTransform, onAdLoaded));
-    }
-
-    IEnumerator CoShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null, BoolDelegate onAdLoaded = null)
-    {
-        if (bannerTransform == null) bannerTransform = BannerTransform.defaultValue;
-
-        bool isSuccess = false;
-        WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
-
-        var adPriority = GetAdsNetworkPriority(placementType);
-
-        for (int i = 0; i < adPriority.Count; i++)
-        {
-            bool checkAdNetworkDone = false;
-            var adsHelper = GetAdsNetworkHelper(adPriority[i]);
-            if (adsHelper == null) continue;
-            adsHelper.ShowBanner(placementType, bannerTransform,
-                (success) =>
-                {
-                    checkAdNetworkDone = true;
-                    isSuccess = success;
-                    onAdLoaded?.Invoke(success);
-                    if (!success)
-                    {
-                        currentShowingBanner = null;
-                        currentShowingBannerTransform = null;
-                    }
-                });
-            while (!checkAdNetworkDone)
-            {
-                yield return checkInterval;
-            }
-            if (isSuccess)
-            {
-                //showingBanners.Add(CurrentAdNetwork);
-                //isShowingBanner = true;
-                currentShowingBanner = placementType;
-                currentShowingBannerTransform = bannerTransform;
-                break;
-            }
-        }
+        GetBannerManager().ShowBanner(placementType, bannerTransform, onAdLoaded);
     }
 
     public void HideBanner()
     {
-        if (!Initialized) return;
-        foreach (var item in adsNetworkHelpers)
-        {
-            //Debug.Log("hiding banner " + item.ToString());
-            HideBanner(item);
-        }
-        //showingBanners.Clear();
-        //isShowingBanner = false;
-        currentShowingBanner = null;
-        currentShowingBannerTransform = null;
+        GetBannerManager().HideBanner();
     }
-
-    void HideBanner(IAdsNetworkHelper adNetwork)
+    
+    public void HideBanner(AdPlacement.Type placementType)
     {
-        adNetwork.HideBanner();
+        GetBannerManager().HideBanner(placementType);
     }
 
     public void DestroyBanner()
     {
-        if (!Initialized) return;
-        foreach (var item in adsNetworkHelpers)
-        {
-            DestroyBanner(item);
-        }
-        
-        currentShowingBanner = null;
-        currentShowingBannerTransform = null;
+        GetBannerManager().DestroyBanner();
     }
-
-    void DestroyBanner(IAdsNetworkHelper adNetwork)
+    
+    public void DestroyBanner(AdPlacement.Type placementType)
     {
-        adNetwork.DestroyBanner();
+        GetBannerManager().DestroyBanner(placementType);
     }
 
     /// <param name="onAdClosed">Warning: not completely functional yet, only Admob will call onAdClosed when the interstitial is closed</param>
@@ -568,7 +493,7 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(BoolDelegate onFinish, AdPlacement.Type placementType)
     {
         ToggleLoading(true);
-        Instance._rewardWrapper.Reward(placementType, rewardResult =>
+        Instance._rewardAdsManager.Reward(placementType, rewardResult =>
         {
             onFinish.Invoke(rewardResult.type == RewardResult.Type.Finished);
         });
@@ -577,12 +502,12 @@ public partial class AdsManager : MonoBehaviour
     public static void Reward(AdPlacement.Type placementType, RewardDelegate onFinish)
     {
         ToggleLoading(true);
-        Instance._rewardWrapper.Reward(placementType, onFinish);
+        Instance._rewardAdsManager.Reward(placementType, onFinish);
     }
 
     public void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish, bool showLoading)
     {
-        _rewardWrapper.RequestRewardAd(placementType, onFinish, showLoading);
+        _rewardAdsManager.RequestRewardAd(placementType, onFinish, showLoading);
     }
 
     public void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null, bool showLoading = true)
@@ -748,7 +673,7 @@ public partial class AdsManager : MonoBehaviour
     }
 
     public float GetTimeSinceLastShowInterstitial() { return _timeInGame - timeLastShowInterstitial; }
-    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - _rewardWrapper.TimeLastShowRewardAd; }
+    public float GetTimeSinceLastShowRewardAd() { return _timeInGame - _rewardAdsManager.TimeLastShowRewardAd; }
 
     public bool HasEnoughTimeBetweenInterstitial(AdPlacement.Type? adType = null)
     {

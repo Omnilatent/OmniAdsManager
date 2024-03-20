@@ -70,13 +70,14 @@ namespace Omnilatent.AdsMediation
 
     public class BannerAdObject : AdObject
     {
-        public AdsManager.InterstitialDelegate onAdLoaded;
+        public BannerLoadDelegate onAdLoaded;
+        public BannerTransform TransformData;
 
         public BannerAdObject()
         {
         }
 
-        public BannerAdObject(AdPlacement.Type adPlacementType, AdsManager.InterstitialDelegate onAdLoaded)
+        public BannerAdObject(AdPlacement.Type adPlacementType, BannerLoadDelegate onAdLoaded)
         {
             this.AdPlacementType = adPlacementType;
             this.onAdLoaded = onAdLoaded;
