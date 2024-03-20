@@ -18,7 +18,12 @@ public interface IAdsNetworkHelper
     void HideBanner();
     
     void HideBanner(AdPlacement.Type placementType);
+    
+    [Obsolete("Use DestroyBanner(AdPlacement.Type) instead")]
     void DestroyBanner();
+    
+    void DestroyBanner(AdPlacement.Type placementType);
+    
     void ShowInterstitial(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdClosed);
     void RequestInterstitialNoShow(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdLoaded = null, bool showLoading = true);
     void RequestInterstitialRewardedNoShow(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null);

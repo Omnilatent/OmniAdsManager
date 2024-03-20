@@ -24,6 +24,16 @@ namespace Omnilatent.AdsMediation
             _adsManager = adsManager;
         }
 
+        public BannerAdObject GetCachedBannerObject(AdPlacement.Type placementType)
+        {
+            if (_cachedBanners.TryGetValue(placementType, out var bannerAdObject))
+            {
+                return bannerAdObject;
+            }
+
+            return null;
+        }
+
         public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, AdsManager.BoolDelegate onAdLoaded = null)
         {
             BannerAdObject cachedBanner;
@@ -166,10 +176,27 @@ namespace Omnilatent.AdsMediation
             currentShowingBanner = null;
             currentShowingBannerTransform = null;
         }
+        
+        public void DestroyBanner(AdPlacement.Type placementType)
+        {
+            if (!AdsManager.Initialized) return;
+            foreach (var item in _adsManager.adsNetworkHelpers)
+            {
+                DestroyBanner(item, placementType);
+            }
+
+            currentShowingBanner = null;
+            currentShowingBannerTransform = null;
+        }
 
         void DestroyBanner(IAdsNetworkHelper adNetwork)
         {
             adNetwork.DestroyBanner();
+        }
+        
+        void DestroyBanner(IAdsNetworkHelper adNetwork, AdPlacement.Type placementType)
+        {
+            adNetwork.DestroyBanner(placementType);
         }
     }
 }
