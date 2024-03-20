@@ -47,7 +47,7 @@ public partial class AdsManager : MonoBehaviour
     IAdsNetworkHelper _ironSourceHelper;
     IAdsNetworkHelper _MAXHelper; //AppLovin
     List<IAdsNetworkHelper> defaultAdsNetworkHelpers; //Default waterfall of ads network helper, start from index 0
-    List<IAdsNetworkHelper> adsNetworkHelpers;
+    public List<IAdsNetworkHelper> adsNetworkHelpers;
     IAdsNetworkHelper currentInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentRewardInterAdsHelper; //current ads helper, to keep consistency of whose interstitial ads was loaded
     IAdsNetworkHelper currentAppOpenAdsHelper;
