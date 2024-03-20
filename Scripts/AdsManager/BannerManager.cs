@@ -34,6 +34,18 @@ namespace Omnilatent.AdsMediation
             return null;
         }
 
+        public void SetCachedBannerObject(AdPlacement.Type placementType, BannerAdObject bannerAdObject)
+        {
+            if (!_cachedBanners.ContainsKey(placementType))
+            {
+                _cachedBanners.Add(placementType, bannerAdObject);
+            }
+            else
+            {
+                _cachedBanners[placementType] = bannerAdObject;
+            }
+        }
+
         public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, AdsManager.BoolDelegate onAdLoaded = null)
         {
             BannerAdObject cachedBanner;
@@ -91,17 +103,10 @@ namespace Omnilatent.AdsMediation
                             currentShowingBanner = null;
                             currentShowingBannerTransform = null;
                         }
-                        else
+                        else if (GetCachedBannerObject(placementType) == null || GetCachedBannerObject(placementType) != newBannerAdObject)
                         {
-                            // register a banner in cached banner dict
-                            if (cachedBanner == null)
-                            {
-                                _cachedBanners.Add(placementType, newBannerAdObject);
-                            }
-                            else
-                            {
-                                _cachedBanners[placementType] = newBannerAdObject;
-                            }
+                            Debug.Log($"{adPriority[i]}'s ads helper did not assign new banner object, AdsManager will assign new banner object.");
+                            SetCachedBannerObject(placementType, newBannerAdObject);
                         }
                     });
                 while (!checkAdNetworkDone)
