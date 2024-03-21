@@ -62,11 +62,15 @@ namespace Omnilatent.AdsMediation
             _adsManager = adsManager;
         }
 
-        public BannerAdObject GetCachedBannerObject(AdPlacement.Type placementType, CustomMediation.AD_NETWORK adNetwork)
+        public BannerAdObject GetCachedBannerObject(AdPlacement.Type placementType, CustomMediation.AD_NETWORK adNetwork = CustomMediation.AD_NETWORK.None)
         {
-            if (_cachedBanners.TryGetValue(placementType, out var bannerAdObject) && bannerAdObject.AdNetwork == adNetwork)
+            if (_cachedBanners.TryGetValue(placementType, out var bannerAdObject))
             {
-                return bannerAdObject;
+                // if ad network is not specified, get any matching banner
+                if (adNetwork == CustomMediation.AD_NETWORK.None || bannerAdObject.AdNetwork == adNetwork)
+                {
+                    return bannerAdObject;
+                }
             }
 
             return null;
