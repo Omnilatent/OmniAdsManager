@@ -82,11 +82,13 @@ public partial class AdsManager : MonoBehaviour
     static float TIME_BETWEEN_APP_OPEN_ADS = 5f; //minimum time between app open ad
     public static float TimeBetweenAppOpenAds { get => TIME_BETWEEN_APP_OPEN_ADS; set => TIME_BETWEEN_APP_OPEN_ADS = value; }
 
-    bool IsShowingBanner { get => currentShowingBanner != null; }
-    AdPlacement.Type? currentShowingBanner = null;
-    public AdPlacement.Type? CurrentShowingBanner { get => currentShowingBanner; }
-    BannerTransform currentShowingBannerTransform;
-    public BannerTransform CurrentShowingBannerTransform { get => currentShowingBannerTransform; }
+    // bool IsShowingBanner { get => currentShowingBanner != null; }
+    // AdPlacement.Type? currentShowingBanner = null;
+    [Obsolete("Use GetBannerManager().CachedBanners instead")]
+    public AdPlacement.Type? CurrentShowingBanner { get => GetBannerManager().CurrentShowingBanner; }
+    // BannerTransform currentShowingBannerTransform;
+    [Obsolete("Use GetBannerManager().CachedBanners instead")]
+    public BannerTransform CurrentShowingBannerTransform { get => GetBannerManager().CurrentShowingBannerTransform; }
 
     Dictionary<string, RemoteConfigAdsNetworkData> configData;
 

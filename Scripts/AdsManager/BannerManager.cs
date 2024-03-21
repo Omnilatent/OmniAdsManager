@@ -6,16 +6,54 @@ using UnityEngine;
 namespace Omnilatent.AdsMediation
 {
     public delegate void BannerLoadDelegate(bool isSuccess, BannerAdObject loadedAdObject);
+
     public class BannerManager
     {
         public CustomMediation.AD_NETWORK? AdNetwork;
 
+        [Obsolete]
         AdPlacement.Type? currentShowingBanner = null;
-        bool IsShowingBanner { get => currentShowingBanner != null; }
+
+        [Obsolete]
+        public AdPlacement.Type? CurrentShowingBanner
+        {
+            get
+            {
+                foreach (var cachedBanner in _cachedBanners)
+                {
+                    if (cachedBanner.Value.State == AdObjectState.Showing)
+                    {
+                        return cachedBanner.Value.AdPlacementType;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        // bool IsShowingBanner { get => currentShowingBanner != null; }
+        [Obsolete]
         BannerTransform currentShowingBannerTransform;
-        public BannerTransform CurrentShowingBannerTransform { get => currentShowingBannerTransform; }
+
+        [Obsolete]
+        public BannerTransform CurrentShowingBannerTransform
+        {
+            get
+            {
+                foreach (var cachedBanner in _cachedBanners)
+                {
+                    if (cachedBanner.Value.State == AdObjectState.Showing)
+                    {
+                        return cachedBanner.Value.TransformData;
+                    }
+                }
+
+                return null;
+            }
+        }
 
         private Dictionary<AdPlacement.Type, BannerAdObject> _cachedBanners = new Dictionary<AdPlacement.Type, BannerAdObject>();
+        public Dictionary<AdPlacement.Type, BannerAdObject> CachedBanners => _cachedBanners;
 
         private AdsManager _adsManager;
 
@@ -72,7 +110,7 @@ namespace Omnilatent.AdsMediation
 
             _adsManager.StartCoroutine(CoRequestBanner(placementType, bannerTransform, onAdLoaded));
         }
-        
+
         IEnumerator CoRequestBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null,
             BannerLoadDelegate onAdLoaded = null)
         {
@@ -109,13 +147,14 @@ namespace Omnilatent.AdsMediation
                         {
                             cachedBanner.State = AdObjectState.Ready;
                         }
+
                         onAdLoaded?.Invoke(success, cachedBanner);
                     });
 
                 SetCachedBannerObject(placementType, cachedBanner);
                 cachedBanner.State = AdObjectState.Loading;
                 cachedBanner.AdNetwork = adPriority[i];
-                
+
                 while (!checkAdNetworkDone)
                 {
                     yield return checkInterval;
@@ -126,8 +165,8 @@ namespace Omnilatent.AdsMediation
                     //showingBanners.Add(CurrentAdNetwork);
                     //isShowingBanner = true;
                     AdNetwork = adPriority[i];
-                    currentShowingBanner = placementType;
-                    currentShowingBannerTransform = bannerTransform;
+                    // currentShowingBanner = placementType;
+                    // currentShowingBannerTransform = bannerTransform;
                     break;
                 }
             }
@@ -144,13 +183,13 @@ namespace Omnilatent.AdsMediation
                     return;
                 }
             }
-            
+
             if (_adsManager.DoNotShowAds(placementType))
             {
                 onAdLoaded?.Invoke(false);
                 return;
             }
-            
+
             RequestBanner(placementType, bannerTransform, (success, adObject) =>
             {
                 if (success)
@@ -177,7 +216,7 @@ namespace Omnilatent.AdsMediation
                     onAdLoaded?.Invoke(false);
                 }
             });
-            
+
             /*BannerAdObject cachedBanner;
             if (_cachedBanners.TryGetValue(placementType, out cachedBanner))
             {
@@ -234,9 +273,11 @@ namespace Omnilatent.AdsMediation
                             currentShowingBanner = null;
                             currentShowingBannerTransform = null;
                         }
-                        else if (GetCachedBannerObject(placementType, adPriority[i]) == null || GetCachedBannerObject(placementType, adPriority[i]) != newBannerAdObject)
+                        else if (GetCachedBannerObject(placementType, adPriority[i]) == null ||
+                                 GetCachedBannerObject(placementType, adPriority[i]) != newBannerAdObject)
                         {
-                            Debug.Log($"{adPriority[i]}'s ads helper did not assign new banner object, AdsManager will assign new banner object.");
+                            Debug.Log(
+                                $"{adPriority[i]}'s ads helper did not assign new banner object, AdsManager will assign new banner object.");
                             SetCachedBannerObject(placementType, newBannerAdObject);
                         }
                     });
@@ -260,22 +301,27 @@ namespace Omnilatent.AdsMediation
         /// <summary>
         /// Hide all banner
         /// </summary>
-        [Obsolete("Use HideBanner(AdPlacement.Type placement) instead")]
         public void HideBanner()
         {
             if (!AdsManager.Initialized) return;
-            foreach (var item in _adsManager.adsNetworkHelpers)
+
+            foreach (var cachedBanner in _cachedBanners)
             {
-                //Debug.Log("hiding banner " + item.ToString());
-                HideBanner(item);
+                var adHelper = _adsManager.GetAdsNetworkHelper(cachedBanner.Value.AdNetwork);
+                HideBanner(adHelper, cachedBanner.Value.AdPlacementType);
             }
+
+            /*foreach (var item in _adsManager.adsNetworkHelpers)
+            {
+                HideBanner(item);
+            }*/
 
             //showingBanners.Clear();
             //isShowingBanner = false;
             currentShowingBanner = null;
             currentShowingBannerTransform = null;
         }
-        
+
         public void HideBanner(AdPlacement.Type placement)
         {
             if (!AdsManager.Initialized) return;
@@ -290,12 +336,12 @@ namespace Omnilatent.AdsMediation
             currentShowingBanner = null;
             currentShowingBannerTransform = null;
         }
-        
+
         void HideBanner(IAdsNetworkHelper adNetwork)
         {
             adNetwork.HideBanner();
         }
-        
+
         void HideBanner(IAdsNetworkHelper adNetwork, AdPlacement.Type placement)
         {
             adNetwork.HideBanner(placement);
@@ -304,15 +350,22 @@ namespace Omnilatent.AdsMediation
         public void DestroyBanner()
         {
             if (!AdsManager.Initialized) return;
-            foreach (var item in _adsManager.adsNetworkHelpers)
+
+            foreach (var cachedBanner in _cachedBanners)
+            {
+                var adHelper = _adsManager.GetAdsNetworkHelper(cachedBanner.Value.AdNetwork);
+                DestroyBanner(adHelper, cachedBanner.Value.AdPlacementType);
+            }
+
+            /*foreach (var item in _adsManager.adsNetworkHelpers)
             {
                 DestroyBanner(item);
-            }
+            }*/
 
             currentShowingBanner = null;
             currentShowingBannerTransform = null;
         }
-        
+
         public void DestroyBanner(AdPlacement.Type placementType)
         {
             if (!AdsManager.Initialized) return;
@@ -329,7 +382,7 @@ namespace Omnilatent.AdsMediation
         {
             adNetwork.DestroyBanner();
         }
-        
+
         void DestroyBanner(IAdsNetworkHelper adNetwork, AdPlacement.Type placementType)
         {
             adNetwork.DestroyBanner(placementType);
