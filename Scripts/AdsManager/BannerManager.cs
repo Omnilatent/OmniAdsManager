@@ -46,6 +46,87 @@ namespace Omnilatent.AdsMediation
             }
         }
 
+        public void RequestBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BannerLoadDelegate onAdLoaded = null)
+        {
+            BannerAdObject cachedBanner;
+            if (_cachedBanners.TryGetValue(placementType, out cachedBanner))
+            {
+                if (cachedBanner.CanBeShown || cachedBanner.State == AdObjectState.Showing)
+                {
+                    onAdLoaded?.Invoke(true, cachedBanner);
+                    return;
+                }
+            }
+
+            if (_adsManager.DoNotShowAds(placementType))
+            {
+                onAdLoaded?.Invoke(false, null);
+                return;
+            }
+
+            _adsManager.StartCoroutine(CoRequestBanner(placementType, bannerTransform, onAdLoaded));
+        }
+        
+        IEnumerator CoRequestBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null,
+            BannerLoadDelegate onAdLoaded = null)
+        {
+            if (_cachedBanners.TryGetValue(placementType, out var cachedBanner) && bannerTransform == null)
+            {
+                bannerTransform = cachedBanner.TransformData;
+            }
+
+            if (bannerTransform == null)
+            {
+                bannerTransform = BannerTransform.defaultValue;
+            }
+
+            bool isSuccess = false;
+            WaitForSecondsRealtime checkInterval = new WaitForSecondsRealtime(0.3f);
+
+            var adPriority = _adsManager.GetAdsNetworkPriority(placementType);
+
+            for (int i = 0; i < adPriority.Count; i++)
+            {
+                bool checkAdNetworkDone = false;
+                var adsHelper = _adsManager.GetAdsNetworkHelper(adPriority[i]);
+                if (adsHelper == null) continue;
+                adsHelper.RequestBanner(placementType, bannerTransform, ref cachedBanner,
+                    (success, newBannerAdObject) =>
+                    {
+                        checkAdNetworkDone = true;
+                        isSuccess = success;
+                        onAdLoaded?.Invoke(success, cachedBanner);
+                        if (!success)
+                        {
+                            _cachedBanners.Remove(placementType);
+                        }
+                        else
+                        {
+                            SetCachedBannerObject(placementType, cachedBanner);
+                            cachedBanner.State = AdObjectState.Ready;
+                        }
+                    });
+
+                cachedBanner.State = AdObjectState.Loading;
+                cachedBanner.AdNetwork = adPriority[i];
+                
+                while (!checkAdNetworkDone)
+                {
+                    yield return checkInterval;
+                }
+
+                if (isSuccess)
+                {
+                    //showingBanners.Add(CurrentAdNetwork);
+                    //isShowingBanner = true;
+                    AdNetwork = adPriority[i];
+                    currentShowingBanner = placementType;
+                    currentShowingBannerTransform = bannerTransform;
+                    break;
+                }
+            }
+        }
+
         public void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, AdsManager.BoolDelegate onAdLoaded = null)
         {
             BannerAdObject cachedBanner;
@@ -53,6 +134,43 @@ namespace Omnilatent.AdsMediation
             {
                 if (cachedBanner.State == AdObjectState.Showing)
                 {
+                    onAdLoaded?.Invoke(true);
+                    return;
+                }
+            }
+            
+            if (_adsManager.DoNotShowAds(placementType))
+            {
+                onAdLoaded?.Invoke(false);
+                return;
+            }
+            
+            RequestBanner(placementType, bannerTransform, (success, adObject) =>
+            {
+                var adsHelper = _adsManager.GetAdsNetworkHelper(adObject.AdNetwork);
+                adsHelper.ShowBanner(placementType, bannerTransform, ref adObject,
+                    (success, newBannerAdObject) =>
+                    {
+                        onAdLoaded?.Invoke(success);
+                        if (!success)
+                        {
+                            _cachedBanners.Remove(placementType);
+                            currentShowingBanner = null;
+                            currentShowingBannerTransform = null;
+                        }
+                        else
+                        {
+                            adObject.State = AdObjectState.Showing;
+                        }
+                    });
+            });
+            
+            /*BannerAdObject cachedBanner;
+            if (_cachedBanners.TryGetValue(placementType, out cachedBanner))
+            {
+                if (cachedBanner.State == AdObjectState.Showing)
+                {
+                    onAdLoaded?.Invoke(true);
                     Debug.Log("AdsManager: A banner is already being shown");
                     return;
                 }
@@ -64,7 +182,7 @@ namespace Omnilatent.AdsMediation
                 return;
             }
 
-            _adsManager.StartCoroutine(CoShowBanner(placementType, bannerTransform, onAdLoaded));
+            _adsManager.StartCoroutine(CoShowBanner(placementType, bannerTransform, onAdLoaded));*/
         }
 
         IEnumerator CoShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform = null,
@@ -91,7 +209,7 @@ namespace Omnilatent.AdsMediation
                 var adsHelper = _adsManager.GetAdsNetworkHelper(adPriority[i]);
                 if (adsHelper == null) continue;
 
-                adsHelper.ShowBanner(placementType, bannerTransform,
+                adsHelper.ShowBanner(placementType, bannerTransform, ref cachedBanner,
                     (success, newBannerAdObject) =>
                     {
                         checkAdNetworkDone = true;

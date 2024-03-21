@@ -6,13 +6,15 @@ using Omnilatent.AdsMediation;
 
 public interface IAdsNetworkHelper
 {
+    void RequestBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, ref BannerAdObject bannerAdObject, BannerLoadDelegate onAdLoaded = null);
+
     [System.Obsolete("Use ShowBanner(AdPlacement.Type, BannerTransform, BannerManager.BannerLoadDelegate) instead.")]
     void ShowBanner(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdLoaded = null);
     
     [System.Obsolete("Use ShowBanner(AdPlacement.Type, BannerTransform, BannerManager.BannerLoadDelegate) instead.")]
     void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, AdsManager.InterstitialDelegate onAdLoaded = null);
     
-    void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BannerLoadDelegate onAdLoaded = null);
+    void ShowBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, ref BannerAdObject bannerAdObject, BannerLoadDelegate onAdLoaded = null);
     
     [Obsolete("Use HideBanner(AdPlacement.Type) instead")]
     void HideBanner();

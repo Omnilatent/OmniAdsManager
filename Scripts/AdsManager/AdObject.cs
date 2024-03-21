@@ -18,6 +18,7 @@ namespace Omnilatent.AdsMediation
         public AdObjectState State { get => state; set => state = value; }
         protected AdPlacement.Type adPlacementType;
         public AdPlacement.Type AdPlacementType { get => adPlacementType; set => adPlacementType = value; }
+        public CustomMediation.AD_NETWORK AdNetwork;
     }
 
     public class InterstitialAdObject : AdObject
@@ -72,6 +73,14 @@ namespace Omnilatent.AdsMediation
     {
         public BannerLoadDelegate onAdLoaded;
         public BannerTransform TransformData;
+
+        public bool CanBeShown
+        {
+            get
+            {
+                return (state == AdObjectState.Ready || state == AdObjectState.Closed);
+            }
+        }
 
         public BannerAdObject()
         {

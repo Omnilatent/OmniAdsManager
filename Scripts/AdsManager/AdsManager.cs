@@ -324,6 +324,11 @@ public partial class AdsManager : MonoBehaviour
         return (Application.internetReachability == NetworkReachability.NotReachable);
     }
 
+    public void RequestBanner(AdPlacement.Type placementType, BannerTransform bannerTransform, BannerLoadDelegate onAdLoaded = null)
+    {
+        GetBannerManager().RequestBanner(placementType, bannerTransform, onAdLoaded);
+    }
+
     [System.Obsolete("Use ShowBanner(type, position, onAdLoaded) instead.")]
     public void ShowBanner(AdPlacement.Type placementType, BoolDelegate onAdLoaded = null)
     {
