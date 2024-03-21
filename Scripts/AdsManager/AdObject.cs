@@ -74,7 +74,7 @@ namespace Omnilatent.AdsMediation
         public BannerLoadDelegate onAdLoaded;
         public BannerTransform TransformData;
 
-        public bool CanBeShown
+        public bool CanShow
         {
             get
             {

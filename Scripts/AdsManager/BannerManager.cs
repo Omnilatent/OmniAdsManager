@@ -24,9 +24,9 @@ namespace Omnilatent.AdsMediation
             _adsManager = adsManager;
         }
 
-        public BannerAdObject GetCachedBannerObject(AdPlacement.Type placementType)
+        public BannerAdObject GetCachedBannerObject(AdPlacement.Type placementType, CustomMediation.AD_NETWORK adNetwork)
         {
-            if (_cachedBanners.TryGetValue(placementType, out var bannerAdObject))
+            if (_cachedBanners.TryGetValue(placementType, out var bannerAdObject) && bannerAdObject.AdNetwork == adNetwork)
             {
                 return bannerAdObject;
             }
@@ -51,9 +51,15 @@ namespace Omnilatent.AdsMediation
             BannerAdObject cachedBanner;
             if (_cachedBanners.TryGetValue(placementType, out cachedBanner))
             {
-                if (cachedBanner.CanBeShown || cachedBanner.State == AdObjectState.Showing)
+                if (cachedBanner.CanShow || cachedBanner.State == AdObjectState.Showing)
                 {
                     onAdLoaded?.Invoke(true, cachedBanner);
+                    return;
+                }
+                else if (cachedBanner.State == AdObjectState.Loading)
+                {
+                    Debug.Log($"Banner '{placementType}' is still loading.");
+                    onAdLoaded?.Invoke(false, cachedBanner);
                     return;
                 }
             }
@@ -95,18 +101,18 @@ namespace Omnilatent.AdsMediation
                     {
                         checkAdNetworkDone = true;
                         isSuccess = success;
-                        onAdLoaded?.Invoke(success, cachedBanner);
                         if (!success)
                         {
                             _cachedBanners.Remove(placementType);
                         }
                         else
                         {
-                            SetCachedBannerObject(placementType, cachedBanner);
                             cachedBanner.State = AdObjectState.Ready;
                         }
+                        onAdLoaded?.Invoke(success, cachedBanner);
                     });
 
+                SetCachedBannerObject(placementType, cachedBanner);
                 cachedBanner.State = AdObjectState.Loading;
                 cachedBanner.AdNetwork = adPriority[i];
                 
@@ -147,22 +153,29 @@ namespace Omnilatent.AdsMediation
             
             RequestBanner(placementType, bannerTransform, (success, adObject) =>
             {
-                var adsHelper = _adsManager.GetAdsNetworkHelper(adObject.AdNetwork);
-                adsHelper.ShowBanner(placementType, bannerTransform, ref adObject,
-                    (success, newBannerAdObject) =>
-                    {
-                        onAdLoaded?.Invoke(success);
-                        if (!success)
+                if (success)
+                {
+                    var adsHelper = _adsManager.GetAdsNetworkHelper(adObject.AdNetwork);
+                    adsHelper.ShowBanner(placementType, bannerTransform, ref adObject,
+                        (success, newBannerAdObject) =>
                         {
-                            _cachedBanners.Remove(placementType);
-                            currentShowingBanner = null;
-                            currentShowingBannerTransform = null;
-                        }
-                        else
-                        {
-                            adObject.State = AdObjectState.Showing;
-                        }
-                    });
+                            onAdLoaded?.Invoke(success);
+                            if (!success)
+                            {
+                                _cachedBanners.Remove(placementType);
+                                currentShowingBanner = null;
+                                currentShowingBannerTransform = null;
+                            }
+                            else
+                            {
+                                adObject.State = AdObjectState.Showing;
+                            }
+                        });
+                }
+                else
+                {
+                    onAdLoaded?.Invoke(false);
+                }
             });
             
             /*BannerAdObject cachedBanner;
@@ -221,7 +234,7 @@ namespace Omnilatent.AdsMediation
                             currentShowingBanner = null;
                             currentShowingBannerTransform = null;
                         }
-                        else if (GetCachedBannerObject(placementType) == null || GetCachedBannerObject(placementType) != newBannerAdObject)
+                        else if (GetCachedBannerObject(placementType, adPriority[i]) == null || GetCachedBannerObject(placementType, adPriority[i]) != newBannerAdObject)
                         {
                             Debug.Log($"{adPriority[i]}'s ads helper did not assign new banner object, AdsManager will assign new banner object.");
                             SetCachedBannerObject(placementType, newBannerAdObject);
