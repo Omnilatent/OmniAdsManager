@@ -1,3 +1,17 @@
+## 2.12.0
+News:
+- Add function RequestBanner().
+- IAdsNetworkHelper: Add function RequestBanner().
+- Change IAdsNetworkHelper's ShowBanner() parameter: add ref BannerAdObject.
+- Remove usage of currentShowingBanner & currentShowingBannerTransform.
+
+Changes:
+- HideBanner and DestroyBanner (no param) will hide/destroy all banners.
+
+Deprecation:
+- Deprecate Current Banner property.
+- IAdsNetworkHelper: deprecate `ShowBanner(AdPlacement.Type, BannerTransform, AdsManager.InterstitialDelegate)`. Replaced with: `ShowBanner(AdPlacement.Type, BannerTransform, ref BannerAdObject, BannerLoadDelegate);`
+
 ## 2.11.0
 News:
 - Add Request Reward Ad function.
