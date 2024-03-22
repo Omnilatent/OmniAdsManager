@@ -157,6 +157,7 @@ namespace Omnilatent.AdsMediation
                     });
 
                 SetCachedBannerObject(placementType, cachedBanner);
+                cachedBanner.TransformData = bannerTransform;
                 cachedBanner.State = AdObjectState.Loading;
                 cachedBanner.AdNetwork = adPriority[i];
 
@@ -207,8 +208,8 @@ namespace Omnilatent.AdsMediation
                             {
                                 adObject.State = AdObjectState.ShowFailed;
                                 // _cachedBanners.Remove(placementType);
-                                currentShowingBanner = null;
-                                currentShowingBannerTransform = null;
+                                // currentShowingBanner = null;
+                                // currentShowingBannerTransform = null;
                             }
                             else
                             {
@@ -276,8 +277,8 @@ namespace Omnilatent.AdsMediation
                         if (!success)
                         {
                             _cachedBanners.Remove(placementType);
-                            currentShowingBanner = null;
-                            currentShowingBannerTransform = null;
+                            // currentShowingBanner = null;
+                            // currentShowingBannerTransform = null;
                         }
                         else if (GetCachedBannerObject(placementType, adPriority[i]) == null ||
                                  GetCachedBannerObject(placementType, adPriority[i]) != newBannerAdObject)
@@ -297,8 +298,8 @@ namespace Omnilatent.AdsMediation
                     //showingBanners.Add(CurrentAdNetwork);
                     //isShowingBanner = true;
                     AdNetwork = adPriority[i];
-                    currentShowingBanner = placementType;
-                    currentShowingBannerTransform = bannerTransform;
+                    // currentShowingBanner = placementType;
+                    // currentShowingBannerTransform = bannerTransform;
                     break;
                 }
             }
@@ -324,8 +325,8 @@ namespace Omnilatent.AdsMediation
 
             //showingBanners.Clear();
             //isShowingBanner = false;
-            currentShowingBanner = null;
-            currentShowingBannerTransform = null;
+            // currentShowingBanner = null;
+            // currentShowingBannerTransform = null;
         }
 
         public void HideBanner(AdPlacement.Type placement)
@@ -339,8 +340,8 @@ namespace Omnilatent.AdsMediation
 
             //showingBanners.Clear();
             //isShowingBanner = false;
-            currentShowingBanner = null;
-            currentShowingBannerTransform = null;
+            // currentShowingBanner = null;
+            // currentShowingBannerTransform = null;
         }
 
         /*void HideBanner(IAdsNetworkHelper adNetwork)
@@ -353,7 +354,8 @@ namespace Omnilatent.AdsMediation
             adNetwork.HideBanner(placementType);
             
             var cachedBanner = GetCachedBannerObject(placementType);
-            if (cachedBanner != null)
+            if (cachedBanner != null && cachedBanner.State != AdObjectState.None && cachedBanner.State != AdObjectState.LoadFailed &&
+                cachedBanner.State != AdObjectState.ShowFailed)
             {
                 cachedBanner.State = AdObjectState.Closed;
             }
@@ -374,8 +376,8 @@ namespace Omnilatent.AdsMediation
                 DestroyBanner(item);
             }*/
 
-            currentShowingBanner = null;
-            currentShowingBannerTransform = null;
+            // currentShowingBanner = null;
+            // currentShowingBannerTransform = null;
         }
 
         public void DestroyBanner(AdPlacement.Type placementType)
@@ -386,8 +388,8 @@ namespace Omnilatent.AdsMediation
                 DestroyBanner(item, placementType);
             }
 
-            currentShowingBanner = null;
-            currentShowingBannerTransform = null;
+            // currentShowingBanner = null;
+            // currentShowingBannerTransform = null;
         }
 
         /*void DestroyBanner(IAdsNetworkHelper adNetwork)
