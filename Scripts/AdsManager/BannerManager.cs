@@ -202,7 +202,6 @@ namespace Omnilatent.AdsMediation
                     adsHelper.ShowBanner(placementType, bannerTransform, ref adObject,
                         (success, newBannerAdObject) =>
                         {
-                            onAdLoaded?.Invoke(success);
                             if (!success)
                             {
                                 _cachedBanners.Remove(placementType);
@@ -213,6 +212,7 @@ namespace Omnilatent.AdsMediation
                             {
                                 adObject.State = AdObjectState.Showing;
                             }
+                            onAdLoaded?.Invoke(success);
                         });
                 }
                 else
@@ -341,14 +341,20 @@ namespace Omnilatent.AdsMediation
             currentShowingBannerTransform = null;
         }
 
-        void HideBanner(IAdsNetworkHelper adNetwork)
+        /*void HideBanner(IAdsNetworkHelper adNetwork)
         {
             adNetwork.HideBanner();
-        }
+        }*/
 
-        void HideBanner(IAdsNetworkHelper adNetwork, AdPlacement.Type placement)
+        void HideBanner(IAdsNetworkHelper adNetwork, AdPlacement.Type placementType)
         {
-            adNetwork.HideBanner(placement);
+            adNetwork.HideBanner(placementType);
+            
+            var cachedBanner = GetCachedBannerObject(placementType);
+            if (cachedBanner != null)
+            {
+                cachedBanner.State = AdObjectState.Closed;
+            }
         }
 
         public void DestroyBanner()
@@ -382,14 +388,19 @@ namespace Omnilatent.AdsMediation
             currentShowingBannerTransform = null;
         }
 
-        void DestroyBanner(IAdsNetworkHelper adNetwork)
+        /*void DestroyBanner(IAdsNetworkHelper adNetwork)
         {
             adNetwork.DestroyBanner();
-        }
+        }*/
 
         void DestroyBanner(IAdsNetworkHelper adNetwork, AdPlacement.Type placementType)
         {
             adNetwork.DestroyBanner(placementType);
+            var cachedBanner = GetCachedBannerObject(placementType);
+            if (cachedBanner != null)
+            {
+                cachedBanner.State = AdObjectState.None;
+            }
         }
     }
 }
