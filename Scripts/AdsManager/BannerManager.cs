@@ -354,8 +354,7 @@ namespace Omnilatent.AdsMediation
             adNetwork.HideBanner(placementType);
             
             var cachedBanner = GetCachedBannerObject(placementType);
-            if (cachedBanner != null && cachedBanner.State != AdObjectState.None && cachedBanner.State != AdObjectState.LoadFailed &&
-                cachedBanner.State != AdObjectState.ShowFailed)
+            if (cachedBanner != null && !AdObject.NeedReload(cachedBanner.State))
             {
                 cachedBanner.State = AdObjectState.Closed;
             }

@@ -19,6 +19,14 @@ namespace Omnilatent.AdsMediation
         protected AdPlacement.Type adPlacementType;
         public AdPlacement.Type AdPlacementType { get => adPlacementType; set => adPlacementType = value; }
         public CustomMediation.AD_NETWORK AdNetwork;
+
+        /// <summary>
+        /// Check if a state mean the ad ran into error and need to be reloaded
+        /// </summary>
+        public static bool NeedReload(AdObjectState state)
+        {
+            return state == AdObjectState.None || state == AdObjectState.LoadFailed || state == AdObjectState.ShowFailed;
+        }
     }
 
     public class InterstitialAdObject : AdObject
