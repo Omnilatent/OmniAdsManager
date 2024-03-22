@@ -145,7 +145,8 @@ namespace Omnilatent.AdsMediation
                         isSuccess = success;
                         if (!success)
                         {
-                            _cachedBanners.Remove(placementType);
+                            cachedBanner.State = AdObjectState.LoadFailed;
+                            // _cachedBanners.Remove(placementType);
                         }
                         else
                         {
@@ -204,7 +205,8 @@ namespace Omnilatent.AdsMediation
                         {
                             if (!success)
                             {
-                                _cachedBanners.Remove(placementType);
+                                adObject.State = AdObjectState.ShowFailed;
+                                // _cachedBanners.Remove(placementType);
                                 currentShowingBanner = null;
                                 currentShowingBannerTransform = null;
                             }
