@@ -11,8 +11,8 @@ namespace Omnilatent.AdsMediation
     {
         public CustomMediation.AD_NETWORK? AdNetwork;
 
-        [Obsolete]
-        AdPlacement.Type? currentShowingBanner = null;
+        // [Obsolete]
+        // AdPlacement.Type? currentShowingBanner = null;
 
         [Obsolete]
         public AdPlacement.Type? CurrentShowingBanner
