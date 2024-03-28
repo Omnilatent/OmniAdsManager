@@ -1,3 +1,11 @@
+## 2.11.1
+News:
+- Screen block (Android): show a fullscreen dialog to cover banner when an ad is displayed.
+- Add Show Reward Ad function to allow listening to Reward ad opening event.
+
+Changes:
+- Reward() use Request and Show reward so the new callback is invoked.
+
 ## 2.11.0
 News:
 - Add Request Reward Ad function.
