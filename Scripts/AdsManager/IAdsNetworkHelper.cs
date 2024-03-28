@@ -16,6 +16,7 @@ public interface IAdsNetworkHelper
     void ShowInterstitialRewarded(AdPlacement.Type placementType, RewardDelegate onAdClosed);
     void Reward(AdPlacement.Type placementType, RewardDelegate onFinish);
     void RequestRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish);
+    void ShowRewardAd(AdPlacement.Type placementType, RewardDelegate onFinish);
     void RequestAppOpenAd(AdPlacement.Type placementType, RewardDelegate onAdLoaded = null);
     void ShowAppOpenAd(AdPlacement.Type placementType, AdsManager.InterstitialDelegate onAdClosed = null);
 }

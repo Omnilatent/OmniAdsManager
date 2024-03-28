@@ -24,13 +24,36 @@ namespace Omnilatent.AdsMediation
             initialized = true;
         }
 
-        public static void Show()
+        /// <summary>
+        /// Show a black screen with the text "Loading ad" to cover the whole screen and the banner ad.
+        /// </summary>
+        /// <param name="cancelableDelay">The amount of miliseconds to wait before setting the black screen cancelable to true to allow use Back button to close it in case it's not closed by callback. Set to -1 if you don't need it.</param>
+        public static void Show(int cancelableDelay = 4000)
         {
             #if UNITY_ANDROID && !UNITY_EDITOR
             try
             {
                 Initialize();
-                _pluginInstance.Call("showDialog", unityActivity);
+                _pluginInstance.CallStatic("showDialog", unityActivity, cancelableDelay);
+            }
+            catch (Exception e)
+            {
+                LogException(e);
+            }
+            #endif
+        }
+        
+        /// <summary>
+        /// Show a black screen, dismiss it on app resume from Ad
+        /// </summary>
+        /// <param name="delayClose">The amount of miliseconds to wait before dismissing the screen on resume app</param>
+        public static void ShowThenDismissOnAppResume(int delayClose = 150)
+        {
+            #if UNITY_ANDROID && !UNITY_EDITOR
+            try
+            {
+                Initialize();
+                _pluginInstance.CallStatic("showDialogDismissOnResume", unityActivity, delayClose);
             }
             catch (Exception e)
             {
@@ -45,7 +68,7 @@ namespace Omnilatent.AdsMediation
             try
             {
                 Initialize();
-                _pluginInstance.Call("closeDialog");
+                _pluginInstance.CallStatic("closeDialog");
             }
             catch (Exception e)
             {

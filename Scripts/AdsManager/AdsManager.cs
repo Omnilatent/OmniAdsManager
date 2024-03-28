@@ -32,9 +32,15 @@ public partial class AdsManager : MonoBehaviour
     /// Called on inter ad closed. First param is ad placement type, second param is true if ad was displayed successfully.
     /// </summary>
     public static Action<AdPlacement.Type, bool> OnInterAdClosedEvent;
+    public static Action<AdPlacement.Type> OnInterAdOpeningEvent;
 
     public static Action<AdPlacement.Type, RewardResult> OnRewardAdLoadedEvent;
     public static Action<AdPlacement.Type, RewardResult> OnRewardAdClosedEvent;
+    
+    /// <summary>
+    /// Called before reward ad is displayed.
+    /// </summary>
+    public static Action<AdPlacement.Type> OnRewardAdOpeningEvent;
     
     public static Action<AdPlacement.Type> OnAppOpenAdOpened;
     public static Action<AdPlacement.Type> OnAppOpenAdClosed;
@@ -445,6 +451,7 @@ public partial class AdsManager : MonoBehaviour
             return;
         }
         ShowingInterstitial = true;
+        OnInterAdOpeningEvent?.Invoke(placeType);
         currentInterAdsHelper.ShowInterstitial(placeType, (InterstitialDelegate)((success) =>
         {
             Instance.ShowingInterstitial = false;
